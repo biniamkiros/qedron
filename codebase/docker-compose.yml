@@ -21,6 +21,35 @@ services:
       - 3001:3001
     networks:
       - app_network
+    
+  # -> only used for manual testing locally
+  # This config is for MongoDB v5+
+  # It's a Replica Set (required for Prisma Client)
+  mongodb:
+    build:
+      context: ./packages/mongodb_replica
+      args:
+        MONGO_VERSION: 6
+    environment:
+      MONGO_REPLICA_HOST: 127.0.0.1
+      MONGO_REPLICA_PORT: 27019
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: auth
+      # MONGOD_PID: 5
+      # Use "mongo" instead of "mongosh" before v5.0
+      MONGO_COMMAND: 'mongosh'
+    ports:
+      - '27017:27017'
+    restart: unless-stopped
+    healthcheck:
+      # Use "mongo" instead of "mongosh" before v5.0
+      test: ['CMD', 'mongosh', 'admin', '--port', '27019', '--eval', "db.adminCommand('ping').ok"]
+      interval: 5s
+      timeout: 2s
+      retries: 20
+    networks:
+      - app_network
 
 # Define a network, which allows containers to communicate
 # with each other, by using their container name as a hostname
