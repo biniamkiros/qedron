@@ -6,13 +6,13 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ../..:/workspaces:cached      
-    network_mode: service:db
+    network_mode: service:mongodb
     command: sleep infinity
  
   # -> only used for manual testing locally
   # This config is for MongoDB v5+
   # It's a Replica Set (required for Prisma Client)
-  db:
+  mongodb:
     build:
       context: ./mongodb_replica
       args:
