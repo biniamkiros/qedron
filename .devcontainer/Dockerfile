@@ -8,7 +8,9 @@ RUN npm i -g corepack
 RUN corepack enable && corepack prepare pnpm@7.29.0 --activate
 
 RUN apk add --no-cache docker-cli
+RUN apk add --update docker openrc
 RUN apk add --update docker-compose
+RUN rc-update add docker boot
 
 RUN git config --global user.email "biniamdev@gmail.com"
 RUN git config --global user.name "biniamkiros"

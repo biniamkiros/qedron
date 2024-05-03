@@ -24,6 +24,7 @@ services:
       
   api:
     container_name: api
+    image: ghcr.io/biniamkiros/api:latest
     build:
       context: .
       dockerfile: ./apps/api/Dockerfile
