@@ -6,6 +6,9 @@ RUN apk update && apk add --update nodejs npm
 RUN npm i -g corepack
 # Install pnpm
 RUN corepack enable && corepack prepare pnpm@7.29.0 --activate
+
+RUN apk add --no-cache docker-cli
+
 RUN git config --global user.email "biniamdev@gmail.com"
 RUN git config --global user.name "biniamkiros"
 # RUN apk update && apk add \
