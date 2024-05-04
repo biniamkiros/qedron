@@ -1,3 +1,5 @@
+
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 # Logs
 logs
 *.log
@@ -20,6 +22,8 @@ pids
 lib-cov
 
 # Coverage directory used by tools like istanbul
+# testing
+coverage
 coverage
 *.lcov
 
@@ -39,6 +43,7 @@ bower_components
 build/Release
 
 # Dependency directories
+node_modules
 node_modules/
 jspm_packages/
 
@@ -83,9 +88,13 @@ web_modules/
 .cache
 .parcel-cache
 
+# next.js
 # Next.js build output
 .next
+.next/
 out
+out/
+build
 
 # Nuxt.js build / generate output
 .nuxt
@@ -127,4 +136,16 @@ dist
 .yarn/unplugged
 .yarn/build-state.yml
 .yarn/install-state.gz
+.pnp
 .pnp.*
+.pnp.js
+
+# other
+dist/
+
+# misc
+.DS_Store
+*.pem
+
+# turbo
+.turbo
