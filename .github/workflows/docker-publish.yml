@@ -5,40 +5,25 @@ on:
     branches: [ "main" ]
     # paths: 
     #   - 'README.md'
-env:
-  # Use docker.io for Docker Hub if empty
-  # REGISTRY: ghcr.io
-  # IMAGE_NAME: ${{ github.actor }}/<image-name>:latest
 
 jobs:
-  runs:
-    using: "composite"
-    steps:
-      - name: make file
-        run: |
-          touch new_file.js
-          cat "${{ github.action_path }}/my_file.js" > new_file.js
-        shell: bash
-  # publish:
-  #   name: publish image
-  #   runs-on: ubuntu-latest
+  publish:
+    name: publish image
+    runs-on: ubuntu-latest
 
-  #   steps:
-  #   - uses: actions/checkout@v3
-  #   - name: Login
-  #     run: |
-  #       echo ${{ secrets.PAT }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-  #   # - name: Build and Publish Backend
-  #   #   run: |
-  #   #     COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose.yml build
-  #   #     docker-compose -f docker-compose.yml push 
-  #   - name: Build Compose Images
-  #     run: docker-compose -f docker-compose.yml build
-  #   - name: Push image to Container Registry
-  #     run: docker-compose -f docker-compose.yml up -d && exit
+    steps:
+    - uses: actions/checkout@v3
+    - name: login into registry
+      run: |
+        echo ${{ secrets.PAT }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+    - name: build images
+      run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose.yml build
+    - name: push image registry
+      run: docker-compose -f docker-compose.yml push
   
   deploy:
     name: deploy repo
+    needs: publish
     runs-on: ubuntu-latest
     
     steps:
@@ -55,7 +40,7 @@ jobs:
       run: "cd ${{ secrets.WORK_DIR }} "
     - name: copy compose file
       run: |
-        $ curl -s https://${{ secrets.PAT }}@raw.githubusercontent.com/biniamkiros/qedron/master/docker-compose.yml > docker-compose.yml
+        $ curl -s -j https://${{ secrets.PAT }}@raw.githubusercontent.com/biniamkiros/qedron/master/docker-compose.yml > docker-compose.yml
     - name: docker
       run: |
         echo ${{ secrets.PAT }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
