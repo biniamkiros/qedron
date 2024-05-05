@@ -58,6 +58,7 @@ jobs:
         $ curl -s https://${{ secrets.PAT }}@raw.githubusercontent.com/biniamkiros/qedron/master/docker-compose.yml > docker-compose.yml
     - name: docker
       run: |
+        docker login ghcr.io -u biniamkiros -password ${{ secrets.PAT }}
         echo ${{ secrets.PAT }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
         "docker compose pull && docker network create app_network && docker compose up -d && exit"
     - name: cleanup
