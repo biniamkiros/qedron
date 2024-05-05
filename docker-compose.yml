@@ -1,9 +1,13 @@
 version: "3"
 
 services:
-  nginx:
-    image: nginx:latest
-    container_name: nginx
+  proxy:
+    container_name: proxy
+    image: ghcr.io/biniamkiros/proxy:latest
+    build:
+      context: ./packages/reverse-proxy
+      args:
+        NGINX_VERSION: latest
     ports:
       - 80:80
     volumes:
@@ -39,6 +43,7 @@ services:
   # This config is for MongoDB v5+
   # It's a Replica Set (required for Prisma Client)
   mongodb:
+    image: ghcr.io/biniamkiros/mongodb:latest
     build:
       context: ./packages/mongodb_replica
       args:
