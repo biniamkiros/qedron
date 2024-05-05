@@ -5,7 +5,8 @@ services:
     container_name: proxy
     image: ghcr.io/biniamkiros/proxy:latest
     build:
-      context: ./packages/reverse-proxy
+      context: .
+      dockerfile: ./packages/reverse-proxy/Dockerfile
       args:
         NGINX_VERSION: latest
     ports:
@@ -44,7 +45,8 @@ services:
     container_name: mongodb
     image: ghcr.io/biniamkiros/mongodb:latest
     build:
-      context: ./packages/mongodb_replica
+      context: .
+      dockerfile: ./packages/mongodb_replica/Dockerfile
       args:
         MONGO_VERSION: 6
     environment:
