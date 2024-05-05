@@ -43,7 +43,7 @@ jobs:
     - name: docker
       run: |
         echo ${{ secrets.PAT }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-        "docker compose pull && docker network create app_network && docker compose up -d && exit"
+        docker compose pull && docker network create app_network && docker compose up -d && exit
     - name: cleanup
       run: rm -rf ~/.ssh
 
