@@ -8,14 +8,25 @@ services:
       context: .
       dockerfile: ./packages/reverse-proxy/Dockerfile
       args:
-        NGINX_VERSION: latest
+        PROXY_VERSION: latest
+    # ports:
+    #   - 80:80
     ports:
-      - 80:80
-    networks:
-      - app_network
+    - "80:80"
+    - "443:443"
+    # remove port 8080 for production
+    - "8080:8080"
+  volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+    - ./traefik/ssl/:/ssl-certs/
+  networks:
+    - app_network
 
   web:
     container_name: web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.web.rule=Host(`qedron.com`)"
     image: ghcr.io/biniamkiros/web:latest
     build:
       context: .
@@ -28,6 +39,9 @@ services:
       
   api:
     container_name: api
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.api.rule=Host(`qedron.com`)"
     image: ghcr.io/biniamkiros/api:latest
     build:
       context: .
