@@ -12,15 +12,15 @@ services:
     # ports:
     #   - 80:80
     ports:
-    - "80:80"
-    - "443:443"
-    # remove port 8080 for production
-    - "8080:8080"
-  volumes:
-    - /var/run/docker.sock:/var/run/docker.sock
-    - ./traefik/ssl/:/ssl-certs/
-  networks:
-    - app_network
+      - "80:80"
+      - "443:443"
+      # remove port 8080 for production
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./traefik/ssl/:/ssl-certs/
+    networks:
+      - app_network
 
   web:
     container_name: web
