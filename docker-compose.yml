@@ -26,7 +26,7 @@ services:
     container_name: web
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.web.rule=Host(`qedron.com`)"
+      - "traefik.http.routers.web.rule=Host(`web.qedron.com`)"
     image: ghcr.io/biniamkiros/web:latest
     build:
       context: .
@@ -41,7 +41,7 @@ services:
     container_name: api
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.api.rule=Host(`qedron.com`)"
+      - "traefik.http.routers.api.rule=Host(`api.qedron.com`)"
     image: ghcr.io/biniamkiros/api:latest
     build:
       context: .
