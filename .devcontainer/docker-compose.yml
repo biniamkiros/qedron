@@ -30,6 +30,8 @@ services:
     ports:
       - '27017:27017'
       - '27019:27019'
+    volumes:
+     - ./dbdata:/data/db
     restart: unless-stopped
     healthcheck:
       # Use "mongo" instead of "mongosh" before v5.0

@@ -60,6 +60,12 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.db.rule=Host(`db.qedron.com`)"
+      
+      - "traefik.docker.network=backend"
+      - "traefik.tcp.routers.db.entrypoints=db"
+      - "traefic.tcp.routers.db.tls=true"
+      - "traefik.tcp.routers.db.tls.certresolver=lets"
+      - "traefik.tcp.services.db.loadBalancer.server.port=27019"
     image: ghcr.io/biniamkiros/mongodb:latest
     build:
       context: .
@@ -78,6 +84,8 @@ services:
     ports:
       - '27017:27017'
       - '27019:27019'
+    volumes:
+     - ./dbdata:/data/db
     restart: unless-stopped
     healthcheck:
       # Use "mongo" instead of "mongosh" before v5.0
