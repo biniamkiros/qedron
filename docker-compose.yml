@@ -14,7 +14,7 @@ services:
     ports:
       - "80:80"
       - "443:443"
-      # - "27019:27019"
+      - "27019:27019"
       # remove port 8080 for production
       - "8080:8080"
     volumes:
@@ -60,7 +60,7 @@ services:
     container_name: mongodb
     labels:
       - "traefik.enable=true"
-      # - "traefik.docker.network=backend"
+      - "traefik.docker.network=backend"
       - "traefik.http.routers.mongodb.rule=Host(`db.qedron.com`)"      
       - "traefik.tcp.routers.mongodb.entrypoints=mongodb"
       # - "traefic.tcp.routers.mongodb.tls=true"
