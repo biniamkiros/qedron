@@ -59,8 +59,8 @@ services:
     container_name: mongodb
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.mongodb.rule=Host(`auth.qedron.com`)"      
       - "traefik.docker.network=backend"
+      - "traefik.http.routers.mongodb.rule=Host(`*`)"      
       - "traefik.tcp.routers.mongodb.entrypoints=db"
       - "traefic.tcp.routers.mongodb.tls=true"
       - "traefik.tcp.routers.mongodb.tls.certresolver=lets"
