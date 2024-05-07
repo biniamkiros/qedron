@@ -60,9 +60,10 @@ services:
     container_name: mongodb
     labels:
       - "traefik.enable=true"
-      - "traefik.docker.network=backend"
+      - "traefik.docker.network=proxy"
       - "traefik.http.routers.mongodb.rule=Host(`db.qedron.com`)"      
       - "traefik.tcp.routers.mongodb.entrypoints=mongodb"
+      - "traefik.tcp.routers.mongodb.service=mongodb"
       - "traefic.tcp.routers.mongodb.tls=true"
       - "traefik.tcp.routers.mongodb.tls.certresolver=letsencrypt"
       - "traefik.tcp.services.mongodb.loadBalancer.server.port=27019"
@@ -81,8 +82,8 @@ services:
       # MONGOD_PID: 5
       # Use "mongo" instead of "mongosh" before v5.0
       MONGO_COMMAND: 'mongosh'
-    ports:
-      - '27017:27017'
+    # ports:
+      # - '27019:27019'
     volumes:
      - ./dbdata:/data/db
     restart: unless-stopped
