@@ -14,7 +14,7 @@ services:
     ports:
       - "80:80"
       - "443:443"
-      - "27019:27019"
+      # - "27019:27019"
       # remove port 8080 for production
       - "8080:8080"
     volumes:
@@ -82,8 +82,8 @@ services:
       # MONGOD_PID: 5
       # Use "mongo" instead of "mongosh" before v5.0
       MONGO_COMMAND: 'mongosh'
-    # ports:
-      # - '27019:27019'
+    ports:
+      - '27019:27019'
     volumes:
      - ./dbdata:/data/db
     restart: unless-stopped
