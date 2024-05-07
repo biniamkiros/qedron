@@ -60,12 +60,12 @@ services:
     container_name: mongodb
     labels:
       - "traefik.enable=true"
-      - "traefik.docker.network=backend"
+      # - "traefik.docker.network=backend"
       - "traefik.http.routers.mongodb.rule=Host(`db.qedron.com`)"      
       - "traefik.tcp.routers.mongodb.entrypoints=mongodb"
-      - "traefic.tcp.routers.mongodb.tls=true"
-      - "traefik.tcp.routers.mongodb.tls.certresolver=letsencrypt"
-      - "traefik.tcp.services.mongodb.loadBalancer.server.port=27019"
+      # - "traefic.tcp.routers.mongodb.tls=true"
+      # - "traefik.tcp.routers.mongodb.tls.certresolver=letsencrypt"
+      # - "traefik.tcp.services.mongodb.loadBalancer.server.port=27019"
     image: ghcr.io/biniamkiros/mongodb:latest
     build:
       context: .
@@ -73,7 +73,7 @@ services:
       args:
         MONGO_VERSION: 6
     environment:
-      MONGO_REPLICA_HOST: 127.0.0.1
+      MONGO_REPLICA_HOST: db.qedron.com
       MONGO_REPLICA_PORT: 27019
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: password
