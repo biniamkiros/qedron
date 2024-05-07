@@ -14,7 +14,7 @@ services:
     ports:
       - "80:80"
       - "443:443"
-      - "27019:27019"
+      # - "27019:27019"
       # remove port 8080 for production
       - "8080:8080"
     volumes:
@@ -65,6 +65,7 @@ services:
       - "traefik.tcp.routers.mongodb.entrypoints=mongodb"
       - "traefic.tcp.routers.mongodb.tls=true"
       - "traefik.tcp.routers.mongodb.tls.certresolver=letsencrypt"
+      - "traefik.tcp.services.mongodb.loadBalancer.server.port=27019"
     image: ghcr.io/biniamkiros/mongodb:latest
     build:
       context: .
