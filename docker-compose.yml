@@ -63,8 +63,8 @@ services:
       - "traefik.docker.network=backend"
       - "traefik.http.routers.mongodb.rule=Host(`db.qedron.com`)"      
       - "traefik.tcp.routers.mongodb.entrypoints=mongodb"
-      # - "traefic.tcp.routers.mongodb.tls=true"
-      # - "traefik.tcp.routers.mongodb.tls.certresolver=letsencrypt"
+      - "traefic.tcp.routers.mongodb.tls=true"
+      - "traefik.tcp.routers.mongodb.tls.certresolver=letsencrypt"
       - "traefik.tcp.services.mongodb.loadBalancer.server.port=27019"
     image: ghcr.io/biniamkiros/mongodb:latest
     build:
