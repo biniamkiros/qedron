@@ -60,7 +60,7 @@ services:
     container_name: mongodb
     labels:
       - "traefik.enable=true"
-      - "traefik.docker.network=proxy"
+      - "traefik.docker.network=app_network"
       - "traefik.http.routers.mongodb.rule=Host(`db.qedron.com`)"      
       - "traefik.tcp.routers.mongodb.entrypoints=mongodb"
       - "traefik.tcp.routers.mongodb.service=mongodb"
