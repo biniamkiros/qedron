@@ -65,7 +65,7 @@ services:
       - "traefik.tcp.routers.mongodb.entrypoints=mongodb"
       # - "traefic.tcp.routers.mongodb.tls=true"
       # - "traefik.tcp.routers.mongodb.tls.certresolver=letsencrypt"
-      # - "traefik.tcp.services.mongodb.loadBalancer.server.port=27019"
+      - "traefik.tcp.services.mongodb.loadBalancer.server.port=27019"
     image: ghcr.io/biniamkiros/mongodb:latest
     build:
       context: .
@@ -83,8 +83,6 @@ services:
       MONGO_COMMAND: 'mongosh'
     ports:
       - '27017:27017'
-      - '27019:27019'
-      - '28017:28017'
     volumes:
      - ./dbdata:/data/db
     restart: unless-stopped
