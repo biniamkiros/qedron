@@ -21,7 +21,7 @@ entryPoints:
     http:
       tls:
         certResolver: default
-  db:
+  mongodb:
     address: :27019
 
 certificatesResolvers:
