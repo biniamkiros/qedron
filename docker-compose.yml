@@ -57,6 +57,9 @@ services:
   # It's a Replica Set (required for Prisma Client)
   mongodb:
     container_name: mongodb
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.db.rule=Host(`db.qedron.com`)"
     image: ghcr.io/biniamkiros/mongodb:latest
     build:
       context: .
