@@ -9,8 +9,6 @@ services:
       dockerfile: ./packages/reverse-proxy/Dockerfile
       args:
         PROXY_VERSION: latest
-    # ports:
-    #   - 80:80
     ports:
       - "80:80"
       - "443:443"
