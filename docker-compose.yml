@@ -66,7 +66,6 @@ services:
       - traefik.tcp.routers.mongodb.service=mongodb
       - traefic.tcp.routers.mongodb.tls=true
       - traefik.tcp.routers.mongodb.tls.certresolver=letsencrypt
-      - traefik.tcp.routers.mongodb.service=mongodb
       - traefik.tcp.services.mongodb.loadBalancer.server.port=27019
     image: ghcr.io/biniamkiros/mongodb:latest
     build:
