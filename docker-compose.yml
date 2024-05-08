@@ -20,7 +20,21 @@ services:
       - ./traefik/ssl/:/ssl-certs/
     networks:
       - app_network
-
+  seleda:
+    container_name: seleda
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.seleda.rule=Host(`seleda.qedron.com`)"
+    image: ghcr.io/biniamkiros/seleda:latest
+    build:
+      context: .
+      dockerfile: ./apps/seleda/Dockerfile
+    restart: always
+    ports:
+      - 3000:3000
+    networks:
+      - app_network
+  
   web:
     container_name: web
     labels:
@@ -32,7 +46,7 @@ services:
       dockerfile: ./apps/web/Dockerfile
     restart: always
     ports:
-      - 3000:3000
+      - 3001:3001
     networks:
       - app_network
       
@@ -47,7 +61,7 @@ services:
       dockerfile: ./apps/api/Dockerfile
     restart: always
     ports:
-      - 3001:3001
+      - 3002:3002
     networks:
       - app_network
     
