@@ -96,6 +96,9 @@ importers:
       '@prisma/client':
         specifier: ^5.10.2
         version: 5.13.0(prisma@5.13.0)
+      '@repo/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
       '@t3-oss/env-nextjs':
         specifier: ^0.10.1
         version: 0.10.1(typescript@5.4.5)(zod@3.23.7)
@@ -115,15 +118,18 @@ importers:
         specifier: ^3.23.3
         version: 3.23.7
     devDependencies:
+      '@repo/eslint-config':
+        specifier: workspace:*
+        version: link:../../packages/eslint-config
+      '@repo/typescript-config':
+        specifier: workspace:*
+        version: link:../../packages/typescript-config
       '@types/eslint':
         specifier: ^8.56.2
         version: 8.56.10
       '@types/node':
         specifier: ^20.11.20
         version: 20.12.7
-      '@types/node-cron':
-        specifier: ^3.0.11
-        version: 3.0.11
       '@types/react':
         specifier: ^18.2.57
         version: 18.3.1
@@ -158,7 +164,7 @@ importers:
         specifier: ^3.4.1
         version: 3.4.3
       typescript:
-        specifier: ^5.4.2
+        specifier: ^5.3.3
         version: 5.4.5
 
   apps/web:
@@ -977,9 +983,6 @@ packages:
 
   '@types/morgan@1.9.9':
     resolution: {integrity: sha512-iRYSDKVaC6FkGSpEVVIvrRGw0DfJMiQzIn3qr2G5B3C//AWkulhXgaBd7tS9/J79GWSYMTHGs7PfI5b3Y8m+RQ==}
-
-  '@types/node-cron@3.0.11':
-    resolution: {integrity: sha512-0ikrnug3/IyneSHqCBeslAhlK2aBfYek1fGo4bP4QnZPmiqSGRK+Oy7ZMisLWkesffJvQ1cqAcBnJC+8+nxIAg==}
 
   '@types/node@20.12.7':
     resolution: {integrity: sha512-wq0cICSkRLVaf3UGLMGItu/PtdY7oaXaI/RVU+xliKVOtRna3PRY57ZDfztpDL0n11vfymMUnXv8QwYCO7L1wg==}
@@ -4541,8 +4544,6 @@ snapshots:
   '@types/morgan@1.9.9':
     dependencies:
       '@types/node': 20.12.7
-
-  '@types/node-cron@3.0.11': {}
 
   '@types/node@20.12.7':
     dependencies:

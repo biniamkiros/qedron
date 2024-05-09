@@ -33,6 +33,7 @@ services:
     ports:
       - 3000:3000
     environment:
+      SKIP_ENV_VALIDATION: 1
       DATABASE_URL: "file:./db.sqlite"
       NEXTAUTH_SECRET: "h"
       NEXTAUTH_URL: "http://auth.qedron.com"

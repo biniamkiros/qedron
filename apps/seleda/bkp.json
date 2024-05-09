@@ -2,6 +2,7 @@
 {
     
   "type": "module",
+  "lint": "next lint",
     "ct3aMetadata": {
     "initVersion": "7.32.1"
   },
