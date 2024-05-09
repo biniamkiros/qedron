@@ -17,7 +17,7 @@ jobs:
       run: |
         echo ${{ secrets.PAT }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
     - name: build images
-      run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose.yml build
+      run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose.yml build -e SKIP_ENV_VALIDATION=1
     - name: push image registry
       run: docker-compose -f docker-compose.yml push
   
