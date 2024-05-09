@@ -20,6 +20,7 @@ services:
       - ./traefik/ssl/:/ssl-certs/
     networks:
       - app_network
+  
   seleda:
     container_name: seleda
     labels:
