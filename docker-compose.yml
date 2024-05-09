@@ -33,7 +33,7 @@ services:
     ports:
       - 3000:3000
     env_file:
-      - /apps/seleda/.env
+      - ./apps/seleda/.env
     # environment:
     #   SKIP_ENV_VALIDATION: 1
     #   DATABASE_URL: "file:./db.sqlite"
