@@ -30,18 +30,19 @@ services:
     build:
       context: .
       dockerfile: ./apps/seleda/Dockerfile
+      args:
+        SKIP_ENV_VALIDATION: 1
+        DATABASE_URL: file:./db.sqlite
+        NEXTAUTH_SECRET: h"
+        NEXTAUTH_URL: http://auth.qedron.com
+        DISCORD_CLIENT_ID: s
+        DISCORD_CLIENT_SECRET: s
     restart: always
     ports:
       - 3000:3000
     # env_file:
     #   - .env
-    environment:
-      SKIP_ENV_VALIDATION: 1
-      DATABASE_URL: file:./db.sqlite
-      NEXTAUTH_SECRET: h"
-      NEXTAUTH_URL: http://auth.qedron.com
-      DISCORD_CLIENT_ID: s
-      DISCORD_CLIENT_SECRET: s
+    
     networks:
       - app_network
   
