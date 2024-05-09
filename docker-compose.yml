@@ -32,15 +32,15 @@ services:
     restart: always
     ports:
       - 3000:3000
-    env_file:
-      - ./apps/seleda/.env
-    # environment:
-    #   SKIP_ENV_VALIDATION: 1
-    #   DATABASE_URL: "file:./db.sqlite"
-    #   NEXTAUTH_SECRET: "h"
-    #   NEXTAUTH_URL: "http://auth.qedron.com"
-    #   DISCORD_CLIENT_ID: "s"
-    #   DISCORD_CLIENT_SECRET: "s"
+    # env_file:
+    #   - ./apps/seleda/.env
+    environment:
+      SKIP_ENV_VALIDATION: 1
+      DATABASE_URL: file:./db.sqlite
+      NEXTAUTH_SECRET: h"
+      NEXTAUTH_URL: http://auth.qedron.com
+      DISCORD_CLIENT_ID: s
+      DISCORD_CLIENT_SECRET: s
     networks:
       - app_network
   
