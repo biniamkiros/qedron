@@ -1,34 +1,16 @@
 export const scrapToday = () => {};
 export const scrapWeek = () => {};
-export const scrapAll = async() => {
+export const scrapAll = async () => {
   let tender = []
-  // let raw = []
   const perPage = 10
   const active = await getEGPActiveTenders(0, perPage);
   const {total,items} = active
-  // raw.push(...items)
   tender.push(...items.map((item: { result: any; })=> item.result))
-  // const skip = Math.ceil(total / perPage)+1
-  for(let i=1; i<total; i + 10) {
-    // const {total, items:{result}} = 
-    getEGPActiveTenders(i, 10)
-    .then(({total, items:{result}}) => {
-      // if(total)
-      tender.push(...items.map((item: { result: any; })=> item.result))
-      if(i==total || i > total) {
-        console.log("🚀 ~ fetching ~ tender complete");
-        console.log("🚀 ~ getEGPActiveTenders ~ tender:", tender.length); 	
-        return tender.flat()
-      } else {
-          console.log("🚀 ~ fetching ~ tender page:", i); 
-        }
-    	}
-    	);
-    }
-    // raw.push(...items)
-      // console.log("🚀 ~ scrapAll ~ tender:", tender)
-  
+  const raw = await getEGPActiveTenders(10, total)
+  tender.push(...items.map((item: { result: any; })=> item.result))
+  return tender.flat();
 };
+
 export const getEGPTenderSummary = async () => {
   const summaryUrl =
     "https://egp.ppa.gov.et/po-gw/cms/api/sourcing/get-tender-summary";
@@ -142,7 +124,7 @@ const single = {
     clarification_deadline: "2024-02-07T08:00:00",
     quatation_request_language: "en",
   },
-  timestamp: "2024-02-06T16:11:12.758485",
+  timestamp: "2024-02-06T16:11:12.758485", 
   procurementMethod: "Open",
   submissionDeadline: "2024-02-06T00:00:00",
   status: "Published",
