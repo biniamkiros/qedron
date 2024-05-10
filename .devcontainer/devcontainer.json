@@ -12,7 +12,8 @@
 			"extensions": [
 				"ms-azuretools.vscode-docker",
 				"esbenp.prettier-vscode",
-				"github.vscode-github-actions"
+				"github.vscode-github-actions",
+				"ChakrounAnas.turbo-console-log"
 			]
 		}
 	}
