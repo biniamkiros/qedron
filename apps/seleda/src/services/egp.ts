@@ -1,13 +1,16 @@
+import { PrismaClient } from '.prisma/client'
+// import { PrismaClient } from '../../node_modules/.prisma/client'
+const prisma = new PrismaClient()
+
 export const scrapToday = () => {};
 export const scrapWeek = () => {};
 export const scrapAll = async () => {
   let tender = []
   const perPage = 10
-  const active = await getEGPActiveTenders(0, perPage);
-  const {total,items} = active
+  const {total, items} = await getEGPActiveTenders(0, perPage);
   tender.push(...items.map((item: { result: any; })=> item.result))
-  const raw = await getEGPActiveTenders(10, total)
-  tender.push(...items.map((item: { result: any; })=> item.result))
+  const restItems = await getEGPActiveTenders(perPage, total)
+  tender.push(...restItems.items.map((item: { result: any; })=> item.result))
   return tender.flat();
 };
 
@@ -44,88 +47,65 @@ export const getRequest = async (url:string) => {
   }
 };
 
-const t = {
-  packageId: "89df2369-3fde-462c-adb1-f6f3691bc557",
-  count: 1,
-  result: [
-    {
-      id: "4c0686a8-9497-4c30-866b-d81d3a134977",
-      lotId: "8b7a5499-1460-464d-b07c-b67640891f73",
-      lotInPackageId: "8b7a5499-1460-464d-b07c-b67640891f73",
-      lotName: "procurement of registration book large/ባለመስመሩ መዝገብ/",
-      lotDescription: "Goods",
-      lotReferenceNo: "MoH-NCB-G-0323-2016-PUR",
-      lotNo: "1",
-      procurementReferenceNo: "MoH-NCB-G-0323-2016-PUR",
-      procurementCategory: "Goods",
-      packageId: "89df2369-3fde-462c-adb1-f6f3691bc557",
-      packageInformation: {},
-      procurementClassification: [],
-      spdId: "00000000-0000-0000-0000-000000000000",
-      submissionDeadline: "2024-02-07T01:00:00",
-      openingSchedule: null,
-      sourceId: "d897fea0-46d9-4f86-b0ec-968c425df5f2",
-      sourceApplication: "Purchasing",
-      method: "Open",
-      language: "en",
-      marketPlace: "National",
-      procuringEntity: "Ministry of Health ",
-      timestamp: "2024-02-06T14:05:22.307047",
-      invitationDate: "2024-02-06T16:11:12.798716",
-      suppliers: null,
-      isSubmittable: true,
-    },
-  ],
+export const createEGPTenders = async (data: any[]) => {
+  if (data.length > 0) {
+    data.forEach((d) => {
+      const { result } = d;
+      if (result) {
+        console.log("🚀 ~ data.forEach ~ result:", result);
+        if (result.length > 0) {
+          result.forEach((r: { id: any; lotName: any; submissionDeadline: any; invitationDate: any; status: any; procuringEntity: any; lotId: any; language: any; marketPlace: any; }) => {
+            upsertEGPTender(r);
+          });
+        } 
+      }
+    });
+  } 
 };
 
-const single = {
-  quotationRequestInvitees: [],
-  quotationRequestClassifications: [],
-  id: "d897fea0-46d9-4f86-b0ec-968c425df5f2",
-  quotationRequestId: "8b7a5499-1460-464d-b07c-b67640891f73",
-  purchaseRequestDefinition: {
-    governing_rule: "The Federal Republic of Ethiopia",
-    terms_and_conditions: {
-      termsAndConditions:
-        "The procuring entity has the right to cancel the bid fully or partially",
-    },
-    eligibility_requirements: {
-      bidSecurityForm: [],
-      participationFee: null,
-      bidSecurityAmount: 0,
-      participationCurrency: null,
-    },
-  },
-  lotInformation: {
-    name: "procurement of registration book large/ባለመስመሩ መዝገብ/",
-    address: {
-      town: "Addis Ababa",
-      email: "sebli19mm@gmail.com",
-      poBox: "1234",
-      street: "goma kuteba",
-      country: "Ethiopia",
-      postCode: "1000",
-      telephone: {
-        code: "+251",
-        number: "967141479",
-      },
-      roomNumber: "MOH 2ND Floor procurement office",
-    },
-    award_type: "Item based",
-    description: "Goods",
-    market_type: "National",
-    bid_currency: null,
-    reference_no: "MoH-NCB-G-0323-2016-PUR",
-    invitation_date: "2024-02-06 00:00:00.000-05:00",
-    procurement_type: "Shopping",
-    procuring_entity: "Ministry of Health ",
-    procurement_method: "Open",
-    submission_deadline: "2024-02-06 00:00:00",
-    clarification_deadline: "2024-02-07T08:00:00",
-    quatation_request_language: "en",
-  },
-  timestamp: "2024-02-06T16:11:12.758485", 
-  procurementMethod: "Open",
-  submissionDeadline: "2024-02-06T00:00:00",
-  status: "Published",
+export const upsertEGPTender = async (r: { id: string; lotName: any; submissionDeadline: any; invitationDate: any; status: any; procuringEntity: any; lotId: any; language: any; marketPlace: any; }) => {
+  const raw = {
+    egpId: r.id,
+      title: r.lotName,
+      description: r.lotName,
+      openingDate: r.submissionDeadline,
+      closingDate: r.invitationDate,
+      sources: ["egp"],
+      status: r.status,
+      entity: r.procuringEntity,
+      link: `https://egp.ppa.gov.et/egp/bids/all/tendering/${r.lotId}/open`,
+      language: r.language,
+      region: r.marketPlace,
+  }
+  const oldTender = await prisma.tender.findFirst({ where: { egpId: r.id } });
+  if(oldTender) {
+    const updateTender = await prisma.tender.update({ where: { egpId: r.id }, data: raw })}
+  else{
+  const createTender = await prisma.tender.create({data: raw })
+}
+
 };
+
+// const createQueue = async (newTender) => {
+//   const bidders = await Bidder.find({ activeEndDate: { $gte: new Date() } });
+//   bidders.forEach((bidder) => {
+//     if (isTenderRelevant(bidder, newTender)) {
+//       const seledaQueue = new SeledaQueue({
+//         bidderRef: bidder._id,
+//         tenderRef: tender._id,
+//         status: "ACTIVE",
+//       });
+//       seledaQueue.save((err, result) => {
+//         if (err && !result) {
+//           // notifySeledaAdmin(
+//           //   "Error creating seleda queue: ",
+//           //   tender.title,
+//           //   " for ",
+//           //   bidder.name
+//           // );
+//         }
+//       });
+//     }
+//   });
+// };
+
