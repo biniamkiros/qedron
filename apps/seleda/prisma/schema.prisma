@@ -24,10 +24,11 @@ model Tender {
     closingDate   String 
     sources       String[] 
     entity        String 
-    link          String @unique
+    link          String
     status        String 
     language      String 
     region        String
     createdAt     DateTime @default(now())
     updatedAt     DateTime @updatedAt
 }
+

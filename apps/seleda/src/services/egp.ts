@@ -1,5 +1,5 @@
-import { PrismaClient } from '.prisma/client'
-// import { PrismaClient } from '../../node_modules/.prisma/client'
+// import { PrismaClient } from '.prisma/client'
+import { PrismaClient } from '../../../../node_modules/.pnpm/@prisma+client@5.13.0_prisma@5.13.0/node_modules/@prisma/client'
 const prisma = new PrismaClient()
 
 export const scrapToday = () => {};
@@ -52,7 +52,6 @@ export const createEGPTenders = async (data: any[]) => {
     data.forEach((d) => {
       const { result } = d;
       if (result) {
-        console.log("🚀 ~ data.forEach ~ result:", result);
         if (result.length > 0) {
           result.forEach((r: { id: any; lotName: any; submissionDeadline: any; invitationDate: any; status: any; procuringEntity: any; lotId: any; language: any; marketPlace: any; }) => {
             upsertEGPTender(r);
@@ -66,24 +65,29 @@ export const createEGPTenders = async (data: any[]) => {
 export const upsertEGPTender = async (r: { id: string; lotName: any; submissionDeadline: any; invitationDate: any; status: any; procuringEntity: any; lotId: any; language: any; marketPlace: any; }) => {
   const raw = {
     egpId: r.id,
-      title: r.lotName,
-      description: r.lotName,
-      openingDate: r.submissionDeadline,
-      closingDate: r.invitationDate,
+      title: r.lotName|| "",
+      description: r.lotName|| "",
+      openingDate: r.submissionDeadline || "",
+      closingDate: r.invitationDate || "",
       sources: ["egp"],
-      status: r.status,
-      entity: r.procuringEntity,
+      status: r.status || "",
+      entity: r.procuringEntity|| "",
       link: `https://egp.ppa.gov.et/egp/bids/all/tendering/${r.lotId}/open`,
-      language: r.language,
-      region: r.marketPlace,
+      language: r.language|| "",
+      region: r.marketPlace|| "",
   }
-  const oldTender = await prisma.tender.findFirst({ where: { egpId: r.id } });
-  if(oldTender) {
-    const updateTender = await prisma.tender.update({ where: { egpId: r.id }, data: raw })}
-  else{
-  const createTender = await prisma.tender.create({data: raw })
-}
-
+  const upsertUser = await prisma.tender.upsert({
+    where: {
+      egpId: r.id,
+    },
+    update: {
+      ...raw
+    },
+    create: {
+      ...raw
+    },
+  })
+  console.log("🚀 ~ upsertEGPTender ~ upsertUser:", upsertUser.egpId)
 };
 
 // const createQueue = async (newTender) => {

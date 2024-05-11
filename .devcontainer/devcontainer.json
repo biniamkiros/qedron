@@ -13,7 +13,8 @@
 				"ms-azuretools.vscode-docker",
 				"esbenp.prettier-vscode",
 				"github.vscode-github-actions",
-				"ChakrounAnas.turbo-console-log"
+				"ChakrounAnas.turbo-console-log",
+				"Prisma.prisma"
 			]
 		}
 	}
