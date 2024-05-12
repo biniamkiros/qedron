@@ -20,7 +20,35 @@ services:
       - ./traefik/ssl/:/ssl-certs/
     networks:
       - app_network
-  
+   
+  seleda:
+    container_name: seleda
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.seleda.rule=Host(`seleda.qedron.com`)
+      # - traefik.http.routers.vault-https.entrypoints=websecure
+      # - traefik.http.routers.seleda.tls=true
+      # - traefik.http.routers.seleda.tls.certresolver=lets-encrypt
+      # - traefik.port=80
+    image: ghcr.io/biniamkiros/seleda:latest
+    build:
+      context: .
+      dockerfile: ./apps/seleda/Dockerfile
+      args:
+        SKIP_ENV_VALIDATION: 1
+        DATABASE_URL: file:./db.sqlite
+        NEXTAUTH_SECRET: h"
+        NEXTAUTH_URL: http://auth.qedron.com
+        DISCORD_CLIENT_ID: s
+        DISCORD_CLIENT_SECRET: s
+    restart: always
+    ports:
+      - 3002:3002  
+    networks:
+      - app_network
+    depends_on:
+      - mongodb
+   
   web:
     container_name: web
     labels:
@@ -62,35 +90,7 @@ services:
       - app_network
     depends_on:
       - mongodb
-   
-  seleda:
-    container_name: seleda
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.seleda.rule=Host(`seleda.qedron.com`)
-      # - traefik.http.routers.vault-https.entrypoints=websecure
-      # - traefik.http.routers.seleda.tls=true
-      # - traefik.http.routers.seleda.tls.certresolver=lets-encrypt
-      # - traefik.port=80
-    image: ghcr.io/biniamkiros/seleda:latest
-    build:
-      context: .
-      dockerfile: ./apps/seleda/Dockerfile
-      args:
-        SKIP_ENV_VALIDATION: 1
-        DATABASE_URL: file:./db.sqlite
-        NEXTAUTH_SECRET: h"
-        NEXTAUTH_URL: http://auth.qedron.com
-        DISCORD_CLIENT_ID: s
-        DISCORD_CLIENT_SECRET: s
-    restart: always
-    ports:
-      - 3002:3002  
-    networks:
-      - app_network
-    depends_on:
-      - mongodb
-   
+
   # -> only used for manual testing locally
   # This config is for MongoDB v5+
   # It's a Replica Set (required for Prisma Client)
