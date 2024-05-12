@@ -38,7 +38,7 @@ jobs:
         echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
         ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
     - name: connect, pull and start
-      run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORKING_DIR }} && curl -s -j https://${{ secrets.PAT }}@raw.githubusercontent.com/biniamkiros/qedron/master/docker-compose.yml > docker-compose.yml && echo ${{ secrets.PAT }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin && docker kill $(docker ps -q) || true && docker rm $(docker ps -a -q) || true  && echo y | docker system prune -all && docker compose pull && docker network create app_network && docker compose up -d && exit"
+      run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORKING_DIR }} && curl -s -j https://${{ secrets.PAT }}@raw.githubusercontent.com/biniamkiros/qedron/master/docker-compose.yml > docker-compose.yml && echo ${{ secrets.PAT }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin && docker compose down  && echo y | docker system prune -all && docker compose pull && docker network create app_network && docker compose up -d && exit"
     - name: cleanup
       run: rm -rf ~/.ssh
 
