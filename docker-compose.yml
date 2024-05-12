@@ -68,10 +68,11 @@ services:
     labels:
       - traefik.enable=true
       - traefik.http.routers.seleda.rule=Host(`seleda.qedron.com`)
-      # - traefik.http.routers.vault-https.entrypoints=websecure
-      # - traefik.http.routers.seleda.tls=true
-      # - traefik.http.routers.seleda.tls.certresolver=lets-encrypt
-      # - traefik.port=80
+      # - traefik.tcp.routers.seleda.entrypoints=seleda
+      # - traefik.tcp.routers.seleda.service=seleda
+      # - traefic.tcp.routers.seleda.tls=true
+      # - traefik.tcp.routers.seleda.tls.certresolver=letsencrypt
+      # - traefik.tcp.services.seleda.loadBalancer.server.port=3002
     image: ghcr.io/biniamkiros/seleda:latest
     build:
       context: .
@@ -111,7 +112,7 @@ services:
       - traefik.tcp.routers.mongodb.service=mongodb
       - traefic.tcp.routers.mongodb.tls=true
       - traefik.tcp.routers.mongodb.tls.certresolver=letsencrypt
-      - traefik.tcp.services.mongodb.loadBalancer.server.port=27019
+      - traefik.tcp.services.mongodb.loadBalancer.server.port=27016
     image: ghcr.io/biniamkiros/mongodb:latest
     build:
       context: .
