@@ -103,7 +103,7 @@ services:
     container_name: cron
     labels:
       - traefik.enable=true
-      - traefik.http.routers.mongodb.rule=Host(`cron.qedron.com`)    
+      - traefik.http.routers.cron.rule=Host(`cron.qedron.com`)    
     image: alseambusher/crontab-ui  
     restart: always
     ports:
