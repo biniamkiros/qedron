@@ -121,7 +121,7 @@ services:
         MONGO_VERSION: 6
     environment:
       MONGO_REPLICA_HOST: db.qedron.com
-      MONGO_REPLICA_PORT: 27019
+      MONGO_REPLICA_PORT: 27016
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: password
       MONGO_INITDB_DATABASE: auth
@@ -129,7 +129,7 @@ services:
       # Use "mongo" instead of "mongosh" before v5.0
       MONGO_COMMAND: 'mongosh'
     ports:
-      - '27019:27019'
+      - '27016:27016'
     volumes:
      - ./dbdata:/data/db
     restart: unless-stopped
