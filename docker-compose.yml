@@ -24,9 +24,11 @@ services:
   web:
     container_name: web
     labels:
-      - traefik.enable=true
+      - traefik.enable='true'
       - traefik.http.routers.web.rule=Host(`web.qedron.com`)
       - traefik.http.routers.vault-https.entrypoints=websecure  
+      - traefik.http.routers.web.tls.certresolver=lets-encrypt
+      - traefik.port=80
     image: ghcr.io/biniamkiros/web:latest
     build:
       context: .
@@ -40,9 +42,11 @@ services:
   api:
     container_name: api
     labels:
-      - traefik.enable=true
+      - traefik.enable='true'
       - traefik.http.routers.api.rule=Host(`api.qedron.com`)
       - traefik.http.routers.vault-https.entrypoints=websecure  
+      - traefik.http.routers.api.tls.certresolver=lets-encrypt
+      - traefik.port=80
     image: ghcr.io/biniamkiros/api:latest
     build:
       context: .
@@ -56,9 +60,11 @@ services:
   seleda:
     container_name: seleda
     labels:
-      - traefik.enable=true
+      - traefik.enable='true'
       - traefik.http.routers.seleda.rule=Host(`seleda.qedron.com`)
-      - traefik.http.routers.vault-https.entrypoints=websecure  
+      - traefik.http.routers.vault-https.entrypoints=websecure
+      - traefik.http.routers.seleda.tls.certresolver=lets-encrypt
+      - traefik.port=80
     image: ghcr.io/biniamkiros/seleda:latest
     build:
       context: .
@@ -72,7 +78,7 @@ services:
         DISCORD_CLIENT_SECRET: s
     restart: always
     ports:
-      - 3003:3003    
+      - 3002:3002  
     networks:
       - app_network
    

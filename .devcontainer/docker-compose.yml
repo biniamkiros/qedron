@@ -9,7 +9,7 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock:rw" 
     network_mode: service:mongodb
     command: sleep infinity
- 
+
   # -> only used for manual testing locally
   # This config is for MongoDB v5+
   # It's a Replica Set (required for Prisma Client)
