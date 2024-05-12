@@ -62,9 +62,9 @@ COPY --from=installer /app/apps/seleda/package.json .
 
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
-COPY --from=installer --chown=nextjs:nodejs /app/apps/seleda/.next/standalone ./
+COPY --from=installer --chown=nextjs:nodejs /app/apps/seleda/.next/standalone ./apps/seleda
 # COPY --from=installer --chown=nextjs:nodejs /app/apps/seleda/.next/standalone/apps/seleda ./
 COPY --from=installer --chown=nextjs:nodejs /app/apps/seleda/.next/static ./apps/seleda/.next/static
-COPY --from=installer --chown=nextjs:nodejs /app/apps/seleda/public ./apps/seleda/.next/public
+COPY --from=installer --chown=nextjs:nodejs /app/apps/seleda/public ./apps/seleda/public
 
 CMD node apps/seleda/server.js
