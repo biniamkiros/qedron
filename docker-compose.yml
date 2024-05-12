@@ -30,7 +30,7 @@ services:
       - traefik.http.routers.web.tls=true
       # - traefik.http.routers.web.tls.certresolver=lets-encrypt
       # - traefik.port=80
-      - traefik.tcp.services.seleda.loadBalancer.server.port=3000
+      - traefik.tcp.services.web.loadBalancer.server.port=3000
     image: ghcr.io/biniamkiros/web:latest
     build:
       context: .
@@ -52,7 +52,7 @@ services:
       # - traefik.http.routers.api.tls=true
       # - traefik.http.routers.api.tls.certresolver=lets-encrypt
       # - traefik.port=80
-      - traefik.tcp.services.seleda.loadBalancer.server.port=3001
+      - traefik.tcp.services.api.loadBalancer.server.port=3001
     image: ghcr.io/biniamkiros/api:latest
     build:
       context: .
@@ -106,7 +106,7 @@ services:
     labels:
       - traefik.enable=true
       - traefik.http.routers.cron.rule=Host(`cron.qedron.com`)   
-      - traefik.tcp.services.seleda.loadBalancer.server.port=3003 
+      - traefik.tcp.services.cron.loadBalancer.server.port=3003 
     image: alseambusher/crontab-ui  
     restart: always
     ports:
