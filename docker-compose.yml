@@ -26,10 +26,10 @@ services:
     labels:
       - traefik.enable='true'
       - traefik.http.routers.web.rule=Host(`web.qedron.com`)
-      - traefik.http.routers.vault-https.entrypoints=websecure
-      - traefik.http.routers.web.tls=true
-      - traefik.http.routers.web.tls.certresolver=lets-encrypt
-      - traefik.port=80
+      # - traefik.http.routers.vault-https.entrypoints=websecure
+      # - traefik.http.routers.web.tls=true
+      # - traefik.http.routers.web.tls.certresolver=lets-encrypt
+      # - traefik.port=80
     image: ghcr.io/biniamkiros/web:latest
     build:
       context: .
@@ -47,10 +47,10 @@ services:
     labels:
       - traefik.enable='true'
       - traefik.http.routers.api.rule=Host(`api.qedron.com`)
-      - traefik.http.routers.vault-https.entrypoints=websecure
-      - traefik.http.routers.api.tls=true
-      - traefik.http.routers.api.tls.certresolver=lets-encrypt
-      - traefik.port=80
+      # - traefik.http.routers.vault-https.entrypoints=websecure
+      # - traefik.http.routers.api.tls=true
+      # - traefik.http.routers.api.tls.certresolver=lets-encrypt
+      # - traefik.port=80
     image: ghcr.io/biniamkiros/api:latest
     build:
       context: .
@@ -68,10 +68,10 @@ services:
     labels:
       - traefik.enable='true'
       - traefik.http.routers.seleda.rule=Host(`seleda.qedron.com`)
-      - traefik.http.routers.vault-https.entrypoints=websecure
-      - traefik.http.routers.seleda.tls=true
-      - traefik.http.routers.seleda.tls.certresolver=lets-encrypt
-      - traefik.port=80
+      # - traefik.http.routers.vault-https.entrypoints=websecure
+      # - traefik.http.routers.seleda.tls=true
+      # - traefik.http.routers.seleda.tls.certresolver=lets-encrypt
+      # - traefik.port=80
     image: ghcr.io/biniamkiros/seleda:latest
     build:
       context: .
