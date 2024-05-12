@@ -98,7 +98,19 @@ services:
       - app_network
     depends_on:
       - mongodb
-   
+
+  cron:
+    container_name: cron
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.mongodb.rule=Host(`cron.qedron.com`)    
+    image: alseambusher/crontab-ui  
+    restart: always
+    ports:
+      - 3003:3003  
+    networks:
+      - app_network
+
   # -> only used for manual testing locally
   # This config is for MongoDB v5+
   # It's a Replica Set (required for Prisma Client)
