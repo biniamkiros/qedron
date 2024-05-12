@@ -26,7 +26,8 @@ services:
     labels:
       - traefik.enable='true'
       - traefik.http.routers.web.rule=Host(`web.qedron.com`)
-      - traefik.http.routers.vault-https.entrypoints=websecure  
+      - traefik.http.routers.vault-https.entrypoints=websecure
+      - traefik.http.routers.web.tls=true
       - traefik.http.routers.web.tls.certresolver=lets-encrypt
       - traefik.port=80
     image: ghcr.io/biniamkiros/web:latest
@@ -38,13 +39,16 @@ services:
       - 3000:3000
     networks:
       - app_network
+    depends_on:
+      - mongodb
      
   api:
     container_name: api
     labels:
       - traefik.enable='true'
       - traefik.http.routers.api.rule=Host(`api.qedron.com`)
-      - traefik.http.routers.vault-https.entrypoints=websecure  
+      - traefik.http.routers.vault-https.entrypoints=websecure
+      - traefik.http.routers.api.tls=true
       - traefik.http.routers.api.tls.certresolver=lets-encrypt
       - traefik.port=80
     image: ghcr.io/biniamkiros/api:latest
@@ -56,6 +60,8 @@ services:
       - 3001:3001
     networks:
       - app_network
+    depends_on:
+      - mongodb
    
   seleda:
     container_name: seleda
@@ -63,6 +69,7 @@ services:
       - traefik.enable='true'
       - traefik.http.routers.seleda.rule=Host(`seleda.qedron.com`)
       - traefik.http.routers.vault-https.entrypoints=websecure
+      - traefik.http.routers.seleda.tls=true
       - traefik.http.routers.seleda.tls.certresolver=lets-encrypt
       - traefik.port=80
     image: ghcr.io/biniamkiros/seleda:latest
@@ -81,6 +88,8 @@ services:
       - 3002:3002  
     networks:
       - app_network
+    depends_on:
+      - mongodb
    
   # -> only used for manual testing locally
   # This config is for MongoDB v5+
