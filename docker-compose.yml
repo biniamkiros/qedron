@@ -27,7 +27,7 @@ services:
       - traefik.enable='true'
       - traefik.http.routers.web.rule=Host(`web.qedron.com`)
       # - traefik.http.routers.vault-https.entrypoints=websecure
-      # - traefik.http.routers.web.tls=true
+      - traefik.http.routers.web.tls=true
       # - traefik.http.routers.web.tls.certresolver=lets-encrypt
       # - traefik.port=80
     image: ghcr.io/biniamkiros/web:latest
