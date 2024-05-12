@@ -111,6 +111,9 @@ importers:
       node-telegram-bot-api:
         specifier: ^0.65.1
         version: 0.65.1(request@2.88.2)
+      prisma-client:
+        specifier: link:@/prisma/prisma-client
+        version: link:@/prisma/prisma-client
       react:
         specifier: 18.2.0
         version: 18.2.0

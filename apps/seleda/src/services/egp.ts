@@ -1,6 +1,6 @@
-// import { PrismaClient } from '.prisma/client'
+import { PrismaClient } from '@prisma/client'
 // import { PrismaClient } from '../../../../node_modules/.pnpm/@prisma+client@5.13.0_prisma@5.13.0/node_modules/@prisma/client'
-// const prisma = new PrismaClient()
+const prisma = new PrismaClient()
 
 export const scrapToday = () => {};
 export const scrapWeek = () => {};
@@ -47,48 +47,48 @@ export const getRequest = async (url:string) => {
   }
 };
 
-// export const createEGPTenders = async (data: any[]) => {
-//   if (data.length > 0) {
-//     data.forEach((d) => {
-//       const { result } = d;
-//       if (result) {
-//         if (result.length > 0) {
-//           result.forEach((r: { id: any; lotName: any; submissionDeadline: any; invitationDate: any; status: any; procuringEntity: any; lotId: any; language: any; marketPlace: any; }) => {
-//             upsertEGPTender(r);
-//           });
-//         } 
-//       }
-//     });
-//   } 
-// };
+export const createEGPTenders = async (data: any[]) => {
+  if (data.length > 0) {
+    data.forEach((d) => {
+      const { result } = d;
+      if (result) {
+        if (result.length > 0) {
+          result.forEach((r: { id: any; lotName: any; submissionDeadline: any; invitationDate: any; status: any; procuringEntity: any; lotId: any; language: any; marketPlace: any; }) => {
+            upsertEGPTender(r);
+          });
+        } 
+      }
+    });
+  } 
+};
 
-// export const upsertEGPTender = async (r: { id: string; lotName: any; submissionDeadline: any; invitationDate: any; status: any; procuringEntity: any; lotId: any; language: any; marketPlace: any; }) => {
-//   const raw = {
-//     egpId: r.id,
-//       title: r.lotName|| "",
-//       description: r.lotName|| "",
-//       openingDate: r.submissionDeadline || "",
-//       closingDate: r.invitationDate || "",
-//       sources: ["egp"],
-//       status: r.status || "",
-//       entity: r.procuringEntity|| "",
-//       link: `https://egp.ppa.gov.et/egp/bids/all/tendering/${r.lotId}/open`,
-//       language: r.language|| "",
-//       region: r.marketPlace|| "",
-//   }
-//   const upsertUser = await prisma.tender.upsert({
-//     where: {
-//       egpId: r.id,
-//     },
-//     update: {
-//       ...raw
-//     },
-//     create: {
-//       ...raw
-//     },
-//   })
-//   console.log("🚀 ~ upsertEGPTender ~ upsertUser:", upsertUser.egpId)
-// };
+export const upsertEGPTender = async (r: { id: string; lotName: any; submissionDeadline: any; invitationDate: any; status: any; procuringEntity: any; lotId: any; language: any; marketPlace: any; }) => {
+  const raw = {
+    egpId: r.id,
+      title: r.lotName|| "",
+      description: r.lotName|| "",
+      openingDate: r.submissionDeadline || "",
+      closingDate: r.invitationDate || "",
+      sources: ["egp"],
+      status: r.status || "",
+      entity: r.procuringEntity|| "",
+      link: `https://egp.ppa.gov.et/egp/bids/all/tendering/${r.lotId}/open`,
+      language: r.language|| "",
+      region: r.marketPlace|| "",
+  }
+  const upsertUser = await prisma.tender.upsert({
+    where: {
+      egpId: r.id,
+    },
+    update: {
+      ...raw
+    },
+    create: {
+      ...raw
+    },
+  })
+  console.log("🚀 ~ upsertEGPTender ~ upsertUser:", upsertUser.egpId)
+};
 
 // const createQueue = async (newTender) => {
 //   const bidders = await Bidder.find({ activeEndDate: { $gte: new Date() } });
