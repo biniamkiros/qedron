@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { getEGPActiveTenders, getEGPTenderSummary, scrapAll, upsertEGPTender } from '~/services/egp'
+import { getEGPActiveTenders, getEGPTenderSummary, scrapAll } from '~/services/egp'//upsertEGPTender
 const TelgramBot = require("node-telegram-bot-api");
 
 
@@ -20,7 +20,7 @@ export async function GET(request: Request) {
   "6971834355:AAEmJnGY1420jIK2FrIEnOV2fdHRVseFHj4"
   const tenders = await scrapAll(); 
   tenders.forEach(tender => {
-    upsertEGPTender(tender)
+    // upsertEGPTender(tender)
   });
   const options = {
     polling: true, 
