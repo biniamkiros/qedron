@@ -1,15 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { getEGPActiveTenders, getEGPTenderSummary, scrapAll, upsertEGPTender } from '~/services/egp'//
 const TelgramBot = require("node-telegram-bot-api");
-const SELEDA_BOT_TOKEN =
-"6971834355:AAEmJnGY1420jIK2FrIEnOV2fdHRVseFHj4"
-const options = {
-  polling: true, 
-  // webHook: {
-  //   port: 8443,
-  // },
-};
-
 
 
 type ResponseData = {
@@ -25,11 +16,18 @@ type ResponseData = {
 // }
 
 export async function GET(request: Request) {
-
+  const SELEDA_BOT_TOKEN =
+  "6971834355:AAEmJnGY1420jIK2FrIEnOV2fdHRVseFHj4"
   const tenders = await scrapAll(); 
   tenders.forEach(tender => {
     upsertEGPTender(tender)
   });
+  const options = {
+    polling: true, 
+    // webHook: {
+    //   port: 8443,
+    // },
+  };
 
   const bot = new TelgramBot(SELEDA_BOT_TOKEN, options);
   const info = await bot.getWebHookInfo();
@@ -41,6 +39,6 @@ export async function GET(request: Request) {
     console.log("🚀 ~ bot.on ~ msg:", msg)
     
   });
-  bot.sendMessage(383604329, "send tender link: ", tenders.length)
+  // bot.sendMessage(383604329, "send tender link: ", tenders.length)
   return Response.json({ tenders })
 }
