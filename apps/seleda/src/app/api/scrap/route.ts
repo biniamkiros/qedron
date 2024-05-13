@@ -40,5 +40,5 @@ export async function GET(request: Request) {
     
   });
   // bot.sendMessage(383604329, "send tender link: ", tenders.length)
-  return Response.json({ l:"tenders" })
+  return Response.json({ tenders })
 }
