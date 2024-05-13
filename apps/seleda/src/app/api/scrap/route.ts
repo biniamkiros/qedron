@@ -39,6 +39,6 @@ export async function GET(request: Request) {
     console.log("🚀 ~ bot.on ~ msg:", msg)
     
   });
-  // bot.sendMessage(383604329, "send tender link: ", tenders.length)
+  bot.sendMessage("383604329", "send tender link: ", tenders.length)
   return Response.json({ tenders })
 }
