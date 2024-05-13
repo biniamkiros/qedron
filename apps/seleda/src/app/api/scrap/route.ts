@@ -10,16 +10,7 @@ const options = {
   // },
 };
 
-const bot = new TelgramBot(SELEDA_BOT_TOKEN, options);
-const info = await bot.getWebHookInfo();
-console.log("🚀 ~ Seleda Web Hook Info:", info);
-bot.on("message", async (msg: { text?: any; reply_to_message?: any; chat?: any; }) => {
-  const {
-    chat: { id },
-  } = msg;
-  console.log("🚀 ~ bot.on ~ msg:", msg)
-  
-});
+
 
 type ResponseData = {
   message: string
@@ -40,7 +31,16 @@ export async function GET(request: Request) {
     upsertEGPTender(tender)
   });
 
- 
+  const bot = new TelgramBot(SELEDA_BOT_TOKEN, options);
+  const info = await bot.getWebHookInfo();
+  console.log("🚀 ~ Seleda Web Hook Info:", info);
+  bot.on("message", async (msg: { text?: any; reply_to_message?: any; chat?: any; }) => {
+    const {
+      chat: { id },
+    } = msg;
+    console.log("🚀 ~ bot.on ~ msg:", msg)
+    
+  });
   bot.sendMessage(383604329, "send tender link: ", tenders.length)
   return Response.json({ tenders })
 }
