@@ -15,7 +15,8 @@
 				"github.vscode-github-actions",
 				"ChakrounAnas.turbo-console-log",
 				"Prisma.prisma",
-				"vscodevim.vim"
+				"vscodevim.vim",
+				"rvest.vs-code-prettier-eslint"
 			]
 		}
 	}
