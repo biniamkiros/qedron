@@ -94,7 +94,8 @@ services:
       - traefik.http.routers.cron.rule=Host(`cron.qedron.com`)        
     image: alseambusher/crontab-ui  
     environment:
-      - BASIC_AUTH_USER=qedron BASIC_AUTH_PWD=_1985qedron
+      - BASIC_AUTH_USER=qedron 
+      - BASIC_AUTH_PWD=_1985qedron
       - CRON_DB_PATH=/cron crontab-ui
     volumes:
       - /cron/cron.d:/etc/crontabs
