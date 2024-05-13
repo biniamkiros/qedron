@@ -20,17 +20,12 @@ services:
       - ./traefik/ssl/:/ssl-certs/
     networks:
       - app_network
-  
+
   web:
     container_name: web
     labels:
       - traefik.enable=true
       - traefik.http.routers.web.rule=Host(`web.qedron.com`)
-      # - traefik.http.routers.vault-https.entrypoints=websecure
-      - traefik.http.routers.web.tls=true
-      # - traefik.http.routers.web.tls.certresolver=lets-encrypt
-      # - traefik.port=80
-      - traefik.tcp.services.web.loadBalancer.server.port=3000
     image: ghcr.io/biniamkiros/web:latest
     build:
       context: .
@@ -48,11 +43,6 @@ services:
     labels:
       - traefik.enable=true
       - traefik.http.routers.api.rule=Host(`api.qedron.com`)
-      # - traefik.http.routers.vault-https.entrypoints=websecure
-      # - traefik.http.routers.api.tls=true
-      # - traefik.http.routers.api.tls.certresolver=lets-encrypt
-      # - traefik.port=80
-      - traefik.tcp.services.api.loadBalancer.server.port=3001
     image: ghcr.io/biniamkiros/api:latest
     build:
       context: .
@@ -70,11 +60,6 @@ services:
     labels:
       - traefik.enable=true
       - traefik.http.routers.seleda.rule=Host(`seleda.qedron.com`)
-      # - traefik.tcp.routers.seleda.entrypoints=seleda
-      # - traefik.tcp.routers.seleda.service=seleda
-      # - traefic.tcp.routers.seleda.tls=true
-      # - traefik.tcp.routers.seleda.tls.certresolver=letsencrypt
-      - traefik.tcp.services.seleda.loadBalancer.server.port=3002
     image: ghcr.io/biniamkiros/seleda:latest
     build:
       context: .
@@ -95,7 +80,7 @@ services:
       - DISCORD_CLIENT_SECRET=s
     restart: always
     ports:
-      - 3002:3002  
+      - 3002:3002
     networks:
       - app_network
     depends_on:
@@ -105,8 +90,7 @@ services:
     container_name: cron
     labels:
       - traefik.enable=true
-      - traefik.http.routers.cron.rule=Host(`cron.qedron.com`)   
-      - traefik.tcp.services.cron.loadBalancer.server.port=3003 
+      - traefik.http.routers.cron.rule=Host(`cron.qedron.com`)        
     image: alseambusher/crontab-ui  
     restart: always
     ports:
@@ -123,11 +107,11 @@ services:
       - traefik.enable=true
       - traefik.docker.network=app_network
       - traefik.http.routers.mongodb.rule=Host(`db.qedron.com`)    
-      - traefik.tcp.routers.mongodb.entrypoints=mongodb
-      - traefik.tcp.routers.mongodb.service=mongodb
-      - traefic.tcp.routers.mongodb.tls=true
-      - traefik.tcp.routers.mongodb.tls.certresolver=letsencrypt
-      - traefik.tcp.services.mongodb.loadBalancer.server.port=27016
+      # - traefik.tcp.routers.mongodb.entrypoints=mongodb
+      # - traefik.tcp.routers.mongodb.service=mongodb
+      # - traefic.tcp.routers.mongodb.tls=true
+      # - traefik.tcp.routers.mongodb.tls.certresolver=letsencrypt
+      # - traefik.tcp.services.mongodb.loadBalancer.server.port=27016
     image: ghcr.io/biniamkiros/mongodb:latest
     build:
       context: .
