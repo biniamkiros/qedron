@@ -128,10 +128,10 @@ services:
       DATABASE_PORT: ${MONGO_REPLICA_PORT}
       DATABASE_USERNAME: ${MONGO_USERNAME}
       DATABASE_PASSWORD: ${MONGO_PASSWORD}
-      JWT_SECRET: ${JWT_SECRET}
-      ADMIN_JWT_SECRET: ${ADMIN_JWT_SECRET}
-      APP_KEYS: ${APP_KEYS}
-      NODE_ENV: ${NODE_ENV}
+      JWT_SECRET: knkl
+      ADMIN_JWT_SECRET: kjhfhjv
+      APP_KEYS: APP_KEYS}
+      NODE_ENV: NODE_ENV}
     # volumes:
     #   - ./config:/opt/app/config
     #   - ./src:/opt/app/src
