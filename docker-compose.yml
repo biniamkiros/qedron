@@ -107,69 +107,41 @@ services:
     networks:
       - app_network
 
-  cms:
-    image: directus/directus:10.10.5
+  mail:
+    container_name: mail
     labels:
       - traefik.enable=true
-      - traefik.docker.network=app_network
-      - traefik.http.routers.mongodb.rule=Host(`cms.qedron.com`)  
+      - traefik.http.routers.mail.rule=Host(`mail.qedron.com`)        
+    image: listmonk/listmonk:latest
     ports:
-      - 8055:8055
-    volumes:
-      - ./database:/directus/database
-      - ./uploads:/directus/uploads
-      - ./extensions:/directus/extensions
+      - "9000:9000"
+    networks:
+      - app_network
     environment:
-      KEY: "replace-with-random-value"
-      SECRET: "replace-with-random-value"
-      ADMIN_EMAIL: "admin@example.com"
-      ADMIN_PASSWORD: "d1r3ctu5"
-      DB_CLIENT: "sqlite3"
-      DB_FILENAME: "/directus/database/data.db"
-      WEBSOCKETS_ENABLED: "true"
-    # container_name: cms
-    # image: ghcr.io/biniamkiros/cms:latest 
-    # build:
-    #   context: .
-    #   dockerfile: ./packages/strapi-cms/Dockerfile
-    # labels:
-    #   - traefik.enable=true
-    #   - traefik.docker.network=app_network
-    #   - traefik.http.routers.mongodb.rule=Host(`cms.qedron.com`)    
-    #   # - traefik.tcp.routers.mongodb.entrypoints=mongodb
-    #   # - traefik.tcp.routers.mongodb.service=mongodb
-    #   # - traefic.tcp.routers.mongodb.tls=true
-    #   # - traefik.tcp.routers.mongodb.tls.certresolver=letsencrypt
-    #   # - traefik.tcp.services.mongodb.loadBalancer.server.port=27016
-    # env_file:
-    #   - ./.env 
-    # environment:
-      # DATABASE_CLIENT: mongo
-      # DATABASE_NAME: strapi
-      # DATABASE_HOST: mongodb
-      # DATABASE_PORT: ${MONGO_REPLICA_PORT}
-      # DATABASE_USERNAME: ${MONGO_USERNAME}
-      # DATABASE_PASSWORD: ${MONGO_PASSWORD}
-      # JWT_SECRET: knkl
-      # ADMIN_JWT_SECRET: kjhfhjv
-      # APP_KEYS: APP_KEYS}
-      # NODE_ENV: NODE_ENV}
+      - TZ=Etc/UTC
+
+  cms:
+    container_name: cms
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.cms.rule=Host(`cms.qedron.com`)        
+    image: naskio/strapi
+    environment:
+      NODE_ENV: production # or production
+      DATABASE_CLIENT: mongo
+      DATABASE_NAME: strapi
+      DATABASE_HOST: mongodb
+      DATABASE_PORT: ${MONGO_REPLICA_PORT}
+      DATABASE_USERNAME: ${MONGO_USERNAME}
+      DATABASE_PASSWORD: ${MONGO_PASSWORD}
+      JWT_SECRET: knkl
+      ADMIN_JWT_SECRET: kjhfhjv
+      APP_KEYS: APP_KEYS}
+    ports:
+      - "1337:1337"
     # volumes:
-    #   - ./config:/opt/app/config
-    #   - ./src:/opt/app/src
-    #   - ./package.json:/opt/package.json
-    #   - ./yarn.lock:/opt/yarn.lock
-    #   - ./.env:/opt/app/.env
-    #   - ./public/uploads:/opt/app/public/uploads
-    # volumes:
-    #   - ./app:/srv/app
-    # ports:
-    #   - '2337:1337'
-    depends_on:
-      - mongodb
-  # -> only used for manual testing locally
-  # This config is for MongoDB v5+
-  # It's a Replica Set (required for Prisma Client)
+    #   - ./app:/srv/app # mount an existing strapi project
+  
   mongodb:
     container_name: mongodb
     labels:
