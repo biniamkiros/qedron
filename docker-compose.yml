@@ -124,7 +124,7 @@ services:
     environment:
       DATABASE_CLIENT: mongo
       DATABASE_NAME: strapi
-      DATABASE_HOST: mongo
+      DATABASE_HOST: mongodb
       DATABASE_PORT: ${MONGO_REPLICA_PORT}
       DATABASE_USERNAME: ${MONGO_USERNAME}
       DATABASE_PASSWORD: ${MONGO_PASSWORD}
@@ -133,7 +133,7 @@ services:
     ports:
       - '2337:1337'
     depends_on:
-      - mongo
+      - mongodb
   # -> only used for manual testing locally
   # This config is for MongoDB v5+
   # It's a Replica Set (required for Prisma Client)
