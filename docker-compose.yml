@@ -109,7 +109,7 @@ services:
 
   cms:
     container_name: cms
-    image: strapi/strapi
+    image: strapi:latest
     labels:
       - traefik.enable=true
       - traefik.docker.network=app_network
@@ -128,6 +128,17 @@ services:
       DATABASE_PORT: ${MONGO_REPLICA_PORT}
       DATABASE_USERNAME: ${MONGO_USERNAME}
       DATABASE_PASSWORD: ${MONGO_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      ADMIN_JWT_SECRET: ${ADMIN_JWT_SECRET}
+      APP_KEYS: ${APP_KEYS}
+      NODE_ENV: ${NODE_ENV}
+    # volumes:
+    #   - ./config:/opt/app/config
+    #   - ./src:/opt/app/src
+    #   - ./package.json:/opt/package.json
+    #   - ./yarn.lock:/opt/yarn.lock
+    #   - ./.env:/opt/app/.env
+    #   - ./public/uploads:/opt/app/public/uploads
     volumes:
       - ./app:/srv/app
     ports:
