@@ -107,6 +107,33 @@ services:
     networks:
       - app_network
 
+  cms:
+    container_name: cms
+    image: strapi/strapi
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=app_network
+      - traefik.http.routers.mongodb.rule=Host(`cms.qedron.com`)    
+      # - traefik.tcp.routers.mongodb.entrypoints=mongodb
+      # - traefik.tcp.routers.mongodb.service=mongodb
+      # - traefic.tcp.routers.mongodb.tls=true
+      # - traefik.tcp.routers.mongodb.tls.certresolver=letsencrypt
+      # - traefik.tcp.services.mongodb.loadBalancer.server.port=27016
+    env_file:
+      - ./.env 
+    environment:
+      DATABASE_CLIENT: mongo
+      DATABASE_NAME: strapi
+      DATABASE_HOST: mongo
+      DATABASE_PORT: ${MONGO_REPLICA_PORT}
+      DATABASE_USERNAME: ${MONGO_USERNAME}
+      DATABASE_PASSWORD: ${MONGO_PASSWORD}
+    volumes:
+      - ./app:/srv/app
+    ports:
+      - '2337:1337'
+    depends_on:
+      - mongo
   # -> only used for manual testing locally
   # This config is for MongoDB v5+
   # It's a Replica Set (required for Prisma Client)
