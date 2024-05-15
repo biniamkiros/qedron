@@ -96,8 +96,8 @@ services:
     env_file:
       - ./.env 
     environment:
-      - BASIC_AUTH_USER=${BASIC_AUTH_USER} 
-      - BASIC_AUTH_PWD=${BASIC_AUTH_PWD}
+      - BASIC_AUTH_USER=${CRON_BASIC_AUTH_USER} 
+      - BASIC_AUTH_PWD=${CRON_BASIC_AUTH_PWD}
       - CRON_DB_PATH=${CRON_DB_PATH}
     volumes:
       - /cron/cron.d:/etc/crontabs
@@ -149,7 +149,7 @@ services:
       args:
         MONGO_VERSION: 6
     environment:
-      MONGO_REPLICA_HOST: db.qedron.com
+      MONGO_REPLICA_HOST: mongodb.qedron.com
       MONGO_REPLICA_PORT: ${MONGO_REPLICA_PORT}
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
@@ -223,8 +223,12 @@ services:
       - app_network
 
   mailserver:
-    image: ghcr.io/docker-mailserver/docker-mailserver:latest
     container_name: mailserver
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=app_network
+      - traefik.http.routers.mailserver.rule=Host(`mail.qedron.com`) 
+    image: ghcr.io/docker-mailserver/docker-mailserver:latest
     # Provide the FQDN of your mail server here (Your DNS MX record should point to this value)
     hostname: mail.qedron.com
     env_file: mailserver.env
