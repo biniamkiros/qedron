@@ -11,7 +11,7 @@ RUN apk update
 WORKDIR /app
 RUN yarn global add turbo
 COPY . .
-RUN turbo prune seleda --docker
+RUN turbo prune account --docker
 
 # Add lockfile and package.json's of isolated subworkspace
 FROM base AS installer
@@ -47,7 +47,7 @@ ENV SKIP_ENV_VALIDATION=${SKIP_ENV_VALIDATION}
 # ENV DISCORD_CLIENT_SECRET=${DISCORD_CLIENT_SECRET}
 
 
-RUN yarn turbo build --filter=seleda...
+RUN yarn turbo build --filter=account...
 
 FROM base AS runner
 WORKDIR /app
@@ -57,13 +57,13 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 USER nextjs
 
-COPY --from=installer /app/apps/seleda/next.config.js .
-COPY --from=installer /app/apps/seleda/package.json .
+COPY --from=installer /app/apps/account/next.config.js .
+COPY --from=installer /app/apps/account/package.json .
 
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
-COPY --from=installer --chown=nextjs:nodejs /app/apps/seleda/.next/standalone ./
-COPY --from=installer --chown=nextjs:nodejs /app/apps/seleda/.next/static ./apps/seleda/.next/static
-COPY --from=installer --chown=nextjs:nodejs /app/apps/seleda/public ./apps/seleda/public
+COPY --from=installer --chown=nextjs:nodejs /app/apps/account/.next/standalone ./
+COPY --from=installer --chown=nextjs:nodejs /app/apps/account/.next/static ./apps/account/.next/static
+COPY --from=installer --chown=nextjs:nodejs /app/apps/account/public ./apps/account/public
 
-CMD node apps/seleda/server.js
+CMD node apps/account/server.js
