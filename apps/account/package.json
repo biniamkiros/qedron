@@ -2,7 +2,6 @@
   "name": "account",
   "version": "0.1.0",
   "private": true,
-  "type": "module",
   "scripts": {
     "build": "prisma generate && pnpm add ./prisma/prisma-client && next build",
     "db:push": "prisma db push",
@@ -14,6 +13,7 @@
   },
   "dependencies": {
     "@auth/prisma-adapter": "^1.4.0",
+    "@repo/ui": "workspace:*",
     "@prisma/client": "^5.10.2",
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
