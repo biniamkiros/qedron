@@ -22,6 +22,37 @@ services:
     networks:
       - app_network
 
+  account:
+    container_name: account
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.account.rule=Host(`account.qedron.com`)
+    image: ghcr.io/biniamkiros/account:latest
+    build:
+      context: .
+      dockerfile: ./apps/account/Dockerfile
+      args:
+        SKIP_ENV_VALIDATION: 1
+        DATABASE_URL: file:./db.sqlite
+        NEXTAUTH_SECRET: h"
+        NEXTAUTH_URL: http://account.qedron.com
+        DISCORD_CLIENT_ID: s
+        DISCORD_CLIENT_SECRET: s
+    environment:
+      - SKIP_ENV_VALIDATION=1
+      - DATABASE_URL=file:./db.sqlite
+      - NEXTAUTH_SECRET=h"
+      - NEXTAUTH_URL=http://account.qedron.com
+      - DISCORD_CLIENT_ID=s
+      - DISCORD_CLIENT_SECRET=s
+    restart: always
+    ports:
+      - 3000:3000
+    networks:
+      - app_network
+    depends_on:
+      - mongodb
+
   web:
     container_name: web
     labels:
@@ -33,7 +64,7 @@ services:
       dockerfile: ./apps/web/Dockerfile
     restart: always
     ports:
-      - 3000:3000
+      - 3001:3000
     networks:
       - app_network
     depends_on:
@@ -50,7 +81,7 @@ services:
       dockerfile: ./apps/api/Dockerfile
     restart: always
     ports:
-      - 3001:3001
+      - 3002:3001
     networks:
       - app_network
     depends_on:
@@ -81,7 +112,7 @@ services:
       - DISCORD_CLIENT_SECRET=s
     restart: always
     ports:
-      - 3002:3000
+      - 3003:3000
     networks:
       - app_network
     depends_on:
