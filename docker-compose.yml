@@ -87,26 +87,6 @@ services:
     depends_on:
       - mongodb
 
-  cron:
-    container_name: cron
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.cron.rule=Host(`cron.qedron.com`)        
-    image: alseambusher/crontab-ui 
-    env_file:
-      - ./.env 
-    environment:
-      - BASIC_AUTH_USER=${CRON_BASIC_AUTH_USER} 
-      - BASIC_AUTH_PWD=${CRON_BASIC_AUTH_PWD}
-      - CRON_DB_PATH=${CRON_DB_PATH}
-    volumes:
-      - /cron/cron.d:/etc/crontabs
-    restart: always
-    ports:
-      - 8000:8000  
-    networks:
-      - app_network
-  
   cms:
     container_name: cms
     labels:
@@ -128,6 +108,92 @@ services:
       - "1337:1337"
     # volumes:
     #   - ./app:/srv/app # mount an existing strapi project
+
+  monk:
+    container_name: monk
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.monk.rule=Host(`monk.qedron.com`)  
+    restart: unless-stopped
+    image: listmonk/listmonk:latest
+    ports:
+      - "9000:9000"
+    env_file:
+      - ./.env 
+    environment:
+      - LISTMONK_app__address=${LISTMONK_app__address}
+      - LISTMONK_app__admin_username=${LISTMONK_app__admin_username}
+      - LISTMONK_app__admin_password=${LISTMONK_app__admin_password}
+      - LISTMONK_db__host=${LISTMONK_db__host}
+      - LISTMONK_db__port=${LISTMONK_db__port}
+      - LISTMONK_db__user=${LISTMONK_db__user}
+      - LISTMONK_db__password=${LISTMONK_db__password}
+      - LISTMONK_db__database=${LISTMONK_db__database}
+      - LISTMONK_db__ssl_mode=${LISTMONK_db__ssl_mode}
+    command: [sh, -c, "echo y | ./listmonk  --install --idempotent  --config='' && ./listmonk"]
+    volumes:
+      - ./listmonk/uploads:/listmonk/uploads
+      # - ./listmonk/config.toml/:/listmonk/config.toml
+    depends_on:
+      - postgresdb
+    networks:
+      - app_network
+
+  cron:
+    container_name: cron
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.cron.rule=Host(`cron.qedron.com`)        
+    image: alseambusher/crontab-ui 
+    env_file:
+      - ./.env 
+    environment:
+      - BASIC_AUTH_USER=${CRON_BASIC_AUTH_USER} 
+      - BASIC_AUTH_PWD=${CRON_BASIC_AUTH_PWD}
+      - CRON_DB_PATH=${CRON_DB_PATH}
+    volumes:
+      - ./cron/cron.d:/etc/crontabs
+    restart: always
+    ports:
+      - 8000:8000  
+    networks:
+      - app_network
+  
+  mailserver:
+    container_name: mailserver
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=app_network
+      - traefik.http.routers.mailserver.rule=Host(`mail.qedron.com`) 
+    image: ghcr.io/docker-mailserver/docker-mailserver:latest
+    # Provide the FQDN of your mail server here (Your DNS MX record should point to this value)
+    hostname: mail.qedron.com
+    env_file: mailserver.env
+    # More information about the mail-server ports:
+    # https://docker-mailserver.github.io/docker-mailserver/latest/config/security/understanding-the-ports/
+    ports:
+      - "25:25"    # SMTP  (explicit TLS => STARTTLS, Authentication is DISABLED => use port 465/587 instead)
+      - "143:143"  # IMAP4 (explicit TLS => STARTTLS)
+      - "465:465"  # ESMTP (implicit TLS)
+      - "587:587"  # ESMTP (explicit TLS => STARTTLS)
+      - "993:993"  # IMAP4 (implicit TLS)
+    volumes:
+      - ./docker-data/dms/mail-data/:/var/mail/
+      - ./docker-data/dms/mail-state/:/var/mail-state/
+      - ./docker-data/dms/mail-logs/:/var/log/mail/
+      - ./docker-data/dms/config/:/tmp/docker-mailserver/
+      - /etc/localtime:/etc/localtime:ro
+    restart: always
+    stop_grace_period: 1m
+    # Uncomment if using `ENABLE_FAIL2BAN=1`:
+    # cap_add:
+    #   - NET_ADMIN
+    healthcheck:
+      test: "ss --listening --tcp | grep -P 'LISTEN.+:smtp' || exit 1"
+      timeout: 3s
+      retries: 0
+    networks:
+      - app_network
   
   mongodb:
     container_name: mongodb
@@ -189,72 +255,6 @@ services:
     restart: always
     volumes:
       - ./postgresdb-data:/var/lib/postgresql/data
-    networks:
-      - app_network
-
-  monk:
-    container_name: monk
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.monk.rule=Host(`monk.qedron.com`)  
-    restart: unless-stopped
-    image: listmonk/listmonk:latest
-    ports:
-      - "9000:9000"
-    env_file:
-      - ./.env 
-    environment:
-      - LISTMONK_app__address=${LISTMONK_app__address}
-      - LISTMONK_app__admin_username=${LISTMONK_app__admin_username}
-      - LISTMONK_app__admin_password=${LISTMONK_app__admin_password}
-      - LISTMONK_db__host=${LISTMONK_db__host}
-      - LISTMONK_db__port=${LISTMONK_db__port}
-      - LISTMONK_db__user=${LISTMONK_db__user}
-      - LISTMONK_db__password=${LISTMONK_db__password}
-      - LISTMONK_db__database=${LISTMONK_db__database}
-      - LISTMONK_db__ssl_mode=${LISTMONK_db__ssl_mode}
-    command: [sh, -c, "echo y | ./listmonk  --install --idempotent  --config='' && ./listmonk"]
-    volumes:
-      - ./listmonk/uploads:/listmonk/uploads
-      # - ./listmonk/config.toml/:/listmonk/config.toml
-    depends_on:
-      - postgresdb
-    networks:
-      - app_network
-
-  mailserver:
-    container_name: mailserver
-    labels:
-      - traefik.enable=true
-      - traefik.docker.network=app_network
-      - traefik.http.routers.mailserver.rule=Host(`mail.qedron.com`) 
-    image: ghcr.io/docker-mailserver/docker-mailserver:latest
-    # Provide the FQDN of your mail server here (Your DNS MX record should point to this value)
-    hostname: mail.qedron.com
-    env_file: mailserver.env
-    # More information about the mail-server ports:
-    # https://docker-mailserver.github.io/docker-mailserver/latest/config/security/understanding-the-ports/
-    ports:
-      - "25:25"    # SMTP  (explicit TLS => STARTTLS, Authentication is DISABLED => use port 465/587 instead)
-      - "143:143"  # IMAP4 (explicit TLS => STARTTLS)
-      - "465:465"  # ESMTP (implicit TLS)
-      - "587:587"  # ESMTP (explicit TLS => STARTTLS)
-      - "993:993"  # IMAP4 (implicit TLS)
-    volumes:
-      - ./docker-data/dms/mail-data/:/var/mail/
-      - ./docker-data/dms/mail-state/:/var/mail-state/
-      - ./docker-data/dms/mail-logs/:/var/log/mail/
-      - ./docker-data/dms/config/:/tmp/docker-mailserver/
-      - /etc/localtime:/etc/localtime:ro
-    restart: always
-    stop_grace_period: 1m
-    # Uncomment if using `ENABLE_FAIL2BAN=1`:
-    # cap_add:
-    #   - NET_ADMIN
-    healthcheck:
-      test: "ss --listening --tcp | grep -P 'LISTEN.+:smtp' || exit 1"
-      timeout: 3s
-      retries: 0
     networks:
       - app_network
 
