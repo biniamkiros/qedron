@@ -129,10 +129,11 @@ services:
     env_file:
       - ./.env 
     volumes:
-      - ./directus/database:/directus/database:rw
       - ./directus/uploads:/directus/uploads:rw
+      - ./directus/extensions:/directus/extensions:rw
     depends_on:
-      - postgresdb
+      postgresdb:
+          condition: service_healthy
     environment:
       - KEY=${DIRECTUS_KEY}
       - SECRET=${DIRECTUS_SECRET}
@@ -142,8 +143,8 @@ services:
       - DB_HOST=postgresdb
       - DB_PORT=5432
       - DB_DATABASE=directus
-      - DB_USER=*${POSTGRES_USERNAME}
-      - DB_PASSWORD=*${POSTGRES_PASSWORD}
+      - DB_USER=${POSTGRES_USERNAME}
+      - DB_PASSWORD=${POSTGRES_PASSWORD}
       - WEBSOCKETS_ENABLED=true
       # Make sure to set this in production
       # (see https://docs.directus.io/self-hosted/config-options#general)
@@ -294,6 +295,11 @@ services:
     restart: always
     volumes:
       - ./postgresdb-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     networks:
       - app_network
 
