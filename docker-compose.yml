@@ -122,23 +122,33 @@ services:
     container_name: cms
     labels:
       - traefik.enable=true
-      - traefik.http.routers.cms.rule=Host(`cms.qedron.com`)        
-    image: naskio/strapi
-    environment:
-      NODE_ENV: production # or production
-      DATABASE_CLIENT: mongo
-      DATABASE_NAME: strapi
-      DATABASE_HOST: mongodb
-      DATABASE_PORT: ${MONGO_REPLICA_PORT}
-      DATABASE_USERNAME: ${MONGO_USERNAME}
-      DATABASE_PASSWORD: ${MONGO_PASSWORD}
-      JWT_SECRET: knkl
-      ADMIN_JWT_SECRET: kjhfhjv
-      APP_KEYS: APP_KEYS}
+      - traefik.http.routers.cms.rule=Host(`cms.qedron.com`)   
+    image: directus/directus:10.10.5
     ports:
-      - "1337:1337"
-    # volumes:
-    #   - ./app:/srv/app # mount an existing strapi project
+      - 8055:8055
+    volumes:
+      - ./directus/uploads:/directus/uploads
+      - ./directus/extensions:/directus/extensions
+    depends_on:
+      - postgresdb
+    env_file:
+      - ./.env 
+    environment:
+      - KEY=${DIRECTUS_KEY}
+      - SECRET=${DIRECTUS_SECRET}
+      - DB_CLIENT="pg"
+      - DB_HOST="postgresdb"
+      - DB_PORT=${POSTGRES_PORT}
+      - DB_DATABASE="directus"
+      - DB_USER=${POSTGRES_USERNAME}
+      - DB_PASSWORD=${POSTGRES_PASSWORD}
+      - ADMIN_EMAIL=${DIRECTUS_ADMIN_EMAIL}
+      - ADMIN_PASSWORD=${DIRECTUS_ADMIN_PASSWORD}
+      # Make sure to set this in production
+      # (see https://docs.directus.io/self-hosted/config-options#general)
+      - PUBLIC_URL="https://cms.qedron.com"
+    networks:
+      - app_network
 
   monk:
     container_name: monk
@@ -194,7 +204,6 @@ services:
     container_name: mailserver
     labels:
       - traefik.enable=true
-      - traefik.docker.network=app_network
       - traefik.http.routers.mailserver.rule=Host(`mail.qedron.com`) 
     image: ghcr.io/docker-mailserver/docker-mailserver:latest
     # Provide the FQDN of your mail server here (Your DNS MX record should point to this value)
@@ -230,7 +239,6 @@ services:
     container_name: mongodb
     labels:
       - traefik.enable=true
-      - traefik.docker.network=app_network
       - traefik.http.routers.mongodb.rule=Host(`mongo.qedron.com`)    
       # - traefik.tcp.routers.mongodb.entrypoints=mongodb
       # - traefik.tcp.routers.mongodb.service=mongodb
@@ -272,7 +280,6 @@ services:
     container_name: postgresdb
     labels:
       - traefik.enable=true
-      - traefik.docker.network=app_network
       - traefik.http.routers.postgresdb.rule=Host(`postgres.qedron.com`) 
     image: postgres:latest
     ports:
