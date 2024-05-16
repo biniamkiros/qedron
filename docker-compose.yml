@@ -138,7 +138,7 @@ services:
       - ADMIN_EMAIL=${DIRECTUS_ADMIN_EMAIL}
       - ADMIN_PASSWORD=${DIRECTUS_ADMIN_PASSWORD}
       - DB_CLIENT="sqlite3"
-      - DB_FILENAME="./directus/database/data.db"
+      - DB_FILENAME="/directus/database/data.db"
       # Make sure to set this in production
       # (see https://docs.directus.io/self-hosted/config-options#general)
       - PUBLIC_URL="https://cms.qedron.com"
