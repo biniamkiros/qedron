@@ -169,7 +169,7 @@ services:
       - LISTMONK_app__admin_username=${LISTMONK_app__admin_username}
       - LISTMONK_app__admin_password=${LISTMONK_app__admin_password}
       - LISTMONK_db__host=${POSTGRES_HOST}
-      - LISTMONK_db__port=${POSTGRES_PORT}
+      - LISTMONK_db__port=5432
       - LISTMONK_db__user=${POSTGRES_USERNAME}
       - LISTMONK_db__password=${POSTGRES_PASSWORD}
       - LISTMONK_db__database=${POSTGRES_DB}
