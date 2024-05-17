@@ -314,9 +314,13 @@ services:
       POSTGRES_USER: "directus"
       POSTGRES_PASSWORD: "directus"
       POSTGRES_DB: "directus"
+    networks:
+      - app_network
 
   cache:
     image: redis:6
+    networks:
+      - app_network
 
   directus:
     image: directus/directus:10.10.5
@@ -353,6 +357,8 @@ services:
     # Environment variables can also be defined in a file (for example `.env`):
     # env_file:
     #	  - .env
+    networks:
+      - app_network
 
 
 # Define a network, which allows containers to communicate
