@@ -125,7 +125,7 @@ services:
       - traefik.http.routers.cms.rule=Host(`cms.qedron.com`)   
     image: directus/directus:10.10.5
     ports:
-      - 8855:8055
+      - 8055:8055
     volumes:
       - ./directus/uploads:/directus/uploads
       - ./directus/extensions:/directus/extensions
@@ -133,8 +133,8 @@ services:
       KEY: ${DIRECTUS_KEY}
       SECRET: ${DIRECTUS_SECRET}
       DB_CLIENT: "pg"
-      DB_HOST: "postgresdb"
-      DB_PORT: "5432"
+      DB_HOST: ${POSTGRES_HOST}
+      DB_PORT: ${POSTGRES_PORT}
       DB_DATABASE: ${POSTGRES_DB}
       DB_USER: ${POSTGRES_USERNAME}
       DB_PASSWORD: ${POSTGRES_PASSWORD}
@@ -143,7 +143,7 @@ services:
 
       # Make sure to set this in production
       # (see https://docs.directus.io/self-hosted/config-options#general)
-      # PUBLIC_URL: "https://directus.example.com"
+      PUBLIC_URL: "https://cms.qedron.com"
     # Environment variables can also be defined in a file (for example `.env`):
     env_file:
       - ./.env 
@@ -152,7 +152,7 @@ services:
           condition: service_healthy
     networks:
     - app_network
-
+    
   monk:
     container_name: monk
     labels:
@@ -168,10 +168,10 @@ services:
       - LISTMONK_app__address=${LISTMONK_app__address}
       - LISTMONK_app__admin_username=${LISTMONK_app__admin_username}
       - LISTMONK_app__admin_password=${LISTMONK_app__admin_password}
-      - LISTMONK_db__host=${LISTMONK_db__host}
-      - LISTMONK_db__port=${LISTMONK_db__port}
-      - LISTMONK_db__user=${LISTMONK_db__user}
-      - LISTMONK_db__password=${LISTMONK_db__password}
+      - LISTMONK_db__host=${POSTGRES_HOST}
+      - LISTMONK_db__port=${POSTGRES_PORT}
+      - LISTMONK_db__user=${POSTGRES_USERNAME}
+      - LISTMONK_db__password=${POSTGRES_PASSWORD}
       - LISTMONK_db__database=${POSTGRES_DB}
       - LISTMONK_db__ssl_mode=${LISTMONK_db__ssl_mode}
     command: [sh, -c, "echo y | ./listmonk  --install --idempotent  --config='' && ./listmonk"]
@@ -179,7 +179,9 @@ services:
       - ./listmonk/uploads:/listmonk/uploads
       # - ./listmonk/config.toml/:/listmonk/config.toml
     depends_on:
-      - postgresdb
+      postgresdb:
+          condition: service_healthy
+
     networks:
       - app_network
 
@@ -280,26 +282,26 @@ services:
       - app_network
   
   postgresdb:
-    container_name: postgresdb
+    container_name: ${POSTGRES_HOST}
     labels:
       - traefik.enable=true
       - traefik.http.routers.postgresdb.rule=Host(`postgres.qedron.com`) 
     image: postgres:latest
-    user: postgres
+    # user: postgres
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT}:5432"
     env_file:
       - ./.env 
     environment:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_USER=${POSTGRES_USERNAME}
       - POSTGRES_DB=${POSTGRES_DB}
-      - PGUSER=$POSTGRES_USERNAME
+      - PGUSER=${POSTGRES_USERNAME}
     restart: always
     volumes:
       - ./postgresdb-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $POSTGRES_USERNAME -d $POSTGRES_DB"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USERNAME} -d ${POSTGRES_DB}"]
       interval: 10s
       timeout: 5s
       retries: 5
