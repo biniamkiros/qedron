@@ -133,7 +133,7 @@ services:
       KEY: ${DIRECTUS_KEY}
       SECRET: ${DIRECTUS_SECRET}
       DB_CLIENT: "pg"
-      DB_HOST: ${POSTGRES_HOST}
+      DB_HOST: postgresdb
       DB_PORT: ${POSTGRES_PORT}
       DB_DATABASE: ${POSTGRES_DB}
       DB_USER: ${POSTGRES_USERNAME}
@@ -282,7 +282,7 @@ services:
       - app_network
   
   postgresdb:
-    container_name: ${POSTGRES_HOST}
+    container_name: postgresdb
     labels:
       - traefik.enable=true
       - traefik.http.routers.postgresdb.rule=Host(`postgres.qedron.com`) 
