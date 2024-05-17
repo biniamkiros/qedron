@@ -314,11 +314,7 @@ services:
       POSTGRES_USER: "directus"
       POSTGRES_PASSWORD: "directus"
       POSTGRES_DB: "directus"
-    networks:
-      - app_network
-
-  cache:
-    image: redis:6
+      PGUSER: "directus"
     networks:
       - app_network
 
@@ -329,9 +325,6 @@ services:
     volumes:
       - ./uploads:/directus/uploads
       - ./extensions:/directus/extensions
-    depends_on:
-      - cache
-      - database
     environment:
       KEY: "255d861b-5ea1-5996-9aa3-922530ec40b1"
       SECRET: "6116487b-cda1-52c2-b5b5-c8022c45e263"
@@ -342,18 +335,15 @@ services:
       DB_DATABASE: "directus"
       DB_USER: "directus"
       DB_PASSWORD: "directus"
-
-      CACHE_ENABLED: "true"
-      CACHE_STORE: "redis"
-      REDIS: "redis://cache:6379"
-
       ADMIN_EMAIL: "admin@example.com"
       ADMIN_PASSWORD: "d1r3ctu5"
 
       # Make sure to set this in production
       # (see https://docs.directus.io/self-hosted/config-options#general)
       # PUBLIC_URL: "https://directus.example.com"
-
+    depends_on:
+      database:
+          condition: service_healthy
     # Environment variables can also be defined in a file (for example `.env`):
     # env_file:
     #	  - .env
