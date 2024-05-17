@@ -172,7 +172,7 @@ services:
       - LISTMONK_db__port=${LISTMONK_db__port}
       - LISTMONK_db__user=${LISTMONK_db__user}
       - LISTMONK_db__password=${LISTMONK_db__password}
-      - LISTMONK_db__database=${LISTMONK_db__database}
+      - LISTMONK_db__database=${POSTGRES_DB}
       - LISTMONK_db__ssl_mode=${LISTMONK_db__ssl_mode}
     command: [sh, -c, "echo y | ./listmonk  --install --idempotent  --config='' && ./listmonk"]
     volumes:
