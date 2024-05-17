@@ -152,7 +152,7 @@ services:
           condition: service_healthy
     networks:
     - app_network
-    
+
   monk:
     container_name: monk
     labels:
@@ -289,7 +289,7 @@ services:
     image: postgres:latest
     # user: postgres
     ports:
-      - "${POSTGRES_PORT}:5432"
+      - "5432:5432"
     env_file:
       - ./.env 
     environment:
