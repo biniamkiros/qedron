@@ -22,101 +22,101 @@ services:
     networks:
       - app_network
 
-  account:
-    container_name: account
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.account.rule=Host(`account.qedron.com`)
-    image: ghcr.io/biniamkiros/account:latest
-    build:
-      context: .
-      dockerfile: ./apps/account/Dockerfile
-      args:
-        SKIP_ENV_VALIDATION: 1
-        DATABASE_URL: file:./db.sqlite
-        NEXTAUTH_SECRET: h"
-        NEXTAUTH_URL: http://account.qedron.com
-        DISCORD_CLIENT_ID: s
-        DISCORD_CLIENT_SECRET: s
-    environment:
-      - SKIP_ENV_VALIDATION=1
-      - DATABASE_URL=file:./db.sqlite
-      - NEXTAUTH_SECRET=h"
-      - NEXTAUTH_URL=http://account.qedron.com
-      - DISCORD_CLIENT_ID=s
-      - DISCORD_CLIENT_SECRET=s
-    restart: always
-    ports:
-      - 3000:3000
-    networks:
-      - app_network
-    depends_on:
-      - mongodb
+  # account:
+  #   container_name: account
+  #   labels:
+  #     - traefik.enable=true
+  #     - traefik.http.routers.account.rule=Host(`account.qedron.com`)
+  #   image: ghcr.io/biniamkiros/account:latest
+  #   build:
+  #     context: .
+  #     dockerfile: ./apps/account/Dockerfile
+  #     args:
+  #       SKIP_ENV_VALIDATION: 1
+  #       DATABASE_URL: file:./db.sqlite
+  #       NEXTAUTH_SECRET: h"
+  #       NEXTAUTH_URL: http://account.qedron.com
+  #       DISCORD_CLIENT_ID: s
+  #       DISCORD_CLIENT_SECRET: s
+  #   environment:
+  #     - SKIP_ENV_VALIDATION=1
+  #     - DATABASE_URL=file:./db.sqlite
+  #     - NEXTAUTH_SECRET=h"
+  #     - NEXTAUTH_URL=http://account.qedron.com
+  #     - DISCORD_CLIENT_ID=s
+  #     - DISCORD_CLIENT_SECRET=s
+  #   restart: always
+  #   ports:
+  #     - 3000:3000
+  #   networks:
+  #     - app_network
+  #   depends_on:
+  #     - mongodb
 
-  web:
-    container_name: web
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.web.rule=Host(`web.qedron.com`)
-    image: ghcr.io/biniamkiros/web:latest
-    build:
-      context: .
-      dockerfile: ./apps/web/Dockerfile
-    restart: always
-    ports:
-      - 3001:3000
-    networks:
-      - app_network
-    depends_on:
-      - mongodb
+  # web:
+  #   container_name: web
+  #   labels:
+  #     - traefik.enable=true
+  #     - traefik.http.routers.web.rule=Host(`web.qedron.com`)
+  #   image: ghcr.io/biniamkiros/web:latest
+  #   build:
+  #     context: .
+  #     dockerfile: ./apps/web/Dockerfile
+  #   restart: always
+  #   ports:
+  #     - 3001:3000
+  #   networks:
+  #     - app_network
+  #   depends_on:
+  #     - mongodb
      
-  api:
-    container_name: api
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.api.rule=Host(`api.qedron.com`)
-    image: ghcr.io/biniamkiros/api:latest
-    build:
-      context: .
-      dockerfile: ./apps/api/Dockerfile
-    restart: always
-    ports:
-      - 3002:3001
-    networks:
-      - app_network
-    depends_on:
-      - mongodb
+  # api:
+  #   container_name: api
+  #   labels:
+  #     - traefik.enable=true
+  #     - traefik.http.routers.api.rule=Host(`api.qedron.com`)
+  #   image: ghcr.io/biniamkiros/api:latest
+  #   build:
+  #     context: .
+  #     dockerfile: ./apps/api/Dockerfile
+  #   restart: always
+  #   ports:
+  #     - 3002:3001
+  #   networks:
+  #     - app_network
+  #   depends_on:
+  #     - mongodb
    
-  seleda:
-    container_name: seleda
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.seleda.rule=Host(`seleda.qedron.com`)
-    image: ghcr.io/biniamkiros/seleda:latest
-    build:
-      context: .
-      dockerfile: ./apps/seleda/Dockerfile
-      args:
-        SKIP_ENV_VALIDATION: 1
-        DATABASE_URL: file:./db.sqlite
-        NEXTAUTH_SECRET: h"
-        NEXTAUTH_URL: http://auth.qedron.com
-        DISCORD_CLIENT_ID: s
-        DISCORD_CLIENT_SECRET: s
-    environment:
-      - SKIP_ENV_VALIDATION=1
-      - DATABASE_URL=file:./db.sqlite
-      - NEXTAUTH_SECRET=h"
-      - NEXTAUTH_URL=http://auth.qedron.com
-      - DISCORD_CLIENT_ID=s
-      - DISCORD_CLIENT_SECRET=s
-    restart: always
-    ports:
-      - 3003:3000
-    networks:
-      - app_network
-    depends_on:
-      - mongodb
+  # seleda:
+  #   container_name: seleda
+  #   labels:
+  #     - traefik.enable=true
+  #     - traefik.http.routers.seleda.rule=Host(`seleda.qedron.com`)
+  #   image: ghcr.io/biniamkiros/seleda:latest
+  #   build:
+  #     context: .
+  #     dockerfile: ./apps/seleda/Dockerfile
+  #     args:
+  #       SKIP_ENV_VALIDATION: 1
+  #       DATABASE_URL: file:./db.sqlite
+  #       NEXTAUTH_SECRET: h"
+  #       NEXTAUTH_URL: http://auth.qedron.com
+  #       DISCORD_CLIENT_ID: s
+  #       DISCORD_CLIENT_SECRET: s
+  #   environment:
+  #     - SKIP_ENV_VALIDATION=1
+  #     - DATABASE_URL=file:./db.sqlite
+  #     - NEXTAUTH_SECRET=h"
+  #     - NEXTAUTH_URL=http://auth.qedron.com
+  #     - DISCORD_CLIENT_ID=s
+  #     - DISCORD_CLIENT_SECRET=s
+  #   restart: always
+  #   ports:
+  #     - 3003:3000
+  #   networks:
+  #     - app_network
+  #   depends_on:
+  #     - mongodb
 
   cms:
     container_name: cms
@@ -130,20 +130,20 @@ services:
       - ./directus/uploads:/directus/uploads
       - ./directus/extensions:/directus/extensions
     environment:
-      KEY: ${DIRECTUS_KEY}
-      SECRET: ${DIRECTUS_SECRET}
-      DB_CLIENT: "pg"
-      DB_HOST: postgresdb
-      DB_PORT: ${POSTGRES_PORT}
-      DB_DATABASE: ${POSTGRES_DB}
-      DB_USER: ${POSTGRES_USERNAME}
-      DB_PASSWORD: ${POSTGRES_PASSWORD}
-      ADMIN_EMAIL: ${DIRECTUS_ADMIN_EMAIL}
-      ADMIN_PASSWORD: ${DIRECTUS_ADMIN_PASSWORD}
+      - KEY=${DIRECTUS_KEY}
+      - SECRET=${DIRECTUS_SECRET}
+      - DB_CLIENT="pg"
+      - DB_HOST="postgresdb"
+      - DB_PORT=${POSTGRES_PORT}
+      - DB_DATABASE=${POSTGRES_DB}
+      - DB_USER=${POSTGRES_USERNAME}
+      - DB_PASSWORD=${POSTGRES_PASSWORD}
+      - ADMIN_EMAIL=${DIRECTUS_ADMIN_EMAIL}
+      - ADMIN_PASSWORD=${DIRECTUS_ADMIN_PASSWORD}
 
       # Make sure to set this in production
       # (see https://docs.directus.io/self-hosted/config-options#general)
-      PUBLIC_URL: "https://cms.qedron.com"
+      - PUBLIC_URL="https://cms.qedron.com"
     # Environment variables can also be defined in a file (for example `.env`):
     env_file:
       - ./.env 
@@ -205,81 +205,81 @@ services:
     networks:
       - app_network
   
-  mailserver:
-    container_name: mailserver
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.mailserver.rule=Host(`mail.qedron.com`) 
-    image: ghcr.io/docker-mailserver/docker-mailserver:latest
-    # Provide the FQDN of your mail server here (Your DNS MX record should point to this value)
-    hostname: mail.qedron.com
-    env_file: mailserver.env
-    # More information about the mail-server ports:
-    # https://docker-mailserver.github.io/docker-mailserver/latest/config/security/understanding-the-ports/
-    ports:
-      - "25:25"    # SMTP  (explicit TLS => STARTTLS, Authentication is DISABLED => use port 465/587 instead)
-      - "143:143"  # IMAP4 (explicit TLS => STARTTLS)
-      - "465:465"  # ESMTP (implicit TLS)
-      - "587:587"  # ESMTP (explicit TLS => STARTTLS)
-      - "993:993"  # IMAP4 (implicit TLS)
-    volumes:
-      - ./mail/docker-data/dms/mail-data/:/var/mail/
-      - ./mail/docker-data/dms/mail-state/:/var/mail-state/
-      - ./mail/docker-data/dms/mail-logs/:/var/log/mail/
-      - ./mail/docker-data/dms/config/:/tmp/docker-mailserver/
-      - /etc/localtime:/etc/localtime:ro
-    restart: always
-    stop_grace_period: 1m
-    # Uncomment if using `ENABLE_FAIL2BAN=1`:
-    # cap_add:
-    #   - NET_ADMIN
-    healthcheck:
-      test: "ss --listening --tcp | grep -P 'LISTEN.+:smtp' || exit 1"
-      timeout: 3s
-      retries: 0
-    networks:
-      - app_network
+  # mailserver:
+  #   container_name: mailserver
+  #   labels:
+  #     - traefik.enable=true
+  #     - traefik.http.routers.mailserver.rule=Host(`mail.qedron.com`) 
+  #   image: ghcr.io/docker-mailserver/docker-mailserver:latest
+  #   # Provide the FQDN of your mail server here (Your DNS MX record should point to this value)
+  #   hostname: mail.qedron.com
+  #   env_file: mailserver.env
+  #   # More information about the mail-server ports:
+  #   # https://docker-mailserver.github.io/docker-mailserver/latest/config/security/understanding-the-ports/
+  #   ports:
+  #     - "25:25"    # SMTP  (explicit TLS => STARTTLS, Authentication is DISABLED => use port 465/587 instead)
+  #     - "143:143"  # IMAP4 (explicit TLS => STARTTLS)
+  #     - "465:465"  # ESMTP (implicit TLS)
+  #     - "587:587"  # ESMTP (explicit TLS => STARTTLS)
+  #     - "993:993"  # IMAP4 (implicit TLS)
+  #   volumes:
+  #     - ./mail/docker-data/dms/mail-data/:/var/mail/
+  #     - ./mail/docker-data/dms/mail-state/:/var/mail-state/
+  #     - ./mail/docker-data/dms/mail-logs/:/var/log/mail/
+  #     - ./mail/docker-data/dms/config/:/tmp/docker-mailserver/
+  #     - /etc/localtime:/etc/localtime:ro
+  #   restart: always
+  #   stop_grace_period: 1m
+  #   # Uncomment if using `ENABLE_FAIL2BAN=1`:
+  #   # cap_add:
+  #   #   - NET_ADMIN
+  #   healthcheck:
+  #     test: "ss --listening --tcp | grep -P 'LISTEN.+:smtp' || exit 1"
+  #     timeout: 3s
+  #     retries: 0
+  #   networks:
+  #     - app_network
   
-  mongodb:
-    container_name: mongodb
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.mongodb.rule=Host(`mongo.qedron.com`)    
-      # - traefik.tcp.routers.mongodb.entrypoints=mongodb
-      # - traefik.tcp.routers.mongodb.service=mongodb
-      # - traefic.tcp.routers.mongodb.tls=true
-      # - traefik.tcp.routers.mongodb.tls.certresolver=letsencrypt
-      # - traefik.tcp.services.mongodb.loadBalancer.server.port=27016
-    image: ghcr.io/biniamkiros/mongodb:latest
-    env_file:
-      - ./.env 
-    build:
-      context: .
-      dockerfile: ./packages/mongodb_replica/Dockerfile
-      args:
-        MONGO_VERSION: 6
-    environment:
-      MONGO_REPLICA_HOST: mongodb.qedron.com
-      MONGO_REPLICA_PORT: ${MONGO_REPLICA_PORT}
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
-      MONGO_INITDB_DATABASE: auth
-      # MONGOD_PID: 5
-      # Use "mongo" instead of "mongosh" before v5.0
-      MONGO_COMMAND: 'mongosh'
-    ports:
-      - '${MONGO_REPLICA_PORT}:${MONGO_REPLICA_PORT}'
-    volumes:
-     - ./mongodb-data:/data/db
-    restart: unless-stopped
-    healthcheck:
-      # Use "mongo" instead of "mongosh" before v5.0
-      test: ['CMD', 'mongosh', 'admin', '--port', '27019', '--eval', "db.adminCommand('ping').ok"]
-      interval: 5s
-      timeout: 2s
-      retries: 20
-    networks:
-      - app_network
+  # mongodb:
+  #   container_name: mongodb
+  #   labels:
+  #     - traefik.enable=true
+  #     - traefik.http.routers.mongodb.rule=Host(`mongo.qedron.com`)    
+  #     # - traefik.tcp.routers.mongodb.entrypoints=mongodb
+  #     # - traefik.tcp.routers.mongodb.service=mongodb
+  #     # - traefic.tcp.routers.mongodb.tls=true
+  #     # - traefik.tcp.routers.mongodb.tls.certresolver=letsencrypt
+  #     # - traefik.tcp.services.mongodb.loadBalancer.server.port=27016
+  #   image: ghcr.io/biniamkiros/mongodb:latest
+  #   env_file:
+  #     - ./.env 
+  #   build:
+  #     context: .
+  #     dockerfile: ./packages/mongodb_replica/Dockerfile
+  #     args:
+  #       MONGO_VERSION: 6
+  #   environment:
+  #     MONGO_REPLICA_HOST: mongodb.qedron.com
+  #     MONGO_REPLICA_PORT: ${MONGO_REPLICA_PORT}
+  #     MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
+  #     MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+  #     MONGO_INITDB_DATABASE: auth
+  #     # MONGOD_PID: 5
+  #     # Use "mongo" instead of "mongosh" before v5.0
+  #     MONGO_COMMAND: 'mongosh'
+  #   ports:
+  #     - '${MONGO_REPLICA_PORT}:${MONGO_REPLICA_PORT}'
+  #   volumes:
+  #    - ./mongodb-data:/data/db
+  #   restart: unless-stopped
+  #   healthcheck:
+  #     # Use "mongo" instead of "mongosh" before v5.0
+  #     test: ['CMD', 'mongosh', 'admin', '--port', '27019', '--eval', "db.adminCommand('ping').ok"]
+  #     interval: 5s
+  #     timeout: 2s
+  #     retries: 20
+  #   networks:
+  #     - app_network
   
   postgresdb:
     container_name: postgresdb
