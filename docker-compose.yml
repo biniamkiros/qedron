@@ -51,7 +51,8 @@ services:
     networks:
       - app_network
     depends_on:
-      - mongodb
+      mongodb:
+        condition: service_healthy
 
   web:
     container_name: web
@@ -68,7 +69,8 @@ services:
     networks:
       - app_network
     depends_on:
-      - mongodb
+      mongodb:
+        condition: service_healthy
      
   api:
     container_name: api
@@ -85,7 +87,8 @@ services:
     networks:
       - app_network
     depends_on:
-      - mongodb
+      mongodb:
+        condition: service_healthy
    
   seleda:
     container_name: seleda
@@ -120,7 +123,8 @@ services:
     networks:
       - app_network
     depends_on:
-      - mongodb
+      mongodb:
+        condition: service_healthy
 
   cms:
     container_name: cms
