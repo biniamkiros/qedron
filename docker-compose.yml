@@ -110,6 +110,8 @@ services:
       - NEXTAUTH_URL=http://auth.qedron.com
       - DISCORD_CLIENT_ID=s
       - DISCORD_CLIENT_SECRET=s
+      - SELEDA_BOT_TOKEN=${SELEDA_BOT_TOKEN}
+      - SELEDA_DATABASE_URL=${SELEDA_DATABASE_URL}
     restart: always
     ports:
       - 3003:3000
@@ -152,7 +154,7 @@ services:
           condition: service_healthy
     networks:
     - app_network
-
+  
   monk:
     container_name: monk
     labels:
@@ -184,7 +186,7 @@ services:
 
     networks:
       - app_network
-
+  
   cron:
     container_name: cron
     labels:

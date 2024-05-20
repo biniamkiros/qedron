@@ -12,7 +12,7 @@ datasource db {
     // Further reading:
     // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
     // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
-    url      = "mongodb://admin:password@localhost:27019/seleda?authSource=admin"//env("localhost")
+    url      = env("SELEDA_DATABASE_URL")
 }
 
 model Tender {
@@ -28,7 +28,31 @@ model Tender {
     status        String 
     language      String 
     region        String
+    messages      Message[]
     createdAt     DateTime @default(now())
     updatedAt     DateTime @updatedAt
 }
 
+model User {
+    id            String @id @default(auto()) @map("_id") @db.ObjectId
+    chatId        Int @unique
+    name          String
+    username      String?
+    activeEndDate DateTime? 
+    notifTime     String?
+    tags          String[]
+    messages      Message[]
+}
+
+model Message{
+    id            String @id @default(auto()) @map("_id") @db.ObjectId
+    userId        String  @db.ObjectId
+    tenderId      String  @db.ObjectId
+    user          User    @relation(fields: [userId], references: [id])
+    tender        Tender  @relation(fields: [tenderId], references: [id])
+    status        String
+    sentCount     Int
+    createdAt     DateTime @default(now())
+    
+    @@unique([userId, tenderId], name: "messageId")
+}
