@@ -93,6 +93,8 @@ services:
       - traefik.enable=true
       - traefik.http.routers.seleda.rule=Host(`seleda.qedron.com`)
     image: ghcr.io/biniamkiros/seleda:latest
+    env_file:
+      - ./.env 
     build:
       context: .
       dockerfile: ./apps/seleda/Dockerfile
