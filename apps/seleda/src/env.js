@@ -7,8 +7,8 @@ export const env = createEnv({
    * isn't built with invalid env vars.
    */
   server: {
-    SELEDA_BOT_TOKEN: z.string(),
-    SELEDA_DATABASE_URL: z.string().url(),
+    SELEDA_BOT_TOKEN: z.string().optional(),
+    SELEDA_DATABASE_URL: z.string().url().optional(),
     NODE_ENV: z
       .enum(["development", "test", "production"])
       .default("development"),
