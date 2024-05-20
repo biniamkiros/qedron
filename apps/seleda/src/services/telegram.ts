@@ -1,39 +1,6 @@
 import { Prisma, Tender } from "@prisma/client";
 import { setTag, upsertUser } from "./egp";
-import { env } from "../env.js";
-const TelgramBot = require("node-telegram-bot-api");
-
-const SELEDA_BOT_TOKEN = env.SELEDA_BOT_TOKEN
-// "6874701338:AAHkRp25OO4pSKYIhoT9_dHUwxJv-LUbC44"
-
-const bot = new TelgramBot(SELEDA_BOT_TOKEN);
-
-if (process.env.NODE_ENV === "production") {
-    bot.setWebHook(
-      `https://seleda.qedron.com/api/bots/updates/${SELEDA_BOT_TOKEN}`
-      // , {
-      //   certificate: "/etc/letsencrypt/live/seleda.qedron.com/cert.pem", // Path to your crt.pem
-      // }
-    );
-  } else {
-// export const startBot = ()=>{
-    const options = {
-        // polling: true, 
-        // webHook: {
-        //   port: 8443,
-        // },
-    };
-    
-    if(bot.isPolling()) {
-        await bot.stopPolling();
-    }
-    
-    await bot.startPolling();
-  }
-
-const info = await bot.getWebHookInfo();
-console.log("🚀 ~ Seleda Web Hook Info:", info);
-// }
+import { bot } from "~/config/gram.config";
 
 // Enable graceful stop
 process.once('SIGINT', () => {
@@ -115,6 +82,6 @@ export const sendTelegram = async (chatId:number, content:String, markdown:boole
 export const handleUpdates = (update: any) => {
     console.log("Handling seleda telegram updates");
     bot.processUpdate(update);
-  };
+};
 
 
