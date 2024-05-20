@@ -23,7 +23,7 @@ RUN yarn global add turbo
 
 # First install the dependencies (as they change less often)
 COPY .gitignore .gitignore
-COPY prisma ./prisma/
+# COPY prisma ./prisma/
 COPY --from=builder /app/out/json/ .
 COPY --from=builder /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
 
