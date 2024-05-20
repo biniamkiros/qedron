@@ -25,6 +25,7 @@ RUN yarn global add turbo
 COPY .gitignore .gitignore
 COPY --from=builder /app/out/json/ .
 COPY --from=builder /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
+COPY --from=builder /app/out/prisma ./prisma/
 RUN pnpm install
 
 # Build the project
