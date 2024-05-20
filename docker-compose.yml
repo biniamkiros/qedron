@@ -282,7 +282,7 @@ services:
     restart: unless-stopped
     healthcheck:
       # Use "mongo" instead of "mongosh" before v5.0
-      test: ['CMD', 'mongosh', 'admin', '--port', '27019', '--eval', "db.adminCommand('ping').ok"]
+      test: ['CMD', 'mongosh', 'admin', '--port', '${MONGO_REPLICA_PORT}', '--eval', "db.adminCommand('ping').ok"]
       interval: 5s
       timeout: 2s
       retries: 20
