@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic' // defaults to auto
 import { processQueue } from "~/services/egp"
 
 type ResponseData = {
