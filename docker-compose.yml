@@ -98,7 +98,7 @@ services:
       dockerfile: ./apps/seleda/Dockerfile
       args:
         SKIP_ENV_VALIDATION: 1
-        DATABASE_URL: file:./db.sqlite
+        SELEDA_DATABASE_URL: ${SELEDA_DATABASE_URL}
         NEXTAUTH_SECRET: h"
         NEXTAUTH_URL: http://auth.qedron.com
         DISCORD_CLIENT_ID: s
