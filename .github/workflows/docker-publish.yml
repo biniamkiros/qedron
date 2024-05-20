@@ -19,7 +19,7 @@ jobs:
     - name: create env        
       run: |
            echo 'MONGO_REPLICA_PORT=27019
-           SELEDA_DATABASE_URL=mongodb://admin:password@localhost:27019/seleda?authSource=admin' > .env
+           SELEDA_DATABASE_URL=mongodb://admin:password@mongodb:27019/seleda?authSource=admin' > .env
     - name: create mailserver env        
       run: echo DMS_DEBUG=0 > mailserver.env
     # - name: create env
