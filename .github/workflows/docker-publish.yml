@@ -51,7 +51,7 @@ jobs:
     
       # docker kill $(docker ps -q) 2> /dev/null || true && docker rm $(docker ps -a -q) 2> /dev/null || true && docker network create --driver bridge app_network || true echo y | docker system prune -all 2> /dev/null || true
 
-# docker login ghcr.io -u biniamkiros -password ${{ secrets.PAT }}
+      # docker login ghcr.io -u biniamkiros -password ${{ secrets.PAT }}
 
 
 
