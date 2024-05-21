@@ -18,7 +18,7 @@ jobs:
         echo ${{ secrets.PAT }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
     - name: create env        
       run: |
-           echo -e "SELEDA_DATABASE_URL=mongodb://admin:password@mongodb:27019/seleda?authSource=admin
+           echo -e "MONGO_DATABASE_BASE_URL=mongodb://qadmin:_qedron1978@mongodb:27017
            MONGO_REPLICA_PORT=27019" > .env
     - name: create mailserver env        
       run: echo DMS_DEBUG=0 > mailserver.env
