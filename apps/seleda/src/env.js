@@ -8,7 +8,7 @@ export const env = createEnv({
    */
   server: {
     SELEDA_BOT_TOKEN: z.string().optional(),
-    MONGO_DATABASE_BASE_URL: z.string().url().optional(),
+    SELEDA_DATABASE_URL: z.string().url().optional(),
     NODE_ENV: z
       .enum(["development", "test", "production"])
       .default("development"),
@@ -42,7 +42,7 @@ export const env = createEnv({
    */
   runtimeEnv: {
     SELEDA_BOT_TOKEN: process.env.SELEDA_BOT_TOKEN,
-    MONGO_DATABASE_BASE_URL: process.env.MONGO_DATABASE_BASE_URL,
+    SELEDA_DATABASE_URL: process.env.SELEDA_DATABASE_URL,
     // DATABASE_URL: process.env.DATABASE_URL,
     NODE_ENV: process.env.NODE_ENV,
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
