@@ -316,30 +316,30 @@ services:
     networks:
       - app_network
 
-  monitoring:
-    image: nicolargo/glances:latest-full
-    pid: host
-    network_mode: host
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /run/user/1000/podman/podman.sock:/run/user/1000/podman/podman.sock
-    environment:
-      - "GLANCES_OPT=-w"
+  # monitoring:
+  #   image: nicolargo/glances:latest-full
+  #   pid: host
+  #   network_mode: host
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #     - /run/user/1000/podman/podman.sock:/run/user/1000/podman/podman.sock
+  #   environment:
+  #     - "GLANCES_OPT=-w"
 
-  netdata:
-    image: netdata/netdata
-    container_name: netdata
-    ports:
-      - 19999:19999
-    restart: unless-stopped
-    cap_add:
-      - SYS_PTRACE
-    security_opt:
-      - apparmor:unconfined
-    volumes:
-      - /proc:/host/proc:ro
-      - /sys:/host/sys:ro
-      - /var/run/docker.sock:/var/run/docker.sock:ro
+  # netdata:
+  #   image: netdata/netdata
+  #   container_name: netdata
+  #   ports:
+  #     - 19999:19999
+  #   restart: unless-stopped
+  #   cap_add:
+  #     - SYS_PTRACE
+  #   security_opt:
+  #     - apparmor:unconfined
+  #   volumes:
+  #     - /proc:/host/proc:ro
+  #     - /sys:/host/sys:ro
+  #     - /var/run/docker.sock:/var/run/docker.sock:ro
 # Define a network, which allows containers to communicate
 # with each other, by using their container name as a hostname
 networks:
