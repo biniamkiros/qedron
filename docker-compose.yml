@@ -22,57 +22,57 @@ services:
     networks:
       - app_network
 
-  account:
-    container_name: account
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.account.rule=Host(`account.qedron.com`)
-    image: ghcr.io/biniamkiros/account:latest
-    build:
-      context: .
-      dockerfile: ./apps/account/Dockerfile
-      args:
-        SKIP_ENV_VALIDATION: 1
-        DATABASE_URL: file:./db.sqlite
-        NEXTAUTH_SECRET: h"
-        NEXTAUTH_URL: http://account.qedron.com
-        DISCORD_CLIENT_ID: s
-        DISCORD_CLIENT_SECRET: s
-    environment:
-      - SKIP_ENV_VALIDATION=1
-      - DATABASE_URL=file:./db.sqlite
-      - NEXTAUTH_SECRET=h"
-      - NEXTAUTH_URL=http://account.qedron.com
-      - DISCORD_CLIENT_ID=s
-      - DISCORD_CLIENT_SECRET=s
-    restart: always
-    ports:
-      - 3000:3000
-    networks:
-      - app_network
-    depends_on:
-      mongodb:
-        condition: service_healthy
+  # account:
+  #   container_name: account
+  #   labels:
+  #     - traefik.enable=true
+  #     - traefik.http.routers.account.rule=Host(`account.qedron.com`)
+  #   image: ghcr.io/biniamkiros/account:latest
+  #   build:
+  #     context: .
+  #     dockerfile: ./apps/account/Dockerfile
+  #     args:
+  #       SKIP_ENV_VALIDATION: 1
+  #       DATABASE_URL: file:./db.sqlite
+  #       NEXTAUTH_SECRET: h"
+  #       NEXTAUTH_URL: http://account.qedron.com
+  #       DISCORD_CLIENT_ID: s
+  #       DISCORD_CLIENT_SECRET: s
+  #   environment:
+  #     - SKIP_ENV_VALIDATION=1
+  #     - DATABASE_URL=file:./db.sqlite
+  #     - NEXTAUTH_SECRET=h"
+  #     - NEXTAUTH_URL=http://account.qedron.com
+  #     - DISCORD_CLIENT_ID=s
+  #     - DISCORD_CLIENT_SECRET=s
+  #   restart: always
+  #   ports:
+  #     - 3000:3000
+  #   networks:
+  #     - app_network
+  #   depends_on:
+  #     mongodb:
+  #       condition: service_healthy
 
-  web:
-    container_name: web
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.web.rule=Host(`web.qedron.com`)
-    image: ghcr.io/biniamkiros/web:latest
-    build:
-      context: .
-      dockerfile: ./apps/web/Dockerfile
-    restart: always
-    ports:
-      - 3001:3000
-    networks:
-      - app_network
-    depends_on:
-      mongodb:
-        condition: service_healthy
+  # web:
+  #   container_name: web
+  #   labels:
+  #     - traefik.enable=true
+  #     - traefik.http.routers.web.rule=Host(`web.qedron.com`)
+  #   image: ghcr.io/biniamkiros/web:latest
+  #   build:
+  #     context: .
+  #     dockerfile: ./apps/web/Dockerfile
+  #   restart: always
+  #   ports:
+  #     - 3001:3000
+  #   networks:
+  #     - app_network
+  #   depends_on:
+  #     mongodb:
+  #       condition: service_healthy
      
-  api:
+  # api:
     container_name: api
     labels:
       - traefik.enable=true
@@ -326,6 +326,20 @@ services:
     environment:
       - "GLANCES_OPT=-w"
 
+  netdata:
+    image: netdata/netdata
+    container_name: netdata
+    ports:
+      - 19999:19999
+    restart: unless-stopped
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - apparmor:unconfined
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
 # Define a network, which allows containers to communicate
 # with each other, by using their container name as a hostname
 networks:
