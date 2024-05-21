@@ -126,72 +126,72 @@ services:
       mongodb:
         condition: service_healthy
 
-  cms:
-    container_name: cms
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.cms.rule=Host(`cms.qedron.com`)   
-    image: directus/directus:10.10.5
-    ports:
-      - 8055:8055
-    volumes:
-      - ./directus/uploads:/directus/uploads
-      - ./directus/extensions:/directus/extensions
-    environment:
-      - KEY=${DIRECTUS_KEY}
-      - SECRET=${DIRECTUS_SECRET}
-      - DB_CLIENT="pg"
-      - DB_HOST="postgresdb"
-      - DB_PORT=${POSTGRES_PORT}
-      - DB_DATABASE=${POSTGRES_DB}
-      - DB_USER=${POSTGRES_USERNAME}
-      - DB_PASSWORD=${POSTGRES_PASSWORD}
-      - ADMIN_EMAIL=${DIRECTUS_ADMIN_EMAIL}
-      - ADMIN_PASSWORD=${DIRECTUS_ADMIN_PASSWORD}
+  # cms:
+  #   container_name: cms
+  #   labels:
+  #     - traefik.enable=true
+  #     - traefik.http.routers.cms.rule=Host(`cms.qedron.com`)   
+  #   image: directus/directus:10.10.5
+  #   ports:
+  #     - 8055:8055
+  #   volumes:
+  #     - ./directus/uploads:/directus/uploads
+  #     - ./directus/extensions:/directus/extensions
+  #   environment:
+  #     - KEY=${DIRECTUS_KEY}
+  #     - SECRET=${DIRECTUS_SECRET}
+  #     - DB_CLIENT="pg"
+  #     - DB_HOST="postgresdb"
+  #     - DB_PORT=${POSTGRES_PORT}
+  #     - DB_DATABASE=${POSTGRES_DB}
+  #     - DB_USER=${POSTGRES_USERNAME}
+  #     - DB_PASSWORD=${POSTGRES_PASSWORD}
+  #     - ADMIN_EMAIL=${DIRECTUS_ADMIN_EMAIL}
+  #     - ADMIN_PASSWORD=${DIRECTUS_ADMIN_PASSWORD}
 
-      # Make sure to set this in production
-      # (see https://docs.directus.io/self-hosted/config-options#general)
-      - PUBLIC_URL="https://cms.qedron.com"
-    # Environment variables can also be defined in a file (for example `.env`):
-    env_file:
-      - ./.env 
-    depends_on:
-      postgresdb:
-          condition: service_healthy
-    networks:
-    - app_network
+  #     # Make sure to set this in production
+  #     # (see https://docs.directus.io/self-hosted/config-options#general)
+  #     - PUBLIC_URL="https://cms.qedron.com"
+  #   # Environment variables can also be defined in a file (for example `.env`):
+  #   env_file:
+  #     - ./.env 
+  #   depends_on:
+  #     postgresdb:
+  #         condition: service_healthy
+  #   networks:
+  #   - app_network
   
-  monk:
-    container_name: monk
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.monk.rule=Host(`monk.qedron.com`)  
-    restart: unless-stopped
-    image: listmonk/listmonk:latest
-    ports:
-      - "9000:9000"
-    env_file:
-      - ./.env 
-    environment:
-      - LISTMONK_app__address=${LISTMONK_app__address}
-      - LISTMONK_app__admin_username=${LISTMONK_app__admin_username}
-      - LISTMONK_app__admin_password=${LISTMONK_app__admin_password}
-      - LISTMONK_db__host=${POSTGRES_HOST}
-      - LISTMONK_db__port=5432
-      - LISTMONK_db__user=${POSTGRES_USERNAME}
-      - LISTMONK_db__password=${POSTGRES_PASSWORD}
-      - LISTMONK_db__database=${POSTGRES_DB}
-      - LISTMONK_db__ssl_mode=${LISTMONK_db__ssl_mode}
-    command: [sh, -c, "echo y | ./listmonk  --install --idempotent  --config='' && ./listmonk"]
-    volumes:
-      - ./listmonk/uploads:/listmonk/uploads
-      # - ./listmonk/config.toml/:/listmonk/config.toml
-    depends_on:
-      postgresdb:
-          condition: service_healthy
+  # monk:
+  #   container_name: monk
+  #   labels:
+  #     - traefik.enable=true
+  #     - traefik.http.routers.monk.rule=Host(`monk.qedron.com`)  
+  #   restart: unless-stopped
+  #   image: listmonk/listmonk:latest
+  #   ports:
+  #     - "9000:9000"
+  #   env_file:
+  #     - ./.env 
+  #   environment:
+  #     - LISTMONK_app__address=${LISTMONK_app__address}
+  #     - LISTMONK_app__admin_username=${LISTMONK_app__admin_username}
+  #     - LISTMONK_app__admin_password=${LISTMONK_app__admin_password}
+  #     - LISTMONK_db__host=${POSTGRES_HOST}
+  #     - LISTMONK_db__port=5432
+  #     - LISTMONK_db__user=${POSTGRES_USERNAME}
+  #     - LISTMONK_db__password=${POSTGRES_PASSWORD}
+  #     - LISTMONK_db__database=${POSTGRES_DB}
+  #     - LISTMONK_db__ssl_mode=${LISTMONK_db__ssl_mode}
+  #   command: [sh, -c, "echo y | ./listmonk  --install --idempotent  --config='' && ./listmonk"]
+  #   volumes:
+  #     - ./listmonk/uploads:/listmonk/uploads
+  #     # - ./listmonk/config.toml/:/listmonk/config.toml
+  #   depends_on:
+  #     postgresdb:
+  #         condition: service_healthy
 
-    networks:
-      - app_network
+  #   networks:
+  #     - app_network
   
   cron:
     container_name: cron
@@ -213,40 +213,40 @@ services:
     networks:
       - app_network
   
-  mailserver:
-    container_name: mailserver
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.mailserver.rule=Host(`mail.qedron.com`) 
-    image: ghcr.io/docker-mailserver/docker-mailserver:latest
-    # Provide the FQDN of your mail server here (Your DNS MX record should point to this value)
-    hostname: mail.qedron.com
-    env_file: mailserver.env
-    # More information about the mail-server ports:
-    # https://docker-mailserver.github.io/docker-mailserver/latest/config/security/understanding-the-ports/
-    ports:
-      - "25:25"    # SMTP  (explicit TLS => STARTTLS, Authentication is DISABLED => use port 465/587 instead)
-      - "143:143"  # IMAP4 (explicit TLS => STARTTLS)
-      - "465:465"  # ESMTP (implicit TLS)
-      - "587:587"  # ESMTP (explicit TLS => STARTTLS)
-      - "993:993"  # IMAP4 (implicit TLS)
-    volumes:
-      - ./mail/docker-data/dms/mail-data/:/var/mail/
-      - ./mail/docker-data/dms/mail-state/:/var/mail-state/
-      - ./mail/docker-data/dms/mail-logs/:/var/log/mail/
-      - ./mail/docker-data/dms/config/:/tmp/docker-mailserver/
-      - /etc/localtime:/etc/localtime:ro
-    restart: always
-    stop_grace_period: 1m
-    # Uncomment if using `ENABLE_FAIL2BAN=1`:
-    # cap_add:
-    #   - NET_ADMIN
-    healthcheck:
-      test: "ss --listening --tcp | grep -P 'LISTEN.+:smtp' || exit 1"
-      timeout: 3s
-      retries: 0
-    networks:
-      - app_network
+  # mailserver:
+  #   container_name: mailserver
+  #   labels:
+  #     - traefik.enable=true
+  #     - traefik.http.routers.mailserver.rule=Host(`mail.qedron.com`) 
+  #   image: ghcr.io/docker-mailserver/docker-mailserver:latest
+  #   # Provide the FQDN of your mail server here (Your DNS MX record should point to this value)
+  #   hostname: mail.qedron.com
+  #   env_file: mailserver.env
+  #   # More information about the mail-server ports:
+  #   # https://docker-mailserver.github.io/docker-mailserver/latest/config/security/understanding-the-ports/
+  #   ports:
+  #     - "25:25"    # SMTP  (explicit TLS => STARTTLS, Authentication is DISABLED => use port 465/587 instead)
+  #     - "143:143"  # IMAP4 (explicit TLS => STARTTLS)
+  #     - "465:465"  # ESMTP (implicit TLS)
+  #     - "587:587"  # ESMTP (explicit TLS => STARTTLS)
+  #     - "993:993"  # IMAP4 (implicit TLS)
+  #   volumes:
+  #     - ./mail/docker-data/dms/mail-data/:/var/mail/
+  #     - ./mail/docker-data/dms/mail-state/:/var/mail-state/
+  #     - ./mail/docker-data/dms/mail-logs/:/var/log/mail/
+  #     - ./mail/docker-data/dms/config/:/tmp/docker-mailserver/
+  #     - /etc/localtime:/etc/localtime:ro
+  #   restart: always
+  #   stop_grace_period: 1m
+  #   # Uncomment if using `ENABLE_FAIL2BAN=1`:
+  #   # cap_add:
+  #   #   - NET_ADMIN
+  #   healthcheck:
+  #     test: "ss --listening --tcp | grep -P 'LISTEN.+:smtp' || exit 1"
+  #     timeout: 3s
+  #     retries: 0
+  #   networks:
+  #     - app_network
   
   mongodb:
     container_name: mongodb
@@ -325,7 +325,7 @@ services:
       - /run/user/1000/podman/podman.sock:/run/user/1000/podman/podman.sock
     environment:
       - "GLANCES_OPT=-w"
-      
+
 # Define a network, which allows containers to communicate
 # with each other, by using their container name as a hostname
 networks:
