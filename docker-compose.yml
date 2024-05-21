@@ -267,7 +267,7 @@ services:
       args:
         MONGO_VERSION: 6
     environment:
-      MONGO_REPLICA_HOST: mongodb.qedron.com
+      MONGO_REPLICA_HOST: mongo.qedron.com
       MONGO_REPLICA_PORT: ${MONGO_REPLICA_PORT}
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}

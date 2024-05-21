@@ -24,4 +24,4 @@ ENTRYPOINT \
          $MONGO_COMMAND admin --port $MONGO_REPLICA_PORT --eval "$INIT_DB_CMD"); do sleep 1; done; \
   \
   # we are done but we keep the container by waiting on signals from the mongo task
-  echo "REPLICA SET ONLINE"; wait $MONGOD_PID;
+  echo ">>>>>>>>>>>REPLICA SET ONLINE!!!!!!!!!"; wait $MONGOD_PID;
