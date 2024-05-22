@@ -103,7 +103,7 @@ services:
       dockerfile: ./apps/seleda/Dockerfile
       args:
         SKIP_ENV_VALIDATION: 1
-        SELEDA_DATABASE_URL: mongodb://admin:password@localhost:27019/seleda?authSource=admin
+        DATABASE_URL: ${DATABASE_URL}
         NEXTAUTH_SECRET: h
         NEXTAUTH_URL: http://auth.qedron.com
         DISCORD_CLIENT_ID: s
@@ -115,7 +115,7 @@ services:
       - DISCORD_CLIENT_ID=s
       - DISCORD_CLIENT_SECRET=s
       - SELEDA_BOT_TOKEN=${SELEDA_BOT_TOKEN} 
-      - SELEDA_DATABASE_URL=mongodb://admin:password@localhost:27019/seleda?authSource=admin
+      - DATABASE_URL=${DATABASE_URL}
     restart: always
     ports:
       - 3003:3000
