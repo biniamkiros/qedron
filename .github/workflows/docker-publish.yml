@@ -19,7 +19,7 @@ jobs:
     - name: create env        
       run: |
            echo -e "DATABASE_URL=${{ secrets.DATABASE_URL }}
-           MONGO_REPLICA_PORT=27019" > .env
+           MONGO_REPLICA_PORT=27017" > .env
     - name: create mailserver env        
       run: echo DMS_DEBUG=0 > mailserver.env
     # - name: create env
