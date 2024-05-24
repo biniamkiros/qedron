@@ -115,7 +115,7 @@ services:
       - DISCORD_CLIENT_ID=s
       - DISCORD_CLIENT_SECRET=s
       - SELEDA_BOT_TOKEN=${SELEDA_BOT_TOKEN} 
-      - DATABASE_URL=${DATABASE_URL}
+      - SELEDA_DATABASE_URL=${SELEDA_DATABASE_URL}
     restart: always
     ports:
       - 3003:3000
