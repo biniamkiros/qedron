@@ -16,7 +16,9 @@ module.exports = {
   reactStrictMode: true,
   transpilePackages: ["@repo/ui"],
   output: "standalone",
+  
   experimental: {
+    instrumentationHook: true, 
     outputFileTracingRoot: path.join(__dirname, "../../"),
   },
 };
