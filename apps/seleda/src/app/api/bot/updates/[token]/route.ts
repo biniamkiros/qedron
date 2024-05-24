@@ -4,7 +4,7 @@ import { env } from "~/env";
 import { handleUpdates } from "~/services/telegram";
 
 const SELEDA_BOT_TOKEN = env.SELEDA_BOT_TOKEN
-export async function GET(request: NextRequest, { params }: { params: { token: string } }) {
+export async function POST(request: NextRequest, { params }: { params: { token: string } }) {
   const { token } = params;
   if(SELEDA_BOT_TOKEN === token)
   handleUpdates(request.body); 
