@@ -1,11 +1,7 @@
 export async function register() {
-    console.log("!!!!!!REGISTER", process.env.NEXT_RUNTIME)
-    const isServer = process.env.NEXT_RUNTIME === "nodejs";
-    
-    console.log("*************************")
-    console.log("*************************")
-    console.log("🚀 ~ register ~ register:")
-    console.log("*************************")
-    console.log("*************************")
-    
+  if (process.env.NEXT_RUNTIME === 'nodejs') {
+    const { bootHandler } = await import("./config/boot.config");
+    const boot = await bootHandler();
+    console.log("🚀 ~ booted:", boot)
+  } 
 }

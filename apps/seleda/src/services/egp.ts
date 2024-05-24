@@ -2,11 +2,19 @@ import { PrismaClient, Tender } from '@prisma/client'
 import { sendTelegram, sendTelegramMarkdown } from './telegram';
 import { nullable } from 'zod';
 import { format } from "date-fns";
+import { env } from 'process';
 // import { PrismaClient } from '../../../../node_modules/.pnpm/@prisma+client@5.13.0_prisma@5.13.0/node_modules/@prisma/client'
 const prisma = new PrismaClient()
 
-export const scrapToday = () => {};
-export const scrapWeek = () => {};
+export const pullTenders = async () => {
+  console.log("🚀 ~ GET ~ tenders...........")
+  const tenders = await scrapAll(); 
+  tenders.forEach(tender => {
+    upsertEGPTender(tender) 
+  });
+  console.log("🚀 ~ Updated and proccessed ", tenders.length," tenders")
+  return tenders
+};
 export const scrapAll = async () => {
   try{
     let tender = []
@@ -108,42 +116,37 @@ export const upsertEGPTender = async (r: { id: any; lotName: any; lotDescription
           }
         })
         if(!queue){
-          console.log("**********************")
-          console.log("Creating message......")
-          console.log("**********************")
+          console.log("Queueing message......")
           const upsertMessage = await prisma.message.create({
             data: {
               userId: bidder.id,
               tenderId: upsertTender.id,
               status: "active",
-              sentCount: 3,
+              sentCount: 0,
             }
-        })} else {
-          console.log("**********************")
-          console.log("Skip. existing message......")
-          console.log("**********************")
-        }
+        })}
       }
-      
     })
   });
 
 };
 
 export const processQueue = async () => {
-  const queue = await prisma.message.findFirst({ where: { status: "active" }, orderBy: { createdAt: 'asc', },});
+  const queues = await prisma.message.findMany({ where: { status: "active" }, orderBy: { createdAt: 'asc', },});
+  // console.log("🚀 ~ processQueue ~ queues:", queues)
+  let queue = await prisma.message.findFirst({ where: { status: "active" }, orderBy: { createdAt: 'asc', },});
   if (!queue) {
-    console.log("🚀 ~ processQueue ~ no queue available!")
+    // console.log("🚀 ~ processQueue ~ no queue available!")
     return;
   }
   const user = await prisma.user.findUnique({ where: { id: queue.userId, },});
   const tender = await prisma.tender.findUnique({ where: { id: queue.tenderId, },});
-  if(user && tender && queue) {
+  if(user && tender && queue && (env.NODE_ENV === "production" || user.chatId === 383604329)) {//only process on prod and for biniam on dev
     const success = await sendTenderWithHelp(user.chatId, tender);
     if(success){
-      // queue.sentCount += 1
-      // queue.status = "sent"
-      prisma.message.update({where:{id: queue.id}, data:{...queue}})
+      const sentCount = queue.sentCount + 1
+      queue.status = "sent"
+      await prisma.message.update({where:{id: queue.id}, data:{ sentCount: sentCount, status: "sent" }})
     }
   }
 };

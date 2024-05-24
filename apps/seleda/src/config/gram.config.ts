@@ -11,16 +11,22 @@ const options = {
     // },
 };
 
-let bot = new TelgramBot(SELEDA_BOT_TOKEN, options);
-if(!env.SELEDA_BOT_TOKEN) {
-    console.log("🚀 ~ SELEDA_BOT_TOKEN not provided")
-} else {
-    console.log("*************************")
-    console.log("*************************")
-    console.log("🚀 ~ Starting bot")
-    console.log("*************************")
-    console.log("*************************")
-    if (process.env.NODE_ENV === "production") {
+let bot:any = null
+export const getBot = async ()=>{
+    if(bot) return bot
+    bot = await initBot();
+    return bot;
+}
+
+export const initBot= async ()=>{ 
+    if(!env.SELEDA_BOT_TOKEN) {
+        console.log("🚀 ~ SELEDA_BOT_TOKEN not provided")
+        return
+    } 
+        
+    bot = new TelgramBot(SELEDA_BOT_TOKEN, options);
+    console.log("🚀 ~ Starting bot...")
+    if (env.NODE_ENV === "production") {
         await bot.setWebHook(
         `https://seleda.qedron.com/api/bot/updates/${SELEDA_BOT_TOKEN}`
         // , {
@@ -29,14 +35,12 @@ if(!env.SELEDA_BOT_TOKEN) {
         );
         const info = await bot.getWebHookInfo();
         console.log("🚀 ~ Seleda Web Hook Info:", info);
+        return bot;
     } else {
-        if(bot.isPolling()) {
-            await bot.stopPolling();
-            }
-
+        if(bot.isPolling()) await bot.stopPolling();
         await bot.startPolling();
-        
+        console.log("🚀 ~ Seleda isPolling:", bot.isPolling());
+        return bot;
     }
+    
 }
-
-export { bot };
