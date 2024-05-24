@@ -16,7 +16,7 @@ if(!env.SELEDA_BOT_TOKEN) {
     console.log("🚀 ~ SELEDA_BOT_TOKEN not provided")
 } else {
     if (process.env.NODE_ENV === "production") {
-        bot.setWebHook(
+        await bot.setWebHook(
         `https://seleda.qedron.com/api/bot/updates/${SELEDA_BOT_TOKEN}`
         // , {
         //   certificate: "/etc/letsencrypt/live/seleda.qedron.com/cert.pem", // Path to your crt.pem
