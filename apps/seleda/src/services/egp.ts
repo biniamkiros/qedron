@@ -156,7 +156,6 @@ export const sendTenderWithHelp = (chatId:number, tender:Tender):Promise<boolean
   return sendTelegramMarkdown(chatId, message);
 };
 
-
 export const getTenderMessage = (tender:Tender) => {
   const header = "```Tender```";
   let details = header;
