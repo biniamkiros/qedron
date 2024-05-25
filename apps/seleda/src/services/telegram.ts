@@ -117,7 +117,7 @@ export const handleUpdates = async (update: any) => {
         await initSeledaBot();
         return false;
     } else {
-        console.log("Handling seleda telegram updates");
+        console.log("Handling seleda telegram updates", update);
         seledaGramBot.processUpdate(update);
     }
 };
