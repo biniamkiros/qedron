@@ -15,6 +15,7 @@ export const pullTenders = async () => {
   console.log("🚀 ~ Updated and proccessed ", tenders.length," tenders")
   return tenders
 };
+
 export const scrapAll = async () => {
   try{
     let tender = []

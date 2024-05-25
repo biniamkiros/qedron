@@ -4,22 +4,24 @@ import { getBot } from "~/config/gram.config";
 let seledaGramBot:any = null
 export const initSeledaBot= async ()=>{
     getBot().then(bot=>{
+        
+        seledaGramBot = bot;
         // Enable graceful stop
         process.once('SIGINT', () => {
             console.log("🚀 ~ SIGINT: stop bot polling.",)
-            return bot.stopPolling()
+            return seledaGramBot.stopPolling()
         })
 
         process.once('SIGTERM', () => {
             console.log("🚀 ~ SIGINT: stop bot polling.",)
-            return bot.stopPolling()
+            return seledaGramBot.stopPolling()
         })
 
-        bot.on('polling_error', (error: { code: any; }) => {
+        seledaGramBot.on('polling_error', (error: { code: any; }) => {
             console.log(error.code);  // => 'EFATAL'
         });
 
-        bot.onText(/\/alert/, async (msg: { chat: { id: number; }; }) => {
+        seledaGramBot.onText(/\/alert/, async (msg: { chat: { id: number; }; }) => {
             const {
                 chat: { id },
                 } = msg;
@@ -39,7 +41,7 @@ export const initSeledaBot= async ()=>{
             );
         });
 
-        bot.onText(/\/start/, async (msg: { chat: { id: number; }, from: { username: string, first_name: string, last_name:string }; }) => {
+        seledaGramBot.onText(/\/start/, async (msg: { chat: { id: number; }, from: { username: string, first_name: string, last_name:string }; }) => {
             const {
                 chat: { id },
                 from: { username, first_name, last_name },
@@ -61,7 +63,7 @@ export const initSeledaBot= async ()=>{
             upsertUser(name.trim(), id, formattedUsername);
         });
 
-        bot.on("message", async (msg: { text?: any; reply_to_message?: any; chat?: any; }) => {
+        seledaGramBot.on("message", async (msg: { text?: any; reply_to_message?: any; chat?: any; }) => {
             const {
               chat: { id },
             } = msg;
@@ -76,7 +78,6 @@ export const initSeledaBot= async ()=>{
             }
           });
 
-        seledaGramBot = bot;
     });
     
 }
