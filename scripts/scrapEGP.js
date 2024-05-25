@@ -23506,7 +23506,7 @@ const getSuplier =async (skip, top)=>{
   const url = `https://production.egp.gov.et/po-gw/cms/api/economic-operators/get-economic-operators-portal?skip=${skip}&top=${top}&orderBy%5B0%5D.field=dateOfRegistration&orderBy%5B0%5D.direction=desc&filter%5B0%5D%5B0%5D.field=status&filter%5B0%5D%5B0%5D.operator==&filter%5B0%5D%5B0%5D.value=active&secretToken=${token}&secretCode=${secret}`
   const list = await fetchData(url)
   const eo = await fetchData(`https://production.egp.gov.et/po-gw/registration/api/economic-operators/get-supplier-by-id/${list.items[0].economicOperatorId}`)
-  total = list.total
+  total = list.total 
   list.items.forEach(async l=> {
     const eo = await fetchData(`https://production.egp.gov.et/po-gw/registration/api/economic-operators/get-supplier-by-id/${l.economicOperatorId}`)
     // console.log(eo.economicOperatorOrganization.organizationName.am)
