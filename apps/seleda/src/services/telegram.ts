@@ -35,7 +35,7 @@ export const initSeledaBot= async ()=>{
                     if(u) bot.sendMessage(id, "Your alert tags is set. Tenders which contain these tags will be sent to you on your preffered time. Your tags: " + u.tags);
                     else bot.sendMessage(id, "errorFetchingUserMessage");
                     bot.removeReplyListener(replyListenerId);
-                });}        
+                });}      
             );
         });
 
