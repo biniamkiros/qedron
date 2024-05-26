@@ -16,7 +16,7 @@ export const getBot = async ()=>{
     if(bot) return bot
     bot = await initBot();
     return bot;
-}
+} 
 
 export const initBot= async ()=>{ 
     if(!env.SELEDA_BOT_TOKEN) {
