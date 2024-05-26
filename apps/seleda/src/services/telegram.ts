@@ -64,7 +64,7 @@ bot.on("message", async (msg: { text?: any; reply_to_message?: any; chat?: any; 
     const {
         chat: { id },
     } = msg;
-    console.log("🚀 ~ bot.on ~ id:", id)
+    console.log("🚀 ~ bot.onmessages ~ id:", id)
     if (msg.text && !msg.reply_to_message && msg.text[0] !== "/") {
     //   const index = msg.text.lastIndexOf("\n");
     //   const objectId = index > -1 ? msg.text.split("\n").pop() : msg.text;
@@ -76,15 +76,11 @@ bot.on("message", async (msg: { text?: any; reply_to_message?: any; chat?: any; 
     });
 // }
 export const initSeledaBot = () =>{
+    console.log("🚀 ~ initialised ~ bot:", bot)
     return bot
 }
 
 export const sendTelegramMarkdown = async (chatId:number, content:String):Promise<boolean> => {
-    if (!bot) {
-        console.error("🚀 ~ sendTelegram ~ has not been iniatialised.")
-        await initSeledaBot();
-        return false;
-    }
     return bot.sendMessage(chatId, content, { parse_mode: "MarkdownV2" }).then((Msg: { chat: { id: any; }; message_id: any; }) => {
         return true;
     }).catch((error: { code: any; response: { body: any; }; }) => {
@@ -95,11 +91,6 @@ export const sendTelegramMarkdown = async (chatId:number, content:String):Promis
 };
 
 export const sendTelegram = async (chatId:number, content:String, markdown:boolean):Promise<boolean> => {
-    if (!bot) {
-        console.error("🚀 ~ sendTelegram ~ has not been iniatialised.")
-        await initSeledaBot();
-        return false;
-    }
     return bot.sendMessage(chatId, content).then((Msg: { chat: { id: any; }; message_id: any; }) => {
         return true;
     }).catch((error: { code: any; response: { body: any; }; }) => {
@@ -110,14 +101,10 @@ export const sendTelegram = async (chatId:number, content:String, markdown:boole
 };
 
 export const handleUpdates = async (update: any) => {
-    if (!bot) {
-        console.error("🚀 ~ sendTelegram ~ has not been iniatialised.")
-        await initSeledaBot();
-        return false;
-    } else {
+
         console.log("Handling seleda telegram updates: ", update);
-        seledaGramBot.processUpdate(update);
-    }
+        bot.processUpdate(update);
+    
 };
 
 
