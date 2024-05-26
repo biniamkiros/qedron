@@ -1,4 +1,4 @@
-import { setTag, upsertUser } from "./egp";
+import { getTruncatedMarkdownString, getUserTags, processRecentTenderForUser, pullTenders, setTag, upsertUser } from "./egp";
 import { getBot } from "~/config/gram.config";
 
 let seledaGramBot:any = null
@@ -23,8 +23,14 @@ export const initSeledaBot= async ()=>{
             const {
                 chat: { id },
                 } = msg;
+                
+            const tags = await getUserTags(id)
+            
+            let escapedMessage = getTruncatedMarkdownString("Send your keywords in amharic and English separated by commas with the correct spelling");
+            escapedMessage += "\n\n"
+            escapedMessage += tags.length > 0 ? "Your current keywords\n\n`" + getTruncatedMarkdownString(tags.join(', ')) +"`" : getTruncatedMarkdownString("e.g books, printer, Ministry of education, መለዋወጫ");
             bot
-            .sendMessage(id, "send your tags separated by commas.\n e.g books, printer, Ministry of education", { reply_markup: { force_reply: true, },})
+            .sendMessage(id, escapedMessage, { parse_mode: "MarkdownV2", reply_markup: { force_reply: true,  } })
             .then((alertMsg: { chat: { id: any; }; message_id: any; }) => {
                 const replyListenerId = bot.onReplyToMessage(
                 alertMsg.chat.id,
@@ -32,8 +38,12 @@ export const initSeledaBot= async ()=>{
                 async (msg: { text: string; }) => {
                     const tags = msg.text.split(",").map((t) => t.trim());
                     const u = await setTag(alertMsg.chat.id, tags);
-                    if(u) bot.sendMessage(id, "Your alert tags is set. Tenders which contain these tags will be sent to you on your preffered time. Your tags: " + u.tags);
-                    else bot.sendMessage(id, "errorFetchingUserMessage");
+                    if(u) {
+                        bot.sendMessage(id, getTruncatedMarkdownString("Your alert tags is set. Tenders which contain these tags will be sent to you on your preffered time.\n\nYour current keywords are: ") + "\n\n`" + u.tags.join(', ')+"`", { parse_mode: "MarkdownV2", });
+                        processRecentTenderForUser(id)
+                    } else {
+                        bot.sendMessage(id, "errorFetchingUserMessage");
+                    }
                     bot.removeReplyListener(replyListenerId);
                 });}      
             );
@@ -63,6 +73,7 @@ export const initSeledaBot= async ()=>{
         });
 
         bot.on("message", async (msg: { text?: any; reply_to_message?: any; chat?: any; }) => {
+            // pullTenders()
             const {
               chat: { id },
             } = msg;
@@ -75,11 +86,10 @@ export const initSeledaBot= async ()=>{
             //   else 
               bot.sendMessage(id, "Please only use the commands from the menu.");
             }
-          });
+        });
 
         seledaGramBot = bot;
     });
-    
 }
 
 export const handleChatUser=(msg: { chat?: any; from?: any; text?: any; reply_to_message?: any; })=>{
@@ -102,7 +112,8 @@ export const sendTelegramMarkdown = async (chatId:number, content:String):Promis
         await initSeledaBot();
         return false;
     }
-    return seledaGramBot.sendMessage(chatId, content, { parse_mode: "MarkdownV2" }).then((Msg: { chat: { id: any; }; message_id: any; }) => {
+    return seledaGramBot.sendMessage(chatId, content, { parse_mode: "MarkdownV2" })
+    .then((Msg: { chat: { id: any; }; message_id: any; }) => {
         return true;
     }).catch((error: { code: any; response: { body: any; }; }) => {
         console.log(error.code); // => 'ETELEGRAM'

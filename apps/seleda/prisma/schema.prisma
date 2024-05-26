@@ -25,7 +25,8 @@ model Tender {
     sources       String[] 
     entity        String 
     link          String
-    status        String 
+    status        String
+    security      String
     language      String 
     region        String
     messages      Message[]
@@ -51,6 +52,7 @@ model Message{
     user          User    @relation(fields: [userId], references: [id])
     tender        Tender  @relation(fields: [tenderId], references: [id])
     status        String
+    tags          String[]
     sentCount     Int
     createdAt     DateTime @default(now())
     
