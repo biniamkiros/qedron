@@ -8,7 +8,6 @@ const SELEDA_BOT_TOKEN = env.SELEDA_BOT_TOKEN
 export async function POST(request: NextRequest, { params }: { params: { token: string } }) {
   const { token } = params;
   const update = await request.json()
-  console.log("🚀 ~ POST ~ token:", token)
   if(SELEDA_BOT_TOKEN === token) handleUpdates(update); 
   return NextResponse.json({ messsage: "Hello World" }, { status: 200 }); //Response.json({ status: 200 })
 }
