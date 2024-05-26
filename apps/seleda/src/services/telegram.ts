@@ -44,28 +44,29 @@ export const initSeledaBot= async ()=>{
                 chat: { id },
                 from: { username, first_name, last_name },
             } = msg;
-            const user = username
-                ? "@" + username
-                : first_name
-                ? first_name
-                : "" + " " + last_name
-                ? last_name
-                : "";
-            const name = first_name
-                ? first_name
-                : "" + " " + last_name
-                ? last_name
-                : "";
-            const formattedUsername = msg.from.username ? "@" + msg.from.username : "null";
+            // const user = username
+            //     ? "@" + username
+            //     : first_name
+            //     ? first_name
+            //     : "" + " " + last_name
+            //     ? last_name
+            //     : "";
+            // const name = first_name
+            //     ? first_name
+            //     : "" + " " + last_name
+            //     ? last_name
+            //     : "";
+            // const formattedUsername = msg.from.username ? "@" + msg.from.username : "null";
+            // upsertUser(name.trim(), id, formattedUsername);
+            handleChatUser(msg);
             bot.sendMessage(id, "welcome, Don't miss any new tenders. get notification for new tender. \n\npress /alert to set alert to set keywords for new tenders. \n\nI'll notify you when tenders containing you keywords get published.");
-            upsertUser(name.trim(), id, formattedUsername);
         });
 
         bot.on("message", async (msg: { text?: any; reply_to_message?: any; chat?: any; }) => {
             const {
               chat: { id },
             } = msg;
-            console.log("🚀 ~ bot.on ~ id:", id)
+            handleChatUser(msg);
             if (msg.text && !msg.reply_to_message && msg.text[0] !== "/") {
             //   const index = msg.text.lastIndexOf("\n");
             //   const objectId = index > -1 ? msg.text.split("\n").pop() : msg.text;
@@ -79,6 +80,20 @@ export const initSeledaBot= async ()=>{
         seledaGramBot = bot;
     });
     
+}
+
+export const handleChatUser=(msg: { chat?: any; from?: any; text?: any; reply_to_message?: any; })=>{
+    const {
+        chat: { id },
+        from: { username, first_name, last_name },
+    } = msg;
+    const name = first_name
+    ? first_name
+    : "" + " " + last_name
+    ? last_name
+    : "";
+    const formattedUsername = msg.from.username ? "@" + msg.from.username : "null";
+    upsertUser(name.trim(), id, formattedUsername);
 }
 
 export const sendTelegramMarkdown = async (chatId:number, content:String):Promise<boolean> => {
