@@ -17,7 +17,7 @@ ENTRYPOINT \
   INIT_REPL_CMD="db.isMaster().primary || rs.initiate({ _id: 'rs0', members: [{ _id: 0, host: '$MONGO_REPLICA_HOST:$MONGO_REPLICA_PORT' }]})" \
   INIT_USER_CMD="db.getUser('$MONGO_INITDB_ROOT_USERNAME') || db.createUser({ user: '$MONGO_INITDB_ROOT_USERNAME', pwd: '$MONGO_INITDB_ROOT_PASSWORD', roles: [ 'root' ] })"; \
   INIT_DB_CMD="db.getSiblingDB('$MONGO_INITDB_DATABASE').getCollectionNames().length == 0 && db.getSiblingDB('$MONGO_INITDB_DATABASE').createCollection('createtest')"; \
-  INIT_SHUTDOWN_CMD="db.shutdownServer()"; \
+  INIT_SHUTDOWN_CMD="db.getSiblingDB('$MONGO_INITDB_DATABASE').shutdownServer()"; \
 #   INIT_AUTH_CMD="db.getSiblingDB('$MONGO_INITDB_DATABASE').shutdownServer()"; \
   \
   # we wait for the replica set to be ready and then submit the commands above
