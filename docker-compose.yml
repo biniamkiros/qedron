@@ -274,7 +274,7 @@ services:
       MONGO_INITDB_DATABASE: auth
       # MONGOD_PID: 5
       # Use "mongo" instead of "mongosh" before v5.0
-      MONGO_COMMAND: 'mongosh --authenticationDatabase auth'
+      MONGO_COMMAND: 'mongosh'
     ports:
       - '${MONGO_REPLICA_PORT}:${MONGO_REPLICA_PORT}'
     volumes:
@@ -283,7 +283,7 @@ services:
     healthcheck:
       # Use "mongo" instead of "mongosh" before v5.0
       # test: ['CMD', 'db.runCommand({serverStatus:1}).ok' | mongo admin -u $MONGO_INITDB_ROOT_USERNAME -p $MONGO_INITDB_ROOT_PASSWORD --quiet | grep 1']
-      test: ['CMD', 'mongosh', '--authenticationDatabase', 'auth', '--port', '${MONGO_REPLICA_PORT}', '--eval', "db.adminCommand('ping').ok"]
+      test: ['CMD', 'mongosh','-u', '${MONGO_USERNAME}', '-p', '${MONGO_PASSWORD}', '--authenticationDatabase', 'auth', '--port', '${MONGO_REPLICA_PORT}', '--eval', "db.adminCommand('ping').ok"]
       interval: 5s
       timeout: 2s
       retries: 20

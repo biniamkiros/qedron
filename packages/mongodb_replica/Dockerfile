@@ -18,13 +18,14 @@ ENTRYPOINT \
   INIT_USER_CMD="db.getUser('$MONGO_INITDB_ROOT_USERNAME') || db.createUser({ user: '$MONGO_INITDB_ROOT_USERNAME', pwd: '$MONGO_INITDB_ROOT_PASSWORD', roles: [ 'root' ] })"; \
   INIT_DB_CMD="db.getSiblingDB('$MONGO_INITDB_DATABASE').getCollectionNames().length == 0 && db.getSiblingDB('$MONGO_INITDB_DATABASE').createCollection('createtest')"; \
   INIT_SHUTDOWN_CMD="db.getSiblingDB('$MONGO_INITDB_DATABASE').shutdownServer()"; \
-#   INIT_AUTH_CMD="db.getSiblingDB('$MONGO_INITDB_DATABASE').shutdownServer()"; \
+#   INIT_SHUTDOWN_CMD="db.adminCommand("shutdown")"; \
   \
   # we wait for the replica set to be ready and then submit the commands above
   until ($MONGO_COMMAND admin --port $MONGO_REPLICA_PORT --eval "$INIT_REPL_CMD" && \
          $MONGO_COMMAND admin --port $MONGO_REPLICA_PORT --eval "$INIT_USER_CMD" && \
          $MONGO_COMMAND admin --port $MONGO_REPLICA_PORT --eval "$INIT_DB_CMD" && \
-         $MONGO_COMMAND admin --port $MONGO_REPLICA_PORT --eval "$INIT_SHUTDOWN_CMD"); do sleep 1; done; \
+         $MONGO_COMMAND admin --port $MONGO_REPLICA_PORT --eval "$INIT_SHUTDOWN_CMD" && \
+         $MONGO_COMMAND -u $MONGO_INITDB_ROOT_USERNAME -p $MONGO_INITDB_ROOT_PASSWORD --port $MONGO_REPLICA_PORT --authenticationDatabase $MONGO_INITDB_DATABASE); do sleep 1; done; \
   \
   # we are done but we keep the container by waiting on signals from the mongo task
   echo ">>>>>>>>>>>REPLICA SET ONLINE!!!!!!!!!"; wait $MONGOD_PID;
