@@ -12,7 +12,7 @@ FROM mongo:${MONGO_VERSION}
 # echo "REPLICA SET ONLINE"; wait $MONGOD_PID;
 
 ENTRYPOINT \
-  mongod --auth --port $MONGO_REPLICA_PORT --replSet rs0 --bind_ip 0.0.0.0 & MONGOD_PID=$!; \
+  mongod --port $MONGO_REPLICA_PORT --replSet rs0 --bind_ip 0.0.0.0 & MONGOD_PID=$!; \
   # we prepare the replica set with a single node and prepare the root user config
   INIT_REPL_CMD="db.isMaster().primary || rs.initiate({ _id: 'rs0', members: [{ _id: 0, host: '$MONGO_REPLICA_HOST:$MONGO_REPLICA_PORT' }]})" \
   INIT_USER_CMD="db.getUser('$MONGO_INITDB_ROOT_USERNAME') || db.createUser({ user: '$MONGO_INITDB_ROOT_USERNAME', pwd: '$MONGO_INITDB_ROOT_PASSWORD', roles: [ 'root' ] })"; \
