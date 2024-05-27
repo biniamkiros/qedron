@@ -128,7 +128,7 @@ export const upsertEGPTender = async (r: { id: any; lotName: any; lotDescription
 
 };
 
-export const getUserTags = async(chatId:Number)=>{
+export const getUserTags = async(chatId:number)=>{
   const bidder = await prisma.user.findFirst({where: { chatId: chatId}});
   return bidder.tags
 }
