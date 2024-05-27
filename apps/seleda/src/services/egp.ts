@@ -143,7 +143,7 @@ export const processRecentTenderForUser = async(chatId:number)=>{
 }
 
 export const createQueueforUser =async (bidder:User, tender:Tender)=>{
-  bidder.tags.forEach(async (t:String)=> {
+  bidder.tags.forEach(async (t:string)=> {
     let rep = tender.title + " "; 
     rep += tender.description +" ";
     if(rep.toLowerCase().includes(t.toLocaleLowerCase()))  {  
