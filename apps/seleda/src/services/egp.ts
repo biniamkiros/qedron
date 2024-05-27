@@ -136,9 +136,10 @@ export const getUserTags = async(chatId:number)=>{
 export const processRecentTenderForUser = async(chatId:number)=>{
   const bidder = await prisma.user.findFirst({where: { chatId: chatId}});
   const tenders = await prisma.tender.findMany({where: {createdAt: { gte: new Date(Date.now() - 86400000) }}});
-  tenders.forEach((tender:Tender) => {
-    createQueueforUser(bidder, tender)
-});
+  if(tenders  && bidder)
+    tenders.forEach((tender:Tender) => {
+      createQueueforUser(bidder, tender)
+    });
 }
 
 export const createQueueforUser =async (bidder:User, tender:Tender)=>{
