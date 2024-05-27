@@ -73,4 +73,4 @@ COPY --from=installer --chown=nextjs:nodejs /app/apps/seleda/.next/standalone ./
 COPY --from=installer --chown=nextjs:nodejs /app/apps/seleda/.next/static ./apps/seleda/.next/static
 COPY --from=installer --chown=nextjs:nodejs /app/apps/seleda/public ./apps/seleda/public
 
-CMD node apps/seleda/server.js
+CMD prisma migrate deploy ; node apps/seleda/server.js
