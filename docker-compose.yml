@@ -274,7 +274,7 @@ services:
       MONGO_INITDB_DATABASE: auth
       # MONGOD_PID: 5
       # Use "mongo" instead of "mongosh" before v5.0
-      MONGO_COMMAND: 'mongosh --auth'
+      MONGO_COMMAND: 'mongosh'
     ports:
       - '${MONGO_REPLICA_PORT}:${MONGO_REPLICA_PORT}'
     volumes:
