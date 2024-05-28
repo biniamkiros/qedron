@@ -14,7 +14,7 @@ export const initCronJobs= async()=>{
 export const sendQueuedMessages= async()=>{
     const rule = new schedule.RecurrenceRule();
     rule.hour = [0, new schedule.Range(7, 24)];
-    // rule.minute = 0;
+    // rule.minute = 0; 
     rule.second = [0, new schedule.Range(0, 59)];
     rule.tz = 'Africa/Addis_Ababa';
     
