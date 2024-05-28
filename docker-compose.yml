@@ -290,10 +290,13 @@ services:
     command: --replSet rs0 --keyFile /etc/mongo-keyfile --bind_ip_all --port 27017
     healthcheck:
       test: echo "try { rs.status() } catch (err) { rs.initiate({_id:'rs0',members:[{_id:0,host:'127.0.0.1:27017'}]}) }" | mongosh --port 27017 -u root -p root --authenticationDatabase admin
+      # interval: 5s
+      # timeout: 15s
+      # start_period: 15s
+      # retries: 10
       interval: 5s
-      timeout: 15s
-      start_period: 15s
-      retries: 10
+      timeout: 2s
+      retries: 20
     # healthcheck:
     #   test:
     #     [
