@@ -25,7 +25,7 @@ jobs:
     # - name: create env
     #   run: echo "SMAPLE=$(echo $GITHUB_SHA | cut -c 1-6)" >> $GITHUB_ENV
     - name: build images
-      run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose -f docker-compose.yml build
+      run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker compose -f docker-compose.yml build
     - name: push image registry
       run: docker-compose -f docker-compose.yml push
   
