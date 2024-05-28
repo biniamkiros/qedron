@@ -1,4 +1,4 @@
-version: "3"
+version: "3.8"
 
 services:
   proxy:
@@ -258,7 +258,7 @@ services:
       # - traefic.tcp.routers.mongodb.tls=true
       # - traefik.tcp.routers.mongodb.tls.certresolver=letsencrypt
       # - traefik.tcp.services.mongodb.loadBalancer.server.port=${MONGO_REPLICA_PORT}
-    image: ghcr.io/biniamkiros/mongodb:latest
+    # image: ghcr.io/biniamkiros/mongodb:latest
     env_file:
       - ./.env 
     # build:
