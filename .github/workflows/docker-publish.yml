@@ -27,7 +27,7 @@ jobs:
     - name: build images
       run: COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker compose -f docker-compose.yml build
     - name: push image registry
-      run: docker-compose -f docker-compose.yml push
+      run: docker compose -f docker-compose.yml push
   
   deploy:
     name: deploy repo
