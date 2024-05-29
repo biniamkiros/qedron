@@ -3,17 +3,17 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "build": "turbo run build",
+    "build": "dotenv -- turbo run build",
     "clean": "turbo run clean",
-    "dev": "turbo run dev",
+    "dev": "dotenv -- turbo run dev",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "lint": "turbo run lint",
     "test": "turbo run test",
     "init": "pnpm install && git config --global user.email 'biniamdev@gmail.com' && git config --global user.name 'biniamkiros' &&  echo '# import environment variables'> '.env' && code .env"
   },
-  "dependencies": {},
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
+    "dotenv-cli": "^7.4.2",
     "prettier": "^3.2.5",
     "turbo": "latest"
   },
