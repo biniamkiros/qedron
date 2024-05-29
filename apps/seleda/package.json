@@ -3,12 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "dev": "prisma generate && pnpm add @prisma/client && next dev",
     "build": "prisma generate && next build",
-    "db:generate": "prisma generate && pnpm add @prisma/client",
     "db:push": "prisma db push",
     "db:studio": "prisma studio",
-    "dev": "prisma generate && next dev",
-    "db:push:prod": "prisma generate && next dev",
     "lint": "eslint . --max-warnings 0",
     "start": "next start"
   },
