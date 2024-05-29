@@ -6,6 +6,7 @@
     "build": "dotenv -- turbo run build",
     "clean": "turbo run clean",
     "dev": "dotenv -- turbo run dev",
+    "db:push":"dotenv -- turbo run db:push",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "lint": "turbo run lint",
     "test": "turbo run test",
