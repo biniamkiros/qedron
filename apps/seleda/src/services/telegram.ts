@@ -9,6 +9,9 @@ import {
 import { getBot } from "~/config/gram.config";
 
 let seledaGramBot: any = null;
+
+const COMMAND_TEMPLATE1 = "show_tenders_for_tags";
+
 export const initSeledaBot = async () => {
   getBot().then((bot) => {
     // Enable graceful stop
@@ -22,6 +25,15 @@ export const initSeledaBot = async () => {
       return bot.stopPolling();
     });
 
+    bot.on("callback_query", (query: { data?: any; message?: any }) => {
+      const { message: { chat: { id } } = {} } = query;
+      switch (query.data) {
+        case COMMAND_TEMPLATE1:
+          bot.sendMessage(id, "Fetching....");
+          processRecentTenderForUser(id);
+          break;
+      }
+    });
     bot.on("polling_error", (error: { code: any }) => {
       console.log(error.code); // => 'EFATAL'
     });
@@ -56,21 +68,39 @@ export const initSeledaBot = async () => {
             alertMsg.message_id,
             async (msg: { text: string }) => {
               const tags = msg.text.split(",").map((t) => t.trim());
-              const u = await setTag(alertMsg.chat.id, tags);
-              if (u) {
+              const { user, count } = await setTag(alertMsg.chat.id, tags);
+              console.log("🚀 ~ count:", count);
+              if (user) {
+                const isTooMuchAlert = count > 5;
+                const options = isTooMuchAlert
+                  ? {
+                      parse_mode: "MarkdownV2",
+                      reply_markup: [
+                        [
+                          {
+                            text: `There are with the new keywords. Press to show`,
+                            callback_data: COMMAND_TEMPLATE1,
+                          },
+                        ],
+                      ],
+                    }
+                  : {
+                      parse_mode: "MarkdownV2",
+                    };
+
+                if (!isTooMuchAlert) processRecentTenderForUser(id);
                 bot.sendMessage(
                   id,
                   getTruncatedMarkdownString(
                     "Your alert tags is set. Tenders which contain these tags will be sent to you on your preffered time.\n\nYour current keywords are: "
                   ) +
                     "\n\n`" +
-                    u.tags.join(", ") +
+                    user.tags.join(", ") +
                     "`",
-                  { parse_mode: "MarkdownV2" }
+                  options
                 );
-                processRecentTenderForUser(id);
               } else {
-                bot.sendMessage(id, "errorFetchingUserMessage");
+                bot.sendMessage(id, "Error. Please try again.");
               }
               bot.removeReplyListener(replyListenerId);
             }

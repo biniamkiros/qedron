@@ -12,7 +12,7 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "lint": "turbo run lint",
     "test": "turbo run test",
-    "init": "pnpm install && git config --global user.email 'biniamdev@gmail.com' && git config --global user.name 'biniamkiros' &&  echo '# import environment variables'> '.env' && code .env"
+    "init": "pnpm install && git config --global user.email 'biniamdev@gmail.com' && git config --global user.name 'biniamkiros' &&  echo '# import development environment variables'>> '.env' && code .env && echo '# import production environment variables'>> '.env.production' && code .env.production"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",

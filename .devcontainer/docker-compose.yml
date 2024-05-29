@@ -15,12 +15,7 @@ services:
   # It's a Replica Set (required for Prisma Client)
   mongodb:
     build:
-      context: .
-      dockerfile_inline: |
-                        FROM mongo:7
-                        RUN openssl rand -base64 756 > /etc/mongo-keyfile 
-                        RUN chmod 400 /etc/mongo-keyfile 
-                        RUN chown mongodb:mongodb /etc/mongo-keyfile 
+      context: ./mongodb_replica
     environment:
       MONGO_REPLICA_HOST: 127.0.0.1
       MONGO_REPLICA_PORT: 27019

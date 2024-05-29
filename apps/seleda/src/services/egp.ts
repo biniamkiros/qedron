@@ -162,9 +162,11 @@ export const getUserTags = async (chatId: number) => {
 
 export const processRecentTenderForUser = async (chatId: number) => {
   const bidder = await prisma.user.findFirst({ where: { chatId: chatId } });
-  const tenders = await prisma.tender.findMany({
-    where: { createdAt: { gte: new Date(Date.now() - 86400000) } },
-  });
+  const tenders = await getActiveTenders();
+  // prisma.tender.findMany({
+  //   // where: { createdAt: { gte: new Date(Date.now() - 86400000) } },
+  //   where: { status: { in: ["active"] } },
+  // });
   if (tenders && bidder)
     tenders.forEach((tender: Tender) => {
       createQueueforUser(bidder, tender);
@@ -176,31 +178,69 @@ export const createQueueforUser = async (bidder: User, tender: Tender) => {
     let rep = tender.title + " ";
     rep += tender.description + " ";
     if (rep.toLowerCase().includes(t.toLocaleLowerCase())) {
-      const queue = await prisma.message.findUnique({
-        where: {
-          messageId: { userId: bidder.id, tenderId: tender.id },
-        },
-      });
-      if (!queue) {
-        await prisma.message.create({
-          data: {
-            userId: bidder.id,
-            tenderId: tender.id,
-            status: "active",
-            tags: [t],
-            sentCount: 0,
-          },
-        });
-      } else {
-        const tags = queue.tags;
-        tags.push(t);
-        await prisma.message.update({
-          where: { id: queue.id },
-          data: { tags: tags },
-        });
-      }
+      upsertQueue(t, bidder, tender);
+      // const queue = await prisma.message.findUnique({
+      //   where: {
+      //     messageId: { userId: bidder.id, tenderId: tender.id },
+      //   },
+      // });
+      // if (!queue) {
+      //   await prisma.message.create({
+      //     data: {
+      //       userId: bidder.id,
+      //       tenderId: tender.id,
+      //       status: "active",
+      //       tags: [t],
+      //       sentCount: 0,
+      //     },
+      //   });
+      // } else {
+      //   const tags = queue.tags;
+      //   tags.push(t);
+      //   await prisma.message.update({
+      //     where: { id: queue.id },
+      //     data: { tags: tags },
+      //   });
+      // }
     }
   });
+};
+
+export const upsertQueue = async (
+  tag: string,
+  bidder: User,
+  tender: Tender
+) => {
+  const queue = await prisma.message.findUnique({
+    where: {
+      messageId: { userId: bidder.id, tenderId: tender.id },
+    },
+  });
+  if (!queue) {
+    await prisma.message.create({
+      data: {
+        userId: bidder.id,
+        tenderId: tender.id,
+        status: "active",
+        tags: [tag],
+        sentCount: 0,
+      },
+    });
+  } else {
+    const tags = queue.tags;
+    tags.push(tag);
+    await prisma.message.update({
+      where: { id: queue.id },
+      data: { tags: tags },
+    });
+  }
+};
+
+export const getActiveTenders = async () => {
+  const tenders = await prisma.tender.findMany({
+    // where: { status: { in: ["active", "Published"] } },
+  });
+  return tenders;
 };
 
 export const processQueue = async () => {
@@ -390,7 +430,31 @@ export const setTag = async (chatId: number, tags: string[]) => {
     where: { chatId: chatId },
     data: { tags: tags },
   });
-  return user;
+  const messages = await prisma.message.updateMany({
+    where: { userId: user.id, status: "active" },
+    data: { status: "stale" },
+  });
+  let count = 0;
+  const tenders = await getActiveTenders();
+  if (tenders && user)
+    tenders.forEach((tender: Tender) => {
+      user.tags.forEach(async (t: string) => {
+        let rep = tender.title + " ";
+        rep += tender.description + " ";
+        if (rep.toLowerCase().includes(t.toLocaleLowerCase())) {
+          const queue = await prisma.message.findUnique({
+            where: {
+              messageId: { userId: user.id, tenderId: tender.id },
+              status: "active",
+            },
+          });
+          // console.log("🚀 ~ user.tags.forEach ~ queue:", queue);
+          if (!queue) count += 1;
+        }
+      });
+    });
+
+  return { user, count };
 };
 
 export const upsertUser = async (
