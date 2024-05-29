@@ -258,14 +258,8 @@ services:
       # - traefic.tcp.routers.mongodb.tls=true
       # - traefik.tcp.routers.mongodb.tls.certresolver=letsencrypt
       # - traefik.tcp.services.mongodb.loadBalancer.server.port=${MONGO_REPLICA_PORT}
-    # image: ghcr.io/biniamkiros/mongodb:latest
     env_file:
       - ./.env 
-    # build:
-    #   context: .
-    #   dockerfile: ./packages/mongodb_replica/Dockerfile
-    #   args:
-    #     MONGO_VERSION: 6
     build:
       context: .
       dockerfile_inline: |
@@ -278,15 +272,11 @@ services:
       MONGO_REPLICA_PORT: ${MONGO_REPLICA_PORT}
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
-      # MONGO_INITDB_DATABASE: auth
-      # MONGOD_PID: 5
-      # Use "mongo" instead of "mongosh" before v5.0
-      # MONGO_COMMAND: 'mongosh -u ${MONGO_USERNAME} -p ${MONGO_PASSWORD} --port ${MONGO_REPLICA_PORT} --authenticationDatabase auth'
     ports:
       - '${MONGO_REPLICA_PORT}:${MONGO_REPLICA_PORT}'
     volumes:
      - ./mongodb-data:/data/db
-    restart: always
+    restart: unless-stopped
     command: --replSet rs0 --keyFile /etc/mongo-keyfile --bind_ip_all --port ${MONGO_REPLICA_PORT}
     healthcheck:
       test: echo "try { rs.status() } catch (err) { rs.initiate({_id:'rs0',members:[{_id:0,host:'127.0.0.1:${MONGO_REPLICA_PORT}'}]}) }" | mongosh --port ${MONGO_REPLICA_PORT} -u ${MONGO_USERNAME} -p ${MONGO_PASSWORD} --authenticationDatabase admin
@@ -297,29 +287,6 @@ services:
       interval: 5s
       timeout: 2s
       retries: 20
-    # healthcheck:
-    #   test:
-    #     [
-    #       "CMD",
-    #       "mongo",
-    #       "admin",
-    #       "-u",
-    #       "root",
-    #       "-p",
-    #       "password",
-    #       "--eval",
-    #       'rs.initiate( { _id : "rs0",members: [{ _id: 0,host: "mongo1:27017" }]}) ; db.getSiblingDB("admin").grantRolesToUser("root",[ "clusterAdmin" ]);',
-    #     ]
-    #   interval: 10s
-    #   start_period: 15s
-    # command: ["--replSet", "rs0", "--bind_ip_all", "--auth"]
-    # healthcheck:
-    #   # Use "mongo" instead of "mongosh" before v5.0
-    #   # test: ['CMD', 'db.runCommand({serverStatus:1}).ok' | mongo admin -u $MONGO_INITDB_ROOT_USERNAME -p $MONGO_INITDB_ROOT_PASSWORD --quiet | grep 1']
-    #   test: ['CMD', 'mongosh','-u', '${MONGO_USERNAME}', '-p', '${MONGO_PASSWORD}', '--authenticationDatabase', 'auth', '--port', '${MONGO_REPLICA_PORT}', '--eval', "db.adminCommand('ping').ok"]
-    #   interval: 5s
-    #   timeout: 2s
-    #   retries: 20
     networks:
       - app_network
   

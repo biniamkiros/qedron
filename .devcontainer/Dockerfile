@@ -12,8 +12,8 @@ RUN apk add --update docker openrc
 RUN apk add --update docker-compose
 RUN rc-update add docker boot
 
-RUN git config --global user.email "biniamdev@gmail.com"
-RUN git config --global user.name "biniamkiros"
+# RUN git config --global user.email "biniamdev@gmail.com"
+# RUN git config --global user.name "biniamkiros"
 # RUN apk update && apk add \
 #      nodejs \
 #      npm \
