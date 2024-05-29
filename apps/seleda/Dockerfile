@@ -53,7 +53,6 @@ ENV SELEDA_BOT_TOKEN="${SELEDA_BOT_TOKEN}"
 # ENV DISCORD_CLIENT_ID=${DISCORD_CLIENT_ID}
 # ENV DISCORD_CLIENT_SECRET=${DISCORD_CLIENT_SECRET}
 
-
 RUN yarn turbo build --filter=seleda...
 
 FROM base AS runner
@@ -73,4 +72,4 @@ COPY --from=installer --chown=nextjs:nodejs /app/apps/seleda/.next/standalone ./
 COPY --from=installer --chown=nextjs:nodejs /app/apps/seleda/.next/static ./apps/seleda/.next/static
 COPY --from=installer --chown=nextjs:nodejs /app/apps/seleda/public ./apps/seleda/public
 
-CMD prisma db push ; node apps/seleda/server.js
+CMD node apps/seleda/server.js
