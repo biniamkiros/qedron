@@ -1,5 +1,5 @@
 import {
-  getTruncatedMarkdownString,
+  getMarkdownString,
   getUserTags,
   processRecentTenderForUser,
   pullTenders,
@@ -46,16 +46,16 @@ export const initSeledaBot = async () => {
 
       const tags = await getUserTags(id);
 
-      let escapedMessage = getTruncatedMarkdownString(
+      let escapedMessage = getMarkdownString(
         "Send your keywords in amharic and English separated by commas with the correct spelling"
       );
       escapedMessage += "\n\n";
       escapedMessage +=
         tags.length > 0
           ? "Your current keywords\n\n`" +
-            getTruncatedMarkdownString(tags.join(", ")) +
+            getMarkdownString(tags.join(", ")) +
             "`"
-          : getTruncatedMarkdownString(
+          : getMarkdownString(
               "e.g books, printer, Ministry of education, መለዋወጫ"
             );
       bot
@@ -70,7 +70,7 @@ export const initSeledaBot = async () => {
             async (msg: { text: string }) => {
               const tags = msg.text.split(",").map((t) => t.trim());
               const { user, count } = await setTag(alertMsg.chat.id, tags);
-              console.log("🚀 ~ count:", count);
+
               if (user) {
                 const isTooMuchAlert = count > 0;
                 const options = isTooMuchAlert
@@ -94,7 +94,7 @@ export const initSeledaBot = async () => {
                 if (!isTooMuchAlert) processRecentTenderForUser(id);
                 bot.sendMessage(
                   id,
-                  getTruncatedMarkdownString(
+                  getMarkdownString(
                     "Your alert tags is set. Tenders which contain these tags will be sent to you on your preffered time.\n\nYour current keywords are: "
                   ) +
                     "\n\n`" +
@@ -118,16 +118,16 @@ export const initSeledaBot = async () => {
 
       const tags = await getUserTags(id);
 
-      let escapedMessage = getTruncatedMarkdownString(
+      let escapedMessage = getMarkdownString(
         "Tags are used to search and filter new tenders. Make sure you list you interests clearly and check for spelling. To edit keywords use /alert"
       );
       escapedMessage += "\n\n";
       escapedMessage +=
         tags.length > 0
           ? "Your current keywords\n\n`" +
-            getTruncatedMarkdownString(tags.join(", ")) +
+            getMarkdownString(tags.join(", ")) +
             "`"
-          : getTruncatedMarkdownString("You currently have no tags set.");
+          : getMarkdownString("You currently have no tags set.");
       bot.sendMessage(id, escapedMessage, { parse_mode: "MarkdownV2" });
     });
 
@@ -138,21 +138,19 @@ export const initSeledaBot = async () => {
 
       // const tags = await getUserTags(id);
 
-      // let escapedMessage = getTruncatedMarkdownString(
+      // let escapedMessage = getMarkdownString(
       //   "Tags are used to search and filter new tenders. Make sure you list you interests clearly and check for spelling. To edit keywords use /alert"
       // );
       // escapedMessage += "\n\n";
       // escapedMessage +=
       //   tags.length > 0
       //     ? "Your current keywords\n\n`" +
-      //       getTruncatedMarkdownString(tags.join(", ")) +
+      //       getMarkdownString(tags.join(", ")) +
       //       "`"
-      //     : getTruncatedMarkdownString("You currently have no tags set.");
+      //     : getMarkdownString("You currently have no tags set.");
       bot.sendMessage(
         id,
-        getTruncatedMarkdownString(
-          "Search is coming soon. \nInfo +251911702254"
-        ),
+        getMarkdownString("Search is coming soon. \nInfo +251911702254"),
         {
           parse_mode: "MarkdownV2",
         }
@@ -225,10 +223,9 @@ export const handleChatUser = (msg: {
     chat: { id },
     from: { username, first_name, last_name },
   } = msg;
-  const name = first_name ? first_name : "" + " " + last_name ? last_name : "";
-  const formattedUsername = msg.from.username
-    ? "@" + msg.from.username
-    : "null";
+  const name =
+    (first_name ? first_name : "") + " " + (last_name ? last_name : "");
+  const formattedUsername = username ? "@" + username : "";
   upsertUser(name.trim(), id, formattedUsername);
 };
 

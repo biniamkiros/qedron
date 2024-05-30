@@ -115,11 +115,11 @@ export const upsertEGPTender = async (r: {
   const bidSecurityAmount = details?.eligibilityRequirements?.bidSecurityAmount;
   const amount = bidSecurityAmount?.amount;
   const currency = bidSecurityAmount?.currency;
-  const securityAmount = amount
+  const securityAmount = /^-?\d+$/.test(amount)
     ? amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " " + currency
       ? currency
       : "ETB"
-    : "**** ETB";
+    : "xx,xxx.xx ETB";
 
   const raw = {
     egpId: r.id,
@@ -261,13 +261,6 @@ export const getActiveTenders = async () => {
 };
 
 export const processQueue = async () => {
-  // const queues = await prisma.message.findMany({
-  //   where: { status: "active" },
-  //   orderBy: { createdAt: "asc" },
-  // });
-  // where: { status: "active" },
-  // let queues = await prisma.message.findMany();
-  // console.log("🚀 ~ processQueue ~ queues:", queues);
   let queue = await prisma.message.findFirst({ orderBy: { createdAt: "asc" } });
   if (!queue) {
     return;
@@ -285,7 +278,13 @@ export const processQueue = async () => {
     //only process on prod and for biniam on dev
     const success = await sendTenderWithHelp(user.chatId, tender, queue);
     if (success) {
-      const deleted = await prisma.message.delete({ where: { id: queue.id } });
+      try {
+        const deleted = await prisma.message.delete({
+          where: { id: queue.id },
+        });
+      } catch (e) {
+        console.log("🚀 ~ processQueue ~ error deleting message:", e);
+      }
     }
   }
 };
@@ -295,39 +294,38 @@ export const sendTenderWithHelp = (
   tender: Tender,
   queue: Message
 ): Promise<boolean> => {
-  let message = "```";
+  let message = "\\#";
   message += queue.type;
-  message += "\n";
-  message += "Tender ";
-  message += tender.status
-    ? getTruncatedMarkdownString(tender.status)
-    : "unkown status";
-
-  message += " : ";
-  // message += "`";
-  message += tender.id ? getTruncatedMarkdownString(tender.id) : "unknown id";
-  // message += "`";
-  message += "```\n";
-  message += "\n\n";
+  message += " tender ";
+  message += " `";
+  message += tender.id
+    ? getMarkdownString(getTruncatedString(tender.id))
+    : "unknown";
+  message += "`\n\n";
   message += "***";
   message += tender.title
-    ? getTruncatedMarkdownString(tender.title, 100)
+    ? getMarkdownString(getTruncatedString(tender.title, 100))
     : "no title";
   message += "***\n";
   if (tender.title !== tender.description) {
     message +=
       tender.description === null
         ? "no description"
-        : getTruncatedMarkdownString(tender.description, 300);
+        : getMarkdownString(
+            getTruncatedString(tender.description.trim(), 1000)
+          );
     message += "\n";
   }
-  message += "\n";
-
-  message += "\\- ";
-  message += getTruncatedMarkdownString(tender.entity, 100);
-
-  message += "\n";
-  message += "\n";
+  message += " \\-";
+  message += tender.status
+    ? " " + getMarkdownString(getTruncatedString(tender.status))
+    : "";
+  message += " by ";
+  message += getMarkdownString(getTruncatedString(tender.entity, 100));
+  message += "\n\n💵 ";
+  if (tender.security)
+    message += getMarkdownString(getTruncatedString(tender.security));
+  message += "    ";
   message +=
     tender.openingDate === null
       ? "unknown opening date"
@@ -337,110 +335,37 @@ export const sendTenderWithHelp = (
     tender.closingDate === null
       ? "unknown closing date"
       : formattedDate(tender.closingDate);
-  message += "\n\n💵 ";
-  if (tender.security) message += getTruncatedMarkdownString(tender.security);
   message += "\n\n";
-  message += getTruncatedMarkdownString(tender.link, 100);
-  message += "\n";
-  // message += getTenderDetails(tender);
+  message += getMarkdownString(getTruncatedString(tender.link, 100));
   message += "\n\n";
   message +=
-    ">tags: " + getTruncatedMarkdownString(queue.tags.join(", ")) + "**";
-  return sendTelegramMarkdown(chatId, message);
-};
+    ">tags: " +
+    getMarkdownString(getTruncatedString(queue.tags.join(", "))) +
+    "**";
 
-export const getTenderMessage = (tender: Tender) => {
-  const header = "```Tender```";
-  let details = header;
-  details += "\n";
-  details += "id `";
-  details += tender.id ? getTruncatedMarkdownString(tender.id) : "???";
-  details += "`\n\n";
-  details += "***";
-  details += tender.title
-    ? getTruncatedMarkdownString(tender.title, 100)
-    : "no title";
-  details += "***\n\n";
-  details +=
-    tender.description === null
-      ? "no description: 🚫"
-      : getTruncatedMarkdownString(tender.description, 300);
-  details += "\n\n";
-  details += getTruncatedMarkdownString(tender.entity, 100);
-  details += "\n";
-  details += getTruncatedMarkdownString(tender.link, 100);
-  details += "\n";
-  details +=
-    tender.sources === null
-      ? "unknown"
-      : getTruncatedMarkdownString(tender.sources.toString());
-  details += "\n```Details\n";
-  details +=
-    tender.openingDate === null
-      ? "unknown opening date"
-      : formattedDate(tender.openingDate);
-  details += " \\- ";
-  details +=
-    tender.closingDate === null
-      ? "unknown closing date"
-      : formattedDate(tender.closingDate);
-  details += "\n";
-  details +=
-    tender.status === null
-      ? "no status"
-      : getTruncatedMarkdownString(tender.status);
-  details += "  ";
-  details +=
-    tender.language === null
-      ? "no lang"
-      : getTruncatedMarkdownString(tender.language);
-  details += "  ";
-  details +=
-    tender.region === null
-      ? "no region"
-      : getTruncatedMarkdownString(tender.region);
-  details += "```";
-  return details;
+  return sendTelegramMarkdown(chatId, message);
 };
 
 export const getTenderDetails = (tender: Tender) => {
   let details = "";
-  // details += "Status: ";
-  // details +=
-  //   tender.status === null
-  //     ? "unknown status"
-  //     : getTruncatedMarkdownString(tender.status);
-  // details += " > ";
-  // details += "Tender ";
-  // details += tender.status
-  //   ? getTruncatedMarkdownString(tender.status)
-  //   : "unknown";
-  // details += "id : ";
-  // details += "`";
-  // details += tender.id
-  //   ? getTruncatedMarkdownString(tender.id)
-  //   : "????????????????";
-  // details += "`";
 
-  // details += "\n";
-  // details += "```";
   details += "\n\n";
   details += "***";
   details += tender.title
-    ? getTruncatedMarkdownString(tender.title, 100)
+    ? getMarkdownString(getTruncatedString(tender.title, 100))
     : "no title";
   details += "***\n";
   if (tender.title !== tender.description) {
     details +=
       tender.description === null
         ? "no description"
-        : getTruncatedMarkdownString(tender.description, 300);
+        : getMarkdownString(getTruncatedString(tender.description, 300));
     details += "\n";
   }
   details += "\n";
 
   details += "\\- ";
-  details += getTruncatedMarkdownString(tender.entity, 100);
+  details += getMarkdownString(getTruncatedString(tender.entity, 100));
 
   details += "\n";
   details += "\n";
@@ -448,35 +373,18 @@ export const getTenderDetails = (tender: Tender) => {
     tender.openingDate === null
       ? "unknown opening date"
       : formattedDate(tender.openingDate);
-  details += " \\- ";
+  details += " - "; //\\
   details +=
     tender.closingDate === null
       ? "unknown closing date"
       : formattedDate(tender.closingDate);
   details += "\n\n💵 ";
-  if (tender.security) details += getTruncatedMarkdownString(tender.security);
+  if (tender.security)
+    details += getMarkdownString(getTruncatedString(tender.security));
   details += "\n\n";
-  details += getTruncatedMarkdownString(tender.link, 100);
+  details += getMarkdownString(getTruncatedString(tender.link, 100));
   details += "\n";
-  // details += "\n>Details";
-  // details += "\n";
 
-  // details +=
-  //   tender.language === null
-  //     ? "no lang"
-  //     : getTruncatedMarkdownString(tender.language);
-  // details += "\nsource: ";
-  // details +=
-  //   tender.sources.length === 0
-  //     ? "unknown"
-  //     : getTruncatedMarkdownString(tender.sources.toString());
-  // details += "\n";
-  // details +=
-  //   tender.region === null
-  //     ? "no region"
-  //     : getTruncatedMarkdownString(tender.region);
-  // details += "```";
-  // details += "**";
   return details;
 };
 
@@ -486,11 +394,7 @@ export const setTag = async (chatId: number, tags: string[]) => {
     data: { tags: tags },
   });
   const messages = await prisma.message.deleteMany({
-    where: {
-      userId: user.id,
-      // status: "active"
-    },
-    // data: { status: "stale" },
+    where: { userId: user.id },
   });
   let count = 0;
   const tenders = await getActiveTenders();
@@ -539,16 +443,17 @@ export const upsertUser = async (
   }
 };
 
-export const getTruncatedMarkdownString = (
-  str: string,
-  maxLength: number = 1000
-) => {
+export const getTruncatedString = (str: string, maxLength: number = 1000) => {
   const formattedStr = str
     ? str.length > maxLength
       ? str.substring(0, maxLength) + "..."
       : str
     : "";
-  return formattedStr
+  return formattedStr;
+};
+
+export const getMarkdownString = (str: string) => {
+  return str
     .toString()
     .replace(/\_/g, "\\_")
     .replace(/\*/g, "\\*")
