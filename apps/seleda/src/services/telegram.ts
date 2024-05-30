@@ -10,7 +10,7 @@ import { getBot } from "~/config/gram.config";
 
 let seledaGramBot: any = null;
 
-const COMMAND_TEMPLATE1 = "show_tenders_for_tags";
+const NEW_TAG_RESULTS = "show_tenders_for_tags";
 
 export const initSeledaBot = async () => {
   getBot().then((bot) => {
@@ -28,12 +28,13 @@ export const initSeledaBot = async () => {
     bot.on("callback_query", (query: { data?: any; message?: any }) => {
       const { message: { chat: { id } } = {} } = query;
       switch (query.data) {
-        case COMMAND_TEMPLATE1:
+        case NEW_TAG_RESULTS:
           bot.sendMessage(id, "Fetching....");
           processRecentTenderForUser(id);
           break;
       }
     });
+
     bot.on("polling_error", (error: { code: any }) => {
       console.log(error.code); // => 'EFATAL'
     });
@@ -71,18 +72,20 @@ export const initSeledaBot = async () => {
               const { user, count } = await setTag(alertMsg.chat.id, tags);
               console.log("🚀 ~ count:", count);
               if (user) {
-                const isTooMuchAlert = count > 5;
+                const isTooMuchAlert = count > 0;
                 const options = isTooMuchAlert
                   ? {
                       parse_mode: "MarkdownV2",
-                      reply_markup: [
-                        [
-                          {
-                            text: `There are with the new keywords. Press to show`,
-                            callback_data: COMMAND_TEMPLATE1,
-                          },
+                      reply_markup: {
+                        inline_keyboard: [
+                          [
+                            {
+                              text: `Press to see ${count} tenders with the new keywords`,
+                              callback_data: NEW_TAG_RESULTS,
+                            },
+                          ],
                         ],
-                      ],
+                      },
                     }
                   : {
                       parse_mode: "MarkdownV2",
@@ -106,6 +109,54 @@ export const initSeledaBot = async () => {
             }
           );
         });
+    });
+
+    bot.onText(/\/tags/, async (msg: { chat: { id: number } }) => {
+      const {
+        chat: { id },
+      } = msg;
+
+      const tags = await getUserTags(id);
+
+      let escapedMessage = getTruncatedMarkdownString(
+        "Tags are used to search and filter new tenders. Make sure you list you interests clearly and check for spelling. To edit keywords use /alert"
+      );
+      escapedMessage += "\n\n";
+      escapedMessage +=
+        tags.length > 0
+          ? "Your current keywords\n\n`" +
+            getTruncatedMarkdownString(tags.join(", ")) +
+            "`"
+          : getTruncatedMarkdownString("You currently have no tags set.");
+      bot.sendMessage(id, escapedMessage, { parse_mode: "MarkdownV2" });
+    });
+
+    bot.onText(/\/search/, async (msg: { chat: { id: number } }) => {
+      const {
+        chat: { id },
+      } = msg;
+
+      // const tags = await getUserTags(id);
+
+      // let escapedMessage = getTruncatedMarkdownString(
+      //   "Tags are used to search and filter new tenders. Make sure you list you interests clearly and check for spelling. To edit keywords use /alert"
+      // );
+      // escapedMessage += "\n\n";
+      // escapedMessage +=
+      //   tags.length > 0
+      //     ? "Your current keywords\n\n`" +
+      //       getTruncatedMarkdownString(tags.join(", ")) +
+      //       "`"
+      //     : getTruncatedMarkdownString("You currently have no tags set.");
+      bot.sendMessage(
+        id,
+        getTruncatedMarkdownString(
+          "Search is coming soon. \nInfo +251911702254"
+        ),
+        {
+          parse_mode: "MarkdownV2",
+        }
+      );
     });
 
     bot.onText(

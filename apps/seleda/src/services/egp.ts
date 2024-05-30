@@ -1,18 +1,19 @@
-import { PrismaClient, User, Tender } from "@prisma/client";
+import { PrismaClient, User, Tender, Message } from "@prisma/client";
 import { sendTelegram, sendTelegramMarkdown } from "./telegram";
-import { nullable } from "zod";
+import { nullable, object } from "zod";
 import { format } from "date-fns";
 import { env } from "process";
+import { Old_Standard_TT } from "next/font/google";
 // import { PrismaClient } from '../../../../node_modules/.pnpm/@prisma+client@5.13.0_prisma@5.13.0/node_modules/@prisma/client'
 const prisma = new PrismaClient();
 
 export const pullTenders = async () => {
-  console.log("🚀 ~ GET ~ tenders...........");
+  // console.log("🚀 ~ GET ~ tenders...........");
   const tenders = await scrapAll();
   tenders.forEach((tender) => {
     upsertEGPTender(tender);
   });
-  console.log("🚀 ~ Updated and proccessed ", tenders.length, " tenders");
+  // console.log("🚀 ~ Updated and proccessed ", tenders.length, " tenders");
   return tenders;
 };
 
@@ -35,7 +36,7 @@ export const getEGPTenderSummary = async () => {
   const summaryUrl =
     "https://egp.ppa.gov.et/po-gw/cms/api/sourcing/get-tender-summary";
   const res = await getRequest(summaryUrl);
-  console.log("🚀 ~ getEGPTenderSummary ~ res:", res);
+  // console.log("🚀 ~ getEGPTenderSummary ~ res:", res);
   return res;
 };
 
@@ -119,11 +120,7 @@ export const upsertEGPTender = async (r: {
       ? currency
       : "ETB"
     : "**** ETB";
-  // console.log("🚀 ~ upsertEGPTender ~ bid:", bidSecurityAmount);
-  // console.log("🚀 ~ upsertEGPTender ~ status:", details.status);
 
-  // amount": 50000,
-  //     "currency
   const raw = {
     egpId: r.id,
     title: r.lotName || "",
@@ -138,21 +135,58 @@ export const upsertEGPTender = async (r: {
     language: r.language || "",
     region: r.marketPlace || "",
   };
-  const upsertTender = await prisma.tender.upsert({
-    where: {
-      egpId: r.id,
-    },
-    update: {
-      ...raw,
-    },
-    create: {
-      ...raw,
-    },
-  });
-  const bidders = await prisma.user.findMany();
-  bidders.forEach((bidder: User) => {
-    createQueueforUser(bidder, upsertTender);
-  });
+  const old = await prisma.tender.findUnique({ where: { egpId: r.id } });
+  const isChanged = old ? !isSameTender(raw, old) : true;
+  if (isChanged) {
+    const upsertTender = await prisma.tender.upsert({
+      where: {
+        egpId: r.id,
+      },
+      update: {
+        ...raw,
+      },
+      create: {
+        ...raw,
+      },
+    });
+    const bidders = await prisma.user.findMany();
+    bidders.forEach((bidder: User) => {
+      createQueueforUser(bidder, upsertTender, old ? "Updated" : "New");
+    });
+  }
+};
+
+export const isSameTender = (
+  raw: {
+    egpId: any;
+    title?: any;
+    description?: any;
+    openingDate?: any;
+    closingDate?: any;
+    sources?: string[];
+    status?: any;
+    entity?: any;
+    security?: any;
+    link?: string;
+    language?: any;
+    region?: any;
+  },
+  old: Tender
+) => {
+  return (
+    raw.egpId === old.egpId &&
+    raw.title === old.title &&
+    raw.description === old.description &&
+    raw.openingDate === old.openingDate &&
+    raw.closingDate === old.closingDate &&
+    raw.sources === old.sources &&
+    raw.status === old.status &&
+    raw.entity === old.entity &&
+    raw.security === old.security &&
+    raw.link === old.link &&
+    raw.language === old.language &&
+    raw.region === old.region
+  );
 };
 
 export const getUserTags = async (chatId: number) => {
@@ -169,39 +203,20 @@ export const processRecentTenderForUser = async (chatId: number) => {
   // });
   if (tenders && bidder)
     tenders.forEach((tender: Tender) => {
-      createQueueforUser(bidder, tender);
+      createQueueforUser(bidder, tender, "searched");
     });
 };
 
-export const createQueueforUser = async (bidder: User, tender: Tender) => {
+export const createQueueforUser = async (
+  bidder: User,
+  tender: Tender,
+  type: string
+) => {
   bidder.tags.forEach(async (t: string) => {
     let rep = tender.title + " ";
     rep += tender.description + " ";
     if (rep.toLowerCase().includes(t.toLocaleLowerCase())) {
-      upsertQueue(t, bidder, tender);
-      // const queue = await prisma.message.findUnique({
-      //   where: {
-      //     messageId: { userId: bidder.id, tenderId: tender.id },
-      //   },
-      // });
-      // if (!queue) {
-      //   await prisma.message.create({
-      //     data: {
-      //       userId: bidder.id,
-      //       tenderId: tender.id,
-      //       status: "active",
-      //       tags: [t],
-      //       sentCount: 0,
-      //     },
-      //   });
-      // } else {
-      //   const tags = queue.tags;
-      //   tags.push(t);
-      //   await prisma.message.update({
-      //     where: { id: queue.id },
-      //     data: { tags: tags },
-      //   });
-      // }
+      upsertQueue(t, bidder, tender, type);
     }
   });
 };
@@ -209,7 +224,8 @@ export const createQueueforUser = async (bidder: User, tender: Tender) => {
 export const upsertQueue = async (
   tag: string,
   bidder: User,
-  tender: Tender
+  tender: Tender,
+  type: string
 ) => {
   const queue = await prisma.message.findUnique({
     where: {
@@ -221,9 +237,10 @@ export const upsertQueue = async (
       data: {
         userId: bidder.id,
         tenderId: tender.id,
-        status: "active",
+        // status: "active",
+        type: type,
         tags: [tag],
-        sentCount: 0,
+        // sentCount: 0,
       },
     });
   } else {
@@ -244,17 +261,15 @@ export const getActiveTenders = async () => {
 };
 
 export const processQueue = async () => {
-  const queues = await prisma.message.findMany({
-    where: { status: "active" },
-    orderBy: { createdAt: "asc" },
-  });
-  // console.log("🚀 ~ processQueue ~ queues:", queues)
-  let queue = await prisma.message.findFirst({
-    where: { status: "active" },
-    orderBy: { createdAt: "asc" },
-  });
+  // const queues = await prisma.message.findMany({
+  //   where: { status: "active" },
+  //   orderBy: { createdAt: "asc" },
+  // });
+  // where: { status: "active" },
+  // let queues = await prisma.message.findMany();
+  // console.log("🚀 ~ processQueue ~ queues:", queues);
+  let queue = await prisma.message.findFirst({ orderBy: { createdAt: "asc" } });
   if (!queue) {
-    // console.log("🚀 ~ processQueue ~ no queue available!")
     return;
   }
   const user = await prisma.user.findUnique({ where: { id: queue.userId } });
@@ -268,14 +283,9 @@ export const processQueue = async () => {
     (env.NODE_ENV === "production" || user.chatId === 383604329)
   ) {
     //only process on prod and for biniam on dev
-    const success = await sendTenderWithHelp(user.chatId, tender, queue.tags);
+    const success = await sendTenderWithHelp(user.chatId, tender, queue);
     if (success) {
-      const sentCount = queue.sentCount + 1;
-      queue.status = "sent";
-      await prisma.message.update({
-        where: { id: queue.id },
-        data: { sentCount: sentCount, status: "sent" },
-      });
+      const deleted = await prisma.message.delete({ where: { id: queue.id } });
     }
   }
 };
@@ -283,14 +293,59 @@ export const processQueue = async () => {
 export const sendTenderWithHelp = (
   chatId: number,
   tender: Tender,
-  tags: string[]
+  queue: Message
 ): Promise<boolean> => {
-  let message = getTenderDetails(tender);
+  let message = "```";
+  message += queue.type;
+  message += "\n";
+  message += "Tender ";
+  message += tender.status
+    ? getTruncatedMarkdownString(tender.status)
+    : "unkown status";
+
+  message += " : ";
+  // message += "`";
+  message += tender.id ? getTruncatedMarkdownString(tender.id) : "unknown id";
+  // message += "`";
+  message += "```\n";
   message += "\n\n";
-  message += ">tags: " + getTruncatedMarkdownString(tags.join(", ")) + "**";
-  // message += "\n"
-  // message += "Don't miss out. Get all tenders from @SeledaGramBot"
-  // console.log("🚀 ~ sendTenderWithHelp ~ message:", message)
+  message += "***";
+  message += tender.title
+    ? getTruncatedMarkdownString(tender.title, 100)
+    : "no title";
+  message += "***\n";
+  if (tender.title !== tender.description) {
+    message +=
+      tender.description === null
+        ? "no description"
+        : getTruncatedMarkdownString(tender.description, 300);
+    message += "\n";
+  }
+  message += "\n";
+
+  message += "\\- ";
+  message += getTruncatedMarkdownString(tender.entity, 100);
+
+  message += "\n";
+  message += "\n";
+  message +=
+    tender.openingDate === null
+      ? "unknown opening date"
+      : formattedDate(tender.openingDate);
+  message += " \\- ";
+  message +=
+    tender.closingDate === null
+      ? "unknown closing date"
+      : formattedDate(tender.closingDate);
+  message += "\n\n💵 ";
+  if (tender.security) message += getTruncatedMarkdownString(tender.security);
+  message += "\n\n";
+  message += getTruncatedMarkdownString(tender.link, 100);
+  message += "\n";
+  // message += getTenderDetails(tender);
+  message += "\n\n";
+  message +=
+    ">tags: " + getTruncatedMarkdownString(queue.tags.join(", ")) + "**";
   return sendTelegramMarkdown(chatId, message);
 };
 
@@ -356,16 +411,16 @@ export const getTenderDetails = (tender: Tender) => {
   //     ? "unknown status"
   //     : getTruncatedMarkdownString(tender.status);
   // details += " > ";
-  details += "Tender ";
-  details += tender.status
-    ? getTruncatedMarkdownString(tender.status)
-    : "unknown";
-  details += ": ";
-  details += "`";
-  details += tender.id
-    ? getTruncatedMarkdownString(tender.id)
-    : "????????????????";
-  details += "`";
+  // details += "Tender ";
+  // details += tender.status
+  //   ? getTruncatedMarkdownString(tender.status)
+  //   : "unknown";
+  // details += "id : ";
+  // details += "`";
+  // details += tender.id
+  //   ? getTruncatedMarkdownString(tender.id)
+  //   : "????????????????";
+  // details += "`";
 
   // details += "\n";
   // details += "```";
@@ -378,7 +433,7 @@ export const getTenderDetails = (tender: Tender) => {
   if (tender.title !== tender.description) {
     details +=
       tender.description === null
-        ? "no description 🚫"
+        ? "no description"
         : getTruncatedMarkdownString(tender.description, 300);
     details += "\n";
   }
@@ -398,7 +453,7 @@ export const getTenderDetails = (tender: Tender) => {
     tender.closingDate === null
       ? "unknown closing date"
       : formattedDate(tender.closingDate);
-  details += "\n\n💵";
+  details += "\n\n💵 ";
   if (tender.security) details += getTruncatedMarkdownString(tender.security);
   details += "\n\n";
   details += getTruncatedMarkdownString(tender.link, 100);
@@ -430,9 +485,12 @@ export const setTag = async (chatId: number, tags: string[]) => {
     where: { chatId: chatId },
     data: { tags: tags },
   });
-  const messages = await prisma.message.updateMany({
-    where: { userId: user.id, status: "active" },
-    data: { status: "stale" },
+  const messages = await prisma.message.deleteMany({
+    where: {
+      userId: user.id,
+      // status: "active"
+    },
+    // data: { status: "stale" },
   });
   let count = 0;
   const tenders = await getActiveTenders();
@@ -442,14 +500,14 @@ export const setTag = async (chatId: number, tags: string[]) => {
         let rep = tender.title + " ";
         rep += tender.description + " ";
         if (rep.toLowerCase().includes(t.toLocaleLowerCase())) {
-          const queue = await prisma.message.findUnique({
-            where: {
-              messageId: { userId: user.id, tenderId: tender.id },
-              status: "active",
-            },
-          });
-          // console.log("🚀 ~ user.tags.forEach ~ queue:", queue);
-          if (!queue) count += 1;
+          // const queue = await prisma.message.findUnique({
+          //   where: {
+          //     messageId: { userId: user.id, tenderId: tender.id },
+          //   },
+          // });
+          // // console.log("🚀 ~ user.tags.forEach ~ queue:", queue);
+          // if (!queue)
+          count += 1;
         }
       });
     });
@@ -522,7 +580,7 @@ export const formattedDate = (
     var formattedDate = format(date, formatString);
     return formattedDate;
   } catch (e) {
-    console.log("🚀 ~ file: dateUtil.js:51 ~ formattedDate ~ e:", e);
+    // console.log("🚀 ~ file: dateUtil.js:51 ~ formattedDate ~ e:", e);
     return "error date";
   }
 };

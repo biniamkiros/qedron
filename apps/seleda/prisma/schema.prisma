@@ -51,9 +51,8 @@ model Message{
     tenderId      String  @db.ObjectId
     user          User    @relation(fields: [userId], references: [id])
     tender        Tender  @relation(fields: [tenderId], references: [id])
-    status        String
+    type          String  @default("")
     tags          String[]
-    sentCount     Int
     createdAt     DateTime @default(now())
     
     @@unique([userId, tenderId], name: "messageId")
