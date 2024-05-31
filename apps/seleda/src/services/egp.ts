@@ -179,13 +179,14 @@ export const isSameTender = (
     raw.description === old.description &&
     raw.openingDate === old.openingDate &&
     raw.closingDate === old.closingDate &&
-    raw.sources === old.sources &&
+    // raw.sources === old.sources &&
     raw.status === old.status &&
     raw.entity === old.entity &&
     raw.security === old.security &&
-    raw.link === old.link &&
-    raw.language === old.language &&
-    raw.region === old.region
+    raw.link === old.link
+    // &&
+    // raw.language === old.language &&
+    // raw.region === old.region
   );
 };
 
@@ -232,25 +233,43 @@ export const upsertQueue = async (
       messageId: { userId: bidder.id, tenderId: tender.id },
     },
   });
-  if (!queue) {
-    await prisma.message.create({
-      data: {
-        userId: bidder.id,
-        tenderId: tender.id,
-        // status: "active",
-        type: type,
-        tags: [tag],
-        // sentCount: 0,
-      },
-    });
-  } else {
-    const tags = queue.tags;
-    tags.push(tag);
-    await prisma.message.update({
-      where: { id: queue.id },
-      data: { tags: tags },
-    });
-  }
+
+  const tags = queue ? queue.tags.concat([tag]) : [tag];
+  queue ? console.log("🚀 ~ tags:", tags) : null;
+  await prisma.message.upsert({
+    where: {
+      messageId: { userId: bidder.id, tenderId: tender.id },
+    },
+    update: {
+      userId: bidder.id,
+      tenderId: tender.id,
+      type: type,
+      tags: tags,
+    },
+    create: {
+      userId: bidder.id,
+      tenderId: tender.id,
+      type: type,
+      tags: tags,
+    },
+  });
+  // if (!queue) {
+  //   await prisma.message.create({
+  //     data: {
+  //       userId: bidder.id,
+  //       tenderId: tender.id,
+  //       type: type,
+  //       tags: [tag],
+  //     },
+  //   });
+  // } else {
+  //   const tags = [...new Set(...queue.tags, tag)];
+  //   // tags.push(tag);
+  //   await prisma.message.update({
+  //     where: { id: queue.id },
+  //     data: { tags: tags },
+  //   });
+  // }
 };
 
 export const getActiveTenders = async () => {
@@ -261,7 +280,13 @@ export const getActiveTenders = async () => {
 };
 
 export const processQueue = async () => {
-  let queue = await prisma.message.findFirst({ orderBy: { createdAt: "asc" } });
+  const matureQueuesDate = new Date(new Date().getTime() - 1000 * 60);
+  let queue = await prisma.message.findFirst({
+    where: {
+      OR: [{ createdAt: { lte: matureQueuesDate } }, { type: "searched" }],
+    },
+    orderBy: { createdAt: "asc" },
+  });
   if (!queue) {
     return;
   }

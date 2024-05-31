@@ -111,6 +111,18 @@ export const initSeledaBot = async () => {
         });
     });
 
+    bot.onText(/\/clear/, async (msg: { chat: { id: number } }) => {
+      const {
+        chat: { id },
+      } = msg;
+
+      const { user, count } = await setTag(id, []);
+      bot.sendMessage(
+        id,
+        user ? "Your tags are cleared" : "Error clearing tags. Try again later"
+      );
+    });
+
     bot.onText(/\/tags/, async (msg: { chat: { id: number } }) => {
       const {
         chat: { id },
@@ -136,18 +148,6 @@ export const initSeledaBot = async () => {
         chat: { id },
       } = msg;
 
-      // const tags = await getUserTags(id);
-
-      // let escapedMessage = getMarkdownString(
-      //   "Tags are used to search and filter new tenders. Make sure you list you interests clearly and check for spelling. To edit keywords use /alert"
-      // );
-      // escapedMessage += "\n\n";
-      // escapedMessage +=
-      //   tags.length > 0
-      //     ? "Your current keywords\n\n`" +
-      //       getMarkdownString(tags.join(", ")) +
-      //       "`"
-      //     : getMarkdownString("You currently have no tags set.");
       bot.sendMessage(
         id,
         getMarkdownString("Search is coming soon. \nInfo +251911702254"),
@@ -157,43 +157,21 @@ export const initSeledaBot = async () => {
       );
     });
 
-    bot.onText(
-      /\/start/,
-      async (msg: {
-        chat: { id: number };
-        from: { username: string; first_name: string; last_name: string };
-      }) => {
-        const {
-          chat: { id },
-          from: { username, first_name, last_name },
-        } = msg;
-        // const user = username
-        //     ? "@" + username
-        //     : first_name
-        //     ? first_name
-        //     : "" + " " + last_name
-        //     ? last_name
-        //     : "";
-        // const name = first_name
-        //     ? first_name
-        //     : "" + " " + last_name
-        //     ? last_name
-        //     : "";
-        // const formattedUsername = msg.from.username ? "@" + msg.from.username : "null";
-        // upsertUser(name.trim(), id, formattedUsername);
-        handleChatUser(msg);
-        bot.sendMessage(
-          id,
-          "welcome, Don't miss any new tenders. get notification for new tender. \n\npress /alert to set alert to set keywords for new tenders. \n\nI'll notify you when tenders containing you keywords get published."
-        );
-      }
-    );
+    bot.onText(/\/start/, async (msg: { chat: { id: number } }) => {
+      const {
+        chat: { id },
+      } = msg;
+
+      handleChatUser(msg);
+      bot.sendMessage(
+        id,
+        "welcome, Don't miss any new tenders. get notification for new tender. \n\npress /alert to set alert to set keywords for new tenders. \n\nI'll notify you when tenders containing you keywords get published."
+      );
+    });
 
     bot.on(
       "message",
       async (msg: { text?: any; reply_to_message?: any; chat?: any }) => {
-        // pullTenders()
-
         const {
           chat: { id },
         } = msg;
