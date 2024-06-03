@@ -1,19 +1,78 @@
 import { PrismaClient, User, Tender, Message } from "@prisma/client";
-import { sendTelegram, sendTelegramMarkdown } from "./telegram";
+import {
+  sendTelegram,
+  sendTelegramMarkdown,
+  sendUsernameOptions,
+} from "./telegram";
 import { nullable, object } from "zod";
 import { format } from "date-fns";
-import { env } from "process";
+import { env } from "~/env";
 import { Old_Standard_TT } from "next/font/google";
 // import { PrismaClient } from '../../../../node_modules/.pnpm/@prisma+client@5.13.0_prisma@5.13.0/node_modules/@prisma/client'
 const prisma = new PrismaClient();
 
+export const sendSummary = async () => {
+  const summaryUrl =
+    "https://production.egp.gov.et/po-gw/cms/api/sourcing/get-tender-summary";
+  const summary = await getRequest(summaryUrl);
+  const users = await prisma.user.findMany({ where: { status: "active" } });
+  const message = `>የዛሬ ጨረታ ማጠቃለያ ይህን ይመስላል።**
+
+    ክፍት ጨረታዎች፡ ${summary.totalActive}    ዛሬ የታተሙ: ${summary.publishedToday}
+    ዛሬ የሚከፈቱ: ${summary.openingToday}    ዛሬ የሚዘጉ: ${summary.closingToday}
+
+    ስምምነት የፈጸሙ: ${summary.signedContract}    ምዘና ላይ ያሉ: ${summary.evaluationTender}
+    የተሰረዙ: ${summary.canceledTender}    ለአሸናፊ የተሰጡ: ${summary.awardedTender}
+
+    እስከዛሬ አጠቃላይ 
+    የታተሙ ጨረታዎች: ${summary.totalTendersPublished}    የተመዘገቡ አቅራቢዎች: ${summary.registeredSupplier}`;
+
+  users.forEach(async (u) => {
+    const notification = await prisma.notification.create({
+      data: {
+        userId: u.id,
+        message: message,
+      },
+    });
+  });
+};
+
+export const PostTochannels = async () => {
+  const tenders = await getRecentTenders(1000 * 60 * 60);
+  const count = tenders.length;
+  if (count > 1) {
+    // && env.NODE_ENV === "production") {
+    const tender = tenders[Math.floor(Math.random() * tenders.length)];
+    const channelIds =
+      env.NODE_ENV === "production"
+        ? ["@qedron", "@qedron_chat/25"]
+        : ["@camioneth"];
+    if (tender) {
+      const message = getTenderForChannelPost(tender);
+      channelIds.forEach((id) =>
+        sendUsernameOptions(id, message, {
+          parse_mode: "MarkdownV2",
+          reply_markup: {
+            inline_keyboard: [
+              [
+                {
+                  text: `ሌሎች አዲስ የወጡ ${count - 1} ጨረታዎችን ይመልከቱ።`,
+                  url: "https://t.me/SeledaGramBot",
+                },
+              ],
+            ],
+          },
+        })
+      );
+    }
+  }
+};
+
 export const pullTenders = async () => {
-  // console.log("🚀 ~ GET ~ tenders...........");
   const tenders = await scrapAll();
   tenders.forEach((tender) => {
     upsertEGPTender(tender);
   });
-  // console.log("🚀 ~ Updated and proccessed ", tenders.length, " tenders");
   return tenders;
 };
 
@@ -119,48 +178,53 @@ export const upsertEGPTender = async (r: {
   language: any;
   marketPlace: any;
 }) => {
-  const details = await getPackageDetails(r.lotId);
-  const bidSecurityAmount = details?.eligibilityRequirements?.bidSecurityAmount;
-  const amount = bidSecurityAmount?.amount;
-  const currency = bidSecurityAmount?.currency;
-  const securityAmount = /^-?\d+$/.test(amount)
-    ? amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " " + currency
-      ? currency
-      : "ETB"
-    : "xx,xxx.xx ETB";
+  try {
+    const details = await getPackageDetails(r.lotId);
+    const bidSecurityAmount =
+      details?.eligibilityRequirements?.bidSecurityAmount;
+    const amount = bidSecurityAmount?.amount;
+    const currency = bidSecurityAmount?.currency;
+    const securityAmount = /^-?\d+$/.test(amount)
+      ? amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " " + currency
+        ? currency
+        : "ETB"
+      : "xx,xxx.xx ETB";
 
-  const raw = {
-    egpId: r.id,
-    title: r.lotName || "",
-    description: r.lotDescription || "",
-    openingDate: r.submissionDeadline || "",
-    closingDate: r.invitationDate || "",
-    sources: ["egp"],
-    status: details.status || "",
-    entity: r.procuringEntity || "",
-    security: securityAmount || "",
-    link: `https://egp.ppa.gov.et/egp/bids/all/tendering/${r.lotId}/open`,
-    language: r.language || "",
-    region: r.marketPlace || "",
-  };
-  const old = await prisma.tender.findUnique({ where: { egpId: r.id } });
-  const isChanged = old ? !isSameTender(raw, old) : true;
-  if (isChanged) {
-    const upsertTender = await prisma.tender.upsert({
-      where: {
-        egpId: r.id,
-      },
-      update: {
-        ...raw,
-      },
-      create: {
-        ...raw,
-      },
-    });
-    const bidders = await prisma.user.findMany();
-    bidders.forEach((bidder: User) => {
-      createQueueforUser(bidder, upsertTender, old ? "Updated" : "New");
-    });
+    const raw = {
+      egpId: r.id,
+      title: r.lotName || "",
+      description: r.lotDescription || "",
+      openingDate: r.submissionDeadline || "",
+      closingDate: r.invitationDate || "",
+      sources: ["egp"],
+      status: details.status || "",
+      entity: r.procuringEntity || "",
+      security: securityAmount || "",
+      link: `https://egp.ppa.gov.et/egp/bids/all/tendering/${r.lotId}/open`,
+      language: r.language || "",
+      region: r.marketPlace || "",
+    };
+    const old = await prisma.tender.findUnique({ where: { egpId: r.id } });
+    const isChanged = old ? !isSameTender(raw, old) : true;
+    if (isChanged) {
+      const upsertTender = await prisma.tender.upsert({
+        where: {
+          egpId: r.id,
+        },
+        update: {
+          ...raw,
+        },
+        create: {
+          ...raw,
+        },
+      });
+      const bidders = await prisma.user.findMany();
+      bidders.forEach((bidder: User) => {
+        createQueueforUser(bidder, upsertTender, old ? "Updated" : "New");
+      });
+    }
+  } catch (e) {
+    console.log("🚀 ~ upserting tender failed:", r.lotId);
   }
 };
 
@@ -243,7 +307,7 @@ export const upsertQueue = async (
   });
 
   const tags = queue ? queue.tags.concat([tag]) : [tag];
-  queue ? console.log("🚀 ~ tags:", tags) : null;
+  // queue ? console.log("🚀 ~ tags:", tags) : null;
   await prisma.message.upsert({
     where: {
       messageId: { userId: bidder.id, tenderId: tender.id },
@@ -291,6 +355,11 @@ export const getActiveTenders = async (window = 1000 * 60 * 60 * 24 * 2) => {
 };
 
 export const processQueue = async () => {
+  const hasNotification = await processNotification();
+  if (!hasNotification) processMessage();
+};
+
+export const processMessage = async () => {
   const matureQueuesDate = new Date(new Date().getTime() - 1000 * 60);
   let queue = await prisma.message.findFirst({
     where: {
@@ -323,6 +392,44 @@ export const processQueue = async () => {
       }
     }
   }
+};
+
+export const processNotification = async () => {
+  const matureQueuesDate = new Date(new Date().getTime() - 1000 * 60);
+  let notification = await prisma.notification.findFirst({
+    where: {
+      createdAt: { lte: matureQueuesDate },
+    },
+    orderBy: { createdAt: "asc" },
+  });
+  if (!notification) {
+    return false;
+  }
+  const user = await prisma.user.findUnique({
+    where: { id: notification.userId },
+  });
+  if (
+    user &&
+    notification &&
+    (env.NODE_ENV === "production" || user.chatId === 383604329)
+  ) {
+    //only process on prod and for biniam on dev
+    const success = await sendTelegramMarkdown(
+      user.chatId,
+      notification.message
+    );
+
+    if (success) {
+      try {
+        const deleted = await prisma.notification.delete({
+          where: { id: notification.id },
+        });
+      } catch (e) {
+        console.log("🚀 ~ process notification ~ error deleting message:", e);
+      }
+    }
+  }
+  return true;
 };
 
 export const sendTenderWithHelp = (
@@ -425,9 +532,9 @@ export const getTenderDetails = (tender: Tender) => {
 };
 
 export const getTenderForChannelPost = (tender: Tender) => {
-  let message = "\\#";
-  message += "@SeledaGramBot";
-  message += " tender ";
+  let message = "\\#ጨረታ ከ";
+  message += " @SeledaGramBot";
+  message += "\ntender ";
   message += " `";
   message += tender.id
     ? getMarkdownString(getTruncatedString(tender.id))
@@ -473,6 +580,7 @@ export const getTenderForChannelPost = (tender: Tender) => {
   //   ">tags: " +
   //   getMarkdownString(getTruncatedString(queue.tags.join(", "))) +
   //   "**";
+  return message;
 };
 
 export const setTag = async (chatId: number, tags: string[]) => {
@@ -512,10 +620,12 @@ export const upsertUser = async (
   username: string
 ) => {
   const user = await prisma.user.findUnique({ where: { chatId: chatId } });
+
+  const status = "active";
   if (user) {
     const updatedUser = await prisma.user.update({
       where: { chatId: chatId },
-      data: { name: name, username: username },
+      data: { name: name, username: username, status },
     });
     return updatedUser;
   } else {
@@ -524,6 +634,7 @@ export const upsertUser = async (
         chatId: chatId,
         name: name,
         username: username,
+        status: status,
       },
     });
     return newUser;

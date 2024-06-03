@@ -1,4 +1,5 @@
-import { processQueue, pullTenders } from "./egp";
+import { env } from "~/env";
+import { PostTochannels, processQueue, pullTenders, sendSummary } from "./egp";
 
 const schedule = require("node-schedule");
 
@@ -9,7 +10,8 @@ process.once("SIGINT", function () {
 export const initCronJobs = async () => {
   sendQueuedMessages();
   pullEPGTenders();
-  PostTendersTochannels();
+  postTendersTochannels();
+  sendTenderSummary();
 };
 
 export const sendQueuedMessages = async () => {
@@ -37,14 +39,32 @@ export const pullEPGTenders = () => {
   });
 };
 
-export const PostTendersTochannels = () => {
+export const postTendersTochannels = () => {
   const rule = new schedule.RecurrenceRule();
-  rule.hour = [9, 13, 17];
-  // rule.minute = 0;
-  // rule.second = [0, new schedule.Range(5, 55)];
+  if (env.NODE_ENV === "production") {
+    rule.hour = [9, 13, 17];
+    //   rule.minute = 50;
+  } else {
+    rule.second = 0; //[0, new schedule.Range(5, 55)];
+  }
   rule.tz = "Africa/Addis_Ababa";
 
   const job = schedule.scheduleJob(rule, function () {
-    PostTendersTochannels();
+    PostTochannels();
+  });
+};
+
+export const sendTenderSummary = () => {
+  const rule = new schedule.RecurrenceRule();
+  if (env.NODE_ENV === "production") {
+    rule.hour = 17;
+    //   rule.minute = 50;
+  } else {
+    rule.second = 0; //[0, new schedule.Range(5, 55)];
+  }
+  rule.tz = "Africa/Addis_Ababa";
+
+  const job = schedule.scheduleJob(rule, function () {
+    sendSummary();
   });
 };
