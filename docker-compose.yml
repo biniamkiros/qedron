@@ -118,6 +118,7 @@ services:
         DISCORD_CLIENT_SECRET: s
     environment:
       - SKIP_ENV_VALIDATION=1
+      - NODE_ENV=production
       - NEXTAUTH_SECRET=h"
       - NEXTAUTH_URL=http://auth.qedron.com
       - DISCORD_CLIENT_ID=s
