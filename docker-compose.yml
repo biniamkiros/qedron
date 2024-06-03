@@ -4,12 +4,6 @@ services:
   proxy:
     container_name: proxy
     image: traefik:latest
-    # ghcr.io/biniamkiros/proxy:latest
-    # build:
-    #   context: .
-    #   dockerfile: ./packages/reverse-proxy/Dockerfile
-    #   args:
-    #     PROXY_VERSION: latest
     restart: always
     command:
       - --api.dashboard=true
@@ -27,7 +21,6 @@ services:
     ports:
       - "80:80"
       - "443:443"
-      # - "27019:27019"
       # remove port 8080 for production
       - "8080:8080"
     volumes:
