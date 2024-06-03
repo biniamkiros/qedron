@@ -9,6 +9,7 @@ process.once("SIGINT", function () {
 export const initCronJobs = async () => {
   sendQueuedMessages();
   pullEPGTenders();
+  PostTendersTochannels();
 };
 
 export const sendQueuedMessages = async () => {
@@ -33,5 +34,17 @@ export const pullEPGTenders = () => {
   const job = schedule.scheduleJob(rule, function () {
     console.log("Scrapping.....");
     pullTenders();
+  });
+};
+
+export const PostTendersTochannels = () => {
+  const rule = new schedule.RecurrenceRule();
+  rule.hour = [9, 13, 17];
+  // rule.minute = 0;
+  // rule.second = [0, new schedule.Range(5, 55)];
+  rule.tz = "Africa/Addis_Ababa";
+
+  const job = schedule.scheduleJob(rule, function () {
+    PostTendersTochannels();
   });
 };

@@ -17,6 +17,14 @@ export const pullTenders = async () => {
   return tenders;
 };
 
+export const getRecentTenders = async (window: number) => {
+  const dateTime = new Date(Date.now() - window);
+  const tenders = await prisma.tender.findMany({
+    where: { createdAt: { gte: dateTime } },
+  });
+  return tenders;
+};
+
 export const scrapAll = async () => {
   try {
     let tender = [];
@@ -272,9 +280,12 @@ export const upsertQueue = async (
   // }
 };
 
-export const getActiveTenders = async () => {
+//updated last two days
+export const getActiveTenders = async (window = 1000 * 60 * 60 * 24 * 2) => {
+  const dateTime = new Date(Date.now() - window);
   const tenders = await prisma.tender.findMany({
     // where: { status: { in: ["active", "Published"] } },
+    where: { updatedAt: { gte: dateTime } },
   });
   return tenders;
 };
@@ -411,6 +422,57 @@ export const getTenderDetails = (tender: Tender) => {
   details += "\n";
 
   return details;
+};
+
+export const getTenderForChannelPost = (tender: Tender) => {
+  let message = "\\#";
+  message += "@SeledaGramBot";
+  message += " tender ";
+  message += " `";
+  message += tender.id
+    ? getMarkdownString(getTruncatedString(tender.id))
+    : "unknown";
+  message += "`\n\n";
+  message += "***";
+  message += tender.title
+    ? getMarkdownString(getTruncatedString(tender.title, 100))
+    : "no title";
+  message += "***\n";
+  if (tender.title !== tender.description) {
+    message +=
+      tender.description === null
+        ? "no description"
+        : getMarkdownString(
+            getTruncatedString(tender.description.trim(), 1000)
+          );
+    message += "\n";
+  }
+  message += " \\-";
+  message += tender.status
+    ? " " + getMarkdownString(getTruncatedString(tender.status))
+    : "";
+  message += " by ";
+  message += getMarkdownString(getTruncatedString(tender.entity, 100));
+  message += "\n\n💵 ";
+  if (tender.security)
+    message += getMarkdownString(getTruncatedString(tender.security));
+  message += "    ";
+  message +=
+    tender.openingDate === null
+      ? "unknown opening date"
+      : formattedDate(tender.openingDate);
+  message += " \\- ";
+  message +=
+    tender.closingDate === null
+      ? "unknown closing date"
+      : formattedDate(tender.closingDate);
+  message += "\n\n";
+  message += getMarkdownString(getTruncatedString(tender.link, 100));
+  message += "\n\n";
+  // message +=
+  //   ">tags: " +
+  //   getMarkdownString(getTruncatedString(queue.tags.join(", "))) +
+  //   "**";
 };
 
 export const setTag = async (chatId: number, tags: string[]) => {

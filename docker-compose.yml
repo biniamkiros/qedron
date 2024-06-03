@@ -3,13 +3,27 @@ version: "3.8"
 services:
   proxy:
     container_name: proxy
-    image: ghcr.io/biniamkiros/proxy:latest
-    build:
-      context: .
-      dockerfile: ./packages/reverse-proxy/Dockerfile
-      args:
-        PROXY_VERSION: latest
+    image: traefik:latest
+    # ghcr.io/biniamkiros/proxy:latest
+    # build:
+    #   context: .
+    #   dockerfile: ./packages/reverse-proxy/Dockerfile
+    #   args:
+    #     PROXY_VERSION: latest
     restart: always
+    command:
+      - --api.dashboard=true
+      - --api.insecure=true
+      - --entrypoints.websecure.address=:443
+      - --entrypoints.websecure.http.tls.certResolver=default
+      - --entrypoints.web.address=:80
+      - --entrypoints.web.http.redirections.entryPoint.to=websecure
+      - --entrypoints.web.http.redirections.entryPoint.scheme=https
+      - --entrypoints.mongodb.address=:${MONGO_REPLICA_PORT}
+      - --certificatesResolvers.default.acme.email=biniamdev@gmail.com
+      - --certificatesResolvers.default.acme.storage=/ssl-certs/acme.json
+      - --certificatesResolvers.default.acme.httpChallenge.entryPoint=web
+      - --providers.docker.exposedByDefault=false
     ports:
       - "80:80"
       - "443:443"
@@ -71,7 +85,7 @@ services:
   #   depends_on:
   #     mongodb:
   #       condition: service_healthy
-     
+
   # api:
   #   container_name: api
   #   labels:
@@ -89,7 +103,7 @@ services:
   #   depends_on:
   #     mongodb:
   #       condition: service_healthy
-   
+
   seleda:
     container_name: seleda
     labels:
@@ -97,14 +111,14 @@ services:
       - traefik.http.routers.seleda.rule=Host(`seleda.qedron.com`)
     image: ghcr.io/biniamkiros/seleda:latest
     env_file:
-      - ./.env 
+      - ./.env
     build:
       context: .
       dockerfile: ./apps/seleda/Dockerfile
       args:
         SKIP_ENV_VALIDATION: 1
         SELEDA_DATABASE_URL: ${SELEDA_DATABASE_URL}
-        SELEDA_BOT_TOKEN: ${SELEDA_BOT_TOKEN} 
+        SELEDA_BOT_TOKEN: ${SELEDA_BOT_TOKEN}
         NEXTAUTH_SECRET: h
         NEXTAUTH_URL: http://auth.qedron.com
         DISCORD_CLIENT_ID: s
@@ -115,7 +129,7 @@ services:
       - NEXTAUTH_URL=http://auth.qedron.com
       - DISCORD_CLIENT_ID=s
       - DISCORD_CLIENT_SECRET=s
-      - SELEDA_BOT_TOKEN=${SELEDA_BOT_TOKEN} 
+      - SELEDA_BOT_TOKEN=${SELEDA_BOT_TOKEN}
       - SELEDA_DATABASE_URL=${SELEDA_DATABASE_URL}
     restart: always
     ports:
@@ -130,7 +144,7 @@ services:
   #   container_name: cms
   #   labels:
   #     - traefik.enable=true
-  #     - traefik.http.routers.cms.rule=Host(`cms.qedron.com`)   
+  #     - traefik.http.routers.cms.rule=Host(`cms.qedron.com`)
   #   image: directus/directus:10.10.5
   #   ports:
   #     - 8055:8055
@@ -154,24 +168,24 @@ services:
   #     - PUBLIC_URL="https://cms.qedron.com"
   #   # Environment variables can also be defined in a file (for example `.env`):
   #   env_file:
-  #     - ./.env 
+  #     - ./.env
   #   depends_on:
   #     postgresdb:
   #         condition: service_healthy
   #   networks:
   #   - app_network
-  
+
   # monk:
   #   container_name: monk
   #   labels:
   #     - traefik.enable=true
-  #     - traefik.http.routers.monk.rule=Host(`monk.qedron.com`)  
+  #     - traefik.http.routers.monk.rule=Host(`monk.qedron.com`)
   #   restart: unless-stopped
   #   image: listmonk/listmonk:latest
   #   ports:
   #     - "9000:9000"
   #   env_file:
-  #     - ./.env 
+  #     - ./.env
   #   environment:
   #     - LISTMONK_app__address=${LISTMONK_app__address}
   #     - LISTMONK_app__admin_username=${LISTMONK_app__admin_username}
@@ -192,32 +206,32 @@ services:
 
   #   networks:
   #     - app_network
-  
+
   # cron:
   #   container_name: cron
   #   labels:
   #     - traefik.enable=true
-  #     - traefik.http.routers.cron.rule=Host(`cron.qedron.com`)        
-  #   image: alseambusher/crontab-ui 
+  #     - traefik.http.routers.cron.rule=Host(`cron.qedron.com`)
+  #   image: alseambusher/crontab-ui
   #   env_file:
-  #     - ./.env 
+  #     - ./.env
   #   environment:
-  #     - BASIC_AUTH_USER=${CRON_BASIC_AUTH_USER} 
+  #     - BASIC_AUTH_USER=${CRON_BASIC_AUTH_USER}
   #     - BASIC_AUTH_PWD=${CRON_BASIC_AUTH_PWD}
   #     - CRON_DB_PATH=${CRON_DB_PATH}
   #   volumes:
   #     - ./cron/cron.d:/etc/crontabs
   #   restart: always
   #   ports:
-  #     - 8000:8000  
+  #     - 8000:8000
   #   networks:
   #     - app_network
-  
+
   # mailserver:
   #   container_name: mailserver
   #   labels:
   #     - traefik.enable=true
-  #     - traefik.http.routers.mailserver.rule=Host(`mail.qedron.com`) 
+  #     - traefik.http.routers.mailserver.rule=Host(`mail.qedron.com`)
   #   image: ghcr.io/docker-mailserver/docker-mailserver:latest
   #   # Provide the FQDN of your mail server here (Your DNS MX record should point to this value)
   #   hostname: mail.qedron.com
@@ -247,35 +261,35 @@ services:
   #     retries: 0
   #   networks:
   #     - app_network
-  
+
   mongodb:
     container_name: mongodb
     labels:
       - traefik.enable=true
-      - traefik.http.routers.mongodb.rule=Host(`mongo.qedron.com`)    
+      - traefik.http.routers.mongodb.rule=Host(`mongo.qedron.com`)
       # - traefik.tcp.routers.mongodb.entrypoints=mongodb
       # - traefik.tcp.routers.mongodb.service=mongodb
       # - traefic.tcp.routers.mongodb.tls=true
       # - traefik.tcp.routers.mongodb.tls.certresolver=letsencrypt
       # - traefik.tcp.services.mongodb.loadBalancer.server.port=${MONGO_REPLICA_PORT}
     env_file:
-      - ./.env 
+      - ./.env
     build:
       context: .
       dockerfile_inline: |
-                        FROM mongo:7
-                        RUN openssl rand -base64 756 > /etc/mongo-keyfile 
-                        RUN chmod 400 /etc/mongo-keyfile 
-                        RUN chown mongodb:mongodb /etc/mongo-keyfile 
+        FROM mongo:7
+        RUN openssl rand -base64 756 > /etc/mongo-keyfile 
+        RUN chmod 400 /etc/mongo-keyfile 
+        RUN chown mongodb:mongodb /etc/mongo-keyfile
     environment:
       MONGO_REPLICA_HOST: mongo.qedron.com
       MONGO_REPLICA_PORT: ${MONGO_REPLICA_PORT}
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
     ports:
-      - '${MONGO_REPLICA_PORT}:${MONGO_REPLICA_PORT}'
+      - "${MONGO_REPLICA_PORT}:${MONGO_REPLICA_PORT}"
     volumes:
-     - ./mongodb-data:/data/db
+      - ./mongodb-data:/data/db
     restart: unless-stopped
     command: --replSet rs0 --keyFile /etc/mongo-keyfile --bind_ip_all --port ${MONGO_REPLICA_PORT}
     healthcheck:
@@ -289,18 +303,18 @@ services:
       retries: 20
     networks:
       - app_network
-  
+
   postgresdb:
     container_name: postgresdb
     labels:
       - traefik.enable=true
-      - traefik.http.routers.postgresdb.rule=Host(`postgres.qedron.com`) 
+      - traefik.http.routers.postgresdb.rule=Host(`postgres.qedron.com`)
     image: postgres:latest
     # user: postgres
     ports:
       - "5432:5432"
     env_file:
-      - ./.env 
+      - ./.env
     environment:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_USER=${POSTGRES_USERNAME}
@@ -310,7 +324,8 @@ services:
     volumes:
       - ./postgresdb-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USERNAME} -d ${POSTGRES_DB}"]
+      test:
+        ["CMD-SHELL", "pg_isready -U ${POSTGRES_USERNAME} -d ${POSTGRES_DB}"]
       interval: 10s
       timeout: 5s
       retries: 5

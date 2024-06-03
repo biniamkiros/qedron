@@ -1,5 +1,8 @@
 import {
   getMarkdownString,
+  getRecentTenders,
+  getTenderDetails,
+  getTenderForChannelPost,
   getUserTags,
   processRecentTenderForUser,
   pullTenders,
@@ -191,6 +194,39 @@ export const initSeledaBot = async () => {
   });
 };
 
+export const PostTendersTochannels = async () => {
+  if (!seledaGramBot) {
+    console.error("🚀 ~ sendTelegram ~ has not been iniatialised.");
+    await initSeledaBot();
+    return false;
+  } else {
+    const tenders = await getRecentTenders(1000 * 60 * 60 * 4);
+    const count = tenders.length;
+    if (count > 0) {
+      const tender = tenders[0];
+      const channelIds = ["@qedron", "@qedron_chat/25"];
+      if (tender) {
+        const message = getTenderForChannelPost(tender);
+        channelIds.forEach((id) =>
+          seledaGramBot.sendMessage(id, message, {
+            parse_mode: "MarkdownV2",
+            reply_markup: {
+              inline_keyboard: [
+                [
+                  {
+                    text: `Press to see ${count} other new tenders published today.`,
+                    url: "@SeledaGramBot",
+                  },
+                ],
+              ],
+            },
+          })
+        );
+      }
+    }
+  }
+};
+
 export const handleChatUser = (msg: {
   chat?: any;
   from?: any;
@@ -256,7 +292,6 @@ export const handleUpdates = async (update: any) => {
     await initSeledaBot();
     return false;
   } else {
-    console.log("Handling seleda telegram updates: ", update);
     seledaGramBot.processUpdate(update);
   }
 };
