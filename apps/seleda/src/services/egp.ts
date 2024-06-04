@@ -49,21 +49,25 @@ export const PostTochannels = async () => {
         : ["@camioneth"];
     if (tender) {
       const message = getTenderForChannelPost(tender);
-      channelIds.forEach((id) =>
-        sendUsernameOptions(id, message, {
-          parse_mode: "MarkdownV2",
-          reply_markup: {
-            inline_keyboard: [
-              [
-                {
-                  text: `ሌሎች አዲስ የወጡ ${count - 1} ጨረታዎችን ይመልከቱ።`,
-                  url: "https://t.me/SeledaGramBot",
-                },
+      channelIds.forEach((id) => {
+        try {
+          sendUsernameOptions(id, message, {
+            parse_mode: "MarkdownV2",
+            reply_markup: {
+              inline_keyboard: [
+                [
+                  {
+                    text: `ሌሎች አዲስ የወጡ ${count - 1} ጨረታዎችን ይመልከቱ።`,
+                    url: "https://t.me/SeledaGramBot",
+                  },
+                ],
               ],
-            ],
-          },
-        })
-      );
+            },
+          });
+        } catch (e) {
+          console.log("🚀 ~ Error posting to channel:", id);
+        }
+      });
     }
   }
 };
