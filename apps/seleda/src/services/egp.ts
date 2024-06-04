@@ -45,7 +45,7 @@ export const PostTochannels = async () => {
     const tender = tenders[Math.floor(Math.random() * tenders.length)];
     const channelIds =
       env.NODE_ENV === "production"
-        ? ["@qedron", "@qedron_chat/25"]
+        ? ["@qedron", "@qedron_chat/25"] ///25
         : ["@camioneth"];
     if (tender) {
       const message = getTenderForChannelPost(tender);

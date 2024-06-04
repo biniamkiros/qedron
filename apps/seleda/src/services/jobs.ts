@@ -42,7 +42,8 @@ export const pullEPGTenders = () => {
 export const postTendersTochannels = () => {
   const rule = new schedule.RecurrenceRule();
   if (env.NODE_ENV === "production") {
-    rule.hour = [9, 13, 17];
+    // rule.hour = [9, 13, 17];
+    rule.hour = [4, new schedule.Range(9, 17)];
     rule.minute = 0;
   } else {
     rule.second = 0; //[0, new schedule.Range(5, 55)];
