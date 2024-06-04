@@ -43,7 +43,7 @@ export const postTendersTochannels = () => {
   const rule = new schedule.RecurrenceRule();
   if (env.NODE_ENV === "production") {
     // rule.hour = [9, 13, 17];
-    rule.hour = [4, new schedule.Range(13, 17)];
+    rule.hour = 17; //[4, new schedule.Range(13, 17)];
     rule.minute = 0;
     rule.tz = "Africa/Addis_Ababa";
 
