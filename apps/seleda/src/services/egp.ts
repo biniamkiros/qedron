@@ -11,6 +11,7 @@ import { Old_Standard_TT } from "next/font/google";
 // import { PrismaClient } from '../../../../node_modules/.pnpm/@prisma+client@5.13.0_prisma@5.13.0/node_modules/@prisma/client'
 const prisma = new PrismaClient();
 
+const openLink = "ሙሉ መረጃ";
 export const sendSummary = async () => {
   const summaryUrl =
     "https://production.egp.gov.et/po-gw/cms/api/sourcing/get-tender-summary";
@@ -138,46 +139,40 @@ export const getPackageDetails = async (r: {
     const packageURL = `https://production.egp.gov.et/po-gw/tendering-int/api/packages/get-public-packages-by-id/${r.lotId}`;
     const packageDetails = await getRequest(packageURL);
 
-    // console.log(
-    //   "🚀 ~ eligibilityRequirements:",
-    //   packageDetails?.eligibilityRequirements?.bidSecurityAmount
-    // );
     const bidSecurityAmount =
       packageDetails?.eligibilityRequirements?.bidSecurityAmount;
     const amount = bidSecurityAmount?.amount;
     const currency = bidSecurityAmount?.currency;
-    const securityAmount = /^-?\d+$/.test(amount)
-      ? amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " " + currency
-        ? currency
-        : "ETB"
+    const security = isValueNumber(amount, true)
+      ? amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") +
+        " " +
+        (currency ? currency : "ETB")
       : "xx,xxx.xx ETB";
     const { status } = packageDetails;
-    const security = securityAmount;
+
     return { status, security, link };
   } else if (r.sourceApplication === "Purchasing") {
-    // try {
-    const link = `https://production.egp.gov.et/egp/bids/all/purchasing/${r.lotId}/open`;
-
     const purchasingURL = `https://production.egp.gov.et/po-gw/purchasing-quotation-invitations/api/get-quotation-invitation/${r.sourceId}`;
 
     const result = await getRequest(purchasingURL);
 
+    const link = `https://production.egp.gov.et/egp/bids/all/purchasing/${result.id}/open`;
+
     const bidSecurityAmount = result?.lotInformation;
+
     const amount = bidSecurityAmount?.bid_security_amount;
     const currency = bidSecurityAmount?.bid_currency;
-    const securityAmount = /^-?\d+$/.test(amount)
-      ? amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " " + currency
-        ? currency
-        : "ETB"
+
+    const security = isValueNumber(amount, true)
+      ? amount > 0
+        ? amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") +
+          " " +
+          (currency ? currency : "ETB")
+        : "Purchasing"
       : "xx,xxx.xx ETB";
 
     const { status } = result;
-    const security = securityAmount;
     return { status, security, link };
-    // } catch (e) {
-    //   console.log("🚀 ~ Error:", e);
-    //   return { status: "unknown", security: "unknown", link: "unknown" };
-    // }
   } else {
     return { status: "unknown", security: "unknown", link: "unknown" };
   }
@@ -538,7 +533,7 @@ export const sendTenderWithHelp = (
       ? "unknown closing date"
       : formattedDate(tender.closingDate);
   message += "\n\n";
-  message += "[ማስፈንጠሪያ](";
+  message += `[${openLink}](`;
   message += getMarkdownString(getTruncatedString(tender.link, 100));
   message += ")";
   message += "\n\n";
@@ -586,7 +581,7 @@ export const getTenderDetails = (tender: Tender) => {
   if (tender.security)
     details += getMarkdownString(getTruncatedString(tender.security));
   details += "\n\n";
-  details += "[ማስፈንጠሪያ](";
+  details += `[${openLink}](`;
   details += getMarkdownString(getTruncatedString(tender.link, 100));
   details += ")";
   details += "\n";
@@ -637,7 +632,7 @@ export const getTenderForChannelPost = (tender: Tender) => {
       ? "unknown closing date"
       : formattedDate(tender.closingDate);
   message += "\n\n";
-  message += "[ማስፈንጠሪያ](";
+  message += `[${openLink}](`;
   message += getMarkdownString(getTruncatedString(tender.link, 100));
   message += ")";
   message += "\n\n";
@@ -752,3 +747,18 @@ export const formattedDate = (
     return "error date";
   }
 };
+
+function isValueNumber(
+  value: unknown,
+  isAcceptingFloatingPointNumbers: boolean
+) {
+  if (typeof value !== "number") {
+    return false;
+  }
+
+  if (!isAcceptingFloatingPointNumbers) {
+    return Number.isInteger(value);
+  }
+
+  return true;
+}
