@@ -43,29 +43,25 @@ export const postTendersTochannels = () => {
   const rule = new schedule.RecurrenceRule();
   if (env.NODE_ENV === "production") {
     // rule.hour = [9, 13, 17];
-    rule.hour = [4, new schedule.Range(9, 17)];
+    rule.hour = [4, new schedule.Range(13, 17)];
     rule.minute = 0;
-  } else {
-    rule.second = 0; //[0, new schedule.Range(5, 55)];
-  }
-  rule.tz = "Africa/Addis_Ababa";
+    rule.tz = "Africa/Addis_Ababa";
 
-  const job = schedule.scheduleJob(rule, function () {
-    PostTochannels();
-  });
+    const job = schedule.scheduleJob(rule, function () {
+      PostTochannels();
+    });
+  }
 };
 
 export const sendTenderSummary = () => {
   const rule = new schedule.RecurrenceRule();
   if (env.NODE_ENV === "production") {
     rule.hour = 17;
-    //   rule.minute = 50;
-  } else {
-    rule.second = 0; //[0, new schedule.Range(5, 55)];
-  }
-  rule.tz = "Africa/Addis_Ababa";
+    rule.minute = 50;
+    rule.tz = "Africa/Addis_Ababa";
 
-  const job = schedule.scheduleJob(rule, function () {
-    sendSummary();
-  });
+    const job = schedule.scheduleJob(rule, function () {
+      sendSummary();
+    });
+  }
 };

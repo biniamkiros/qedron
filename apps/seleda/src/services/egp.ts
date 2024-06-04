@@ -45,8 +45,8 @@ export const PostTochannels = async () => {
     const tender = tenders[Math.floor(Math.random() * tenders.length)];
     const channelIds =
       env.NODE_ENV === "production"
-        ? ["@qedron", "@qedron_chat/25"] ///25
-        : ["@camioneth"];
+        ? ["@qedron", "@qedron_chat/25"] ///25 /-1001945901536
+        : ["@camioneth", "@qedron_chat/25"];
     if (tender) {
       const message = getTenderForChannelPost(tender);
       channelIds.forEach((id) => {
@@ -70,6 +70,7 @@ export const PostTochannels = async () => {
       });
     }
   }
+  return tenders;
 };
 
 export const pullTenders = async () => {
@@ -118,10 +119,68 @@ export const getEGPActiveTenders = async (skip = 0, top = 10) => {
   return activePage;
 };
 
-export const getPackageDetails = async (id: string) => {
-  const packageURL = `https://production.egp.gov.et/po-gw/tendering-int/api/packages/get-public-packages-by-id/${id}`;
-  const packageDetails = await getRequest(packageURL);
-  return packageDetails;
+export const getPackageDetails = async (r: {
+  sourceId: any;
+  id?: any;
+  lotName?: any;
+  lotDescription?: any;
+  submissionDeadline?: any;
+  invitationDate?: any;
+  status?: any;
+  procuringEntity?: any;
+  lotId?: any;
+  sourceApplication: any;
+  language?: any;
+  marketPlace?: any;
+}) => {
+  if (r.sourceApplication === "Tendering") {
+    const link = `https://production.egp.gov.et/egp/bids/all/tendering/${r.lotId}/open`;
+    const packageURL = `https://production.egp.gov.et/po-gw/tendering-int/api/packages/get-public-packages-by-id/${r.lotId}`;
+    const packageDetails = await getRequest(packageURL);
+
+    // console.log(
+    //   "🚀 ~ eligibilityRequirements:",
+    //   packageDetails?.eligibilityRequirements?.bidSecurityAmount
+    // );
+    const bidSecurityAmount =
+      packageDetails?.eligibilityRequirements?.bidSecurityAmount;
+    const amount = bidSecurityAmount?.amount;
+    const currency = bidSecurityAmount?.currency;
+    const securityAmount = /^-?\d+$/.test(amount)
+      ? amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " " + currency
+        ? currency
+        : "ETB"
+      : "xx,xxx.xx ETB";
+    const { status } = packageDetails;
+    const security = securityAmount;
+    return { status, security, link };
+  } else if (r.sourceApplication === "Purchasing") {
+    // try {
+    const link = `https://production.egp.gov.et/egp/bids/all/purchasing/${r.lotId}/open`;
+
+    const purchasingURL = `https://production.egp.gov.et/po-gw/purchasing-quotation-invitations/api/get-quotation-invitation/${r.sourceId}`;
+
+    const result = await getRequest(purchasingURL);
+
+    const bidSecurityAmount = result?.lotInformation;
+    const amount = bidSecurityAmount?.bid_security_amount;
+    const currency = bidSecurityAmount?.bid_currency;
+    const securityAmount = /^-?\d+$/.test(amount)
+      ? amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " " + currency
+        ? currency
+        : "ETB"
+      : "xx,xxx.xx ETB";
+
+    const { status } = result;
+    const security = securityAmount;
+    return { status, security, link };
+    // } catch (e) {
+    //   console.log("🚀 ~ Error:", e);
+    //   return { status: "unknown", security: "unknown", link: "unknown" };
+    // }
+  } else {
+    return { status: "unknown", security: "unknown", link: "unknown" };
+  }
 };
 
 export const getRequest = async (url: string) => {
@@ -160,6 +219,8 @@ export const createEGPTenders = async (data: any[]) => {
               lotId: any;
               language: any;
               marketPlace: any;
+              sourceApplication: any;
+              sourceId: any;
             }) => {
               upsertEGPTender(r);
             }
@@ -181,18 +242,12 @@ export const upsertEGPTender = async (r: {
   lotId: any;
   language: any;
   marketPlace: any;
+  sourceApplication: any;
+  sourceId: any;
 }) => {
   try {
-    const details = await getPackageDetails(r.lotId);
-    const bidSecurityAmount =
-      details?.eligibilityRequirements?.bidSecurityAmount;
-    const amount = bidSecurityAmount?.amount;
-    const currency = bidSecurityAmount?.currency;
-    const securityAmount = /^-?\d+$/.test(amount)
-      ? amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " " + currency
-        ? currency
-        : "ETB"
-      : "xx,xxx.xx ETB";
+    const { status, security, link } = await getPackageDetails(r);
+    console.log("🚀 ~ details:", r.sourceApplication, status, security, link);
 
     const raw = {
       egpId: r.id,
@@ -201,10 +256,10 @@ export const upsertEGPTender = async (r: {
       openingDate: r.submissionDeadline || "",
       closingDate: r.invitationDate || "",
       sources: ["egp"],
-      status: details.status || "",
+      status: status || "",
       entity: r.procuringEntity || "",
-      security: securityAmount || "",
-      link: `https://egp.ppa.gov.et/egp/bids/all/tendering/${r.lotId}/open`,
+      security: security || "",
+      link: link || "",
       language: r.language || "",
       region: r.marketPlace || "",
     };
@@ -483,7 +538,9 @@ export const sendTenderWithHelp = (
       ? "unknown closing date"
       : formattedDate(tender.closingDate);
   message += "\n\n";
+  message += "[ማስፈንጠሪያ](";
   message += getMarkdownString(getTruncatedString(tender.link, 100));
+  message += ")";
   message += "\n\n";
   message +=
     ">tags: " +
@@ -529,7 +586,9 @@ export const getTenderDetails = (tender: Tender) => {
   if (tender.security)
     details += getMarkdownString(getTruncatedString(tender.security));
   details += "\n\n";
+  details += "[ማስፈንጠሪያ](";
   details += getMarkdownString(getTruncatedString(tender.link, 100));
+  details += ")";
   details += "\n";
 
   return details;
@@ -578,7 +637,9 @@ export const getTenderForChannelPost = (tender: Tender) => {
       ? "unknown closing date"
       : formattedDate(tender.closingDate);
   message += "\n\n";
+  message += "[ማስፈንጠሪያ](";
   message += getMarkdownString(getTruncatedString(tender.link, 100));
+  message += ")";
   message += "\n\n";
   // message +=
   //   ">tags: " +
