@@ -1,7 +1,8 @@
 export const dynamic = "force-dynamic"; // defaults to auto
 
 import type { NextApiRequest, NextApiResponse } from "next";
-import { pullTenders } from "~/services/egp"; //
+import { env } from "~/env";
+import { pullTenders, sendSummary } from "~/services/egp"; //
 import { sendTenderSummary } from "~/services/jobs";
 
 type ResponseData = {
@@ -9,6 +10,7 @@ type ResponseData = {
 };
 
 export async function GET() {
-  const tenders = await sendTenderSummary();
-  return Response.json({});
+  if (env.NODE_ENV === "production") return Response.json([]);
+  const summary = await sendSummary();
+  return Response.json({ summary });
 }

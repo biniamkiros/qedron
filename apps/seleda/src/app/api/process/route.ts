@@ -1,11 +1,13 @@
-export const dynamic = 'force-dynamic' // defaults to auto
-import { processQueue } from "~/services/egp"
+export const dynamic = "force-dynamic"; // defaults to auto
+import { env } from "~/env";
+import { processQueue } from "~/services/egp";
 
 type ResponseData = {
-  message: string
-}
+  message: string;
+};
 
 export async function GET(request: Request) {
-  await processQueue()
-  return Response.json({ status: 200 }) 
+  if (env.NODE_ENV === "production") return Response.json([]);
+  await processQueue();
+  return Response.json({ status: 200 });
 }

@@ -3,6 +3,7 @@ import {
   sendTelegram,
   sendTelegramMarkdown,
   sendUsernameOptions,
+  sendUsernameReplyOptions,
 } from "./telegram";
 import { nullable, object } from "zod";
 import { format } from "date-fns";
@@ -12,63 +13,117 @@ import { Old_Standard_TT } from "next/font/google";
 const prisma = new PrismaClient();
 
 const openLink = "ሙሉ መረጃ";
+const Purchasing = "ፕሮፎርማ";
+
+export const getSpace = (text: string, max: number) => {
+  let space = new Array(max).join(" ");
+
+  if (text.length > max) return "";
+  else return space.substring(0, max - text.length);
+};
+
 export const sendSummary = async () => {
   const summaryUrl =
     "https://production.egp.gov.et/po-gw/cms/api/sourcing/get-tender-summary";
   const summary = await getRequest(summaryUrl);
-  const users = await prisma.user.findMany({ where: { status: "active" } });
+  const total = formatNumber(summary.totalActive);
+  const publishedToday = formatNumber(summary.publishedToday);
+  const openingToday = formatNumber(summary.openingToday);
+  const closingToday = formatNumber(summary.closingToday);
+  const signedContract = formatNumber(summary.signedContract);
+  const evaluationTender = formatNumber(summary.evaluationTender);
+  const canceledTender = formatNumber(summary.canceledTender);
+  const awardedTender = formatNumber(summary.awardedTender);
+  const totalTendersPublished = formatNumber(summary.totalTendersPublished);
+  const registeredSupplier = formatNumber(summary.registeredSupplier);
+
   const message = `>የዛሬ ጨረታ ማጠቃለያ ይህን ይመስላል።**
+  
+ክፍት ጨረታዎች፡ ${total}${getSpace(total, 8)}   ዛሬ የታተሙ: ${publishedToday}
+   ዛሬ የሚከፈቱ: ${openingToday}${getSpace(openingToday, 18)}   ዛሬ የሚዘጉ: ${closingToday}
 
-    ክፍት ጨረታዎች፡ ${summary.totalActive}    ዛሬ የታተሙ: ${summary.publishedToday}
-    ዛሬ የሚከፈቱ: ${summary.openingToday}    ዛሬ የሚዘጉ: ${summary.closingToday}
+ስምምነት የፈጸሙ: ${signedContract}${getSpace(signedContract, 18)} ምዘና ላይ ያሉ: ${evaluationTender}
+       የተሰረዙ: ${canceledTender}${getSpace(canceledTender, 18)}ለአሸናፊ የተሰጡ: ${awardedTender}
 
-    ስምምነት የፈጸሙ: ${summary.signedContract}    ምዘና ላይ ያሉ: ${summary.evaluationTender}
-    የተሰረዙ: ${summary.canceledTender}    ለአሸናፊ የተሰጡ: ${summary.awardedTender}
+እስከዛሬ አጠቃላይ 
+ የታተሙ ጨረታዎች: ${totalTendersPublished}
+የተመዘገቡ አቅራቢዎች: ${registeredSupplier}`;
 
-    እስከዛሬ አጠቃላይ 
-    የታተሙ ጨረታዎች: ${summary.totalTendersPublished}    የተመዘገቡ አቅራቢዎች: ${summary.registeredSupplier}`;
+  // console.log("🚀 ~ sendSummary ~ message:\n", message);
 
-  users.forEach(async (u) => {
-    const notification = await prisma.notification.create({
-      data: {
-        userId: u.id,
-        message: message,
-      },
+  if (env.NODE_ENV === "production") {
+    const users = await prisma.user.findMany({ where: { status: "active" } });
+    users.forEach(async (u) => {
+      const notification = await prisma.notification.create({
+        data: {
+          userId: u.id,
+          message: message,
+        },
+      });
     });
-  });
+  } else {
+    const user = await prisma.user.findUnique({ where: { chatId: 383604329 } });
+    if (user) {
+      const notification = await prisma.notification.create({
+        data: {
+          userId: user.id,
+          message: message,
+        },
+      });
+    }
+  }
+  return summary;
 };
 
 export const PostTochannels = async () => {
-  const tenders = await getRecentTenders(1000 * 60 * 60);
+  const tenders = await getRecentTenders(1000 * 60 * 60 * 12);
   const count = tenders.length;
   if (count > 1) {
     // && env.NODE_ENV === "production") {
     const tender = tenders[Math.floor(Math.random() * tenders.length)];
-    const channelIds =
-      env.NODE_ENV === "production"
-        ? ["@qedron", "@qedron_chat/25"] ///25 /-1001945901536
-        : ["@camioneth", "@qedron_chat/25"];
+    const mainChannel =
+      env.NODE_ENV === "production" ? "@qedron" : "@qedron_dev";
+    const mainGroup =
+      env.NODE_ENV === "production" ? "@qedron_chat" : "@qedron_chat_dev"; ///25 /-1001945901536;
+    const messageId = env.NODE_ENV === "production" ? 25 : 2;
+    const text = `እና ሌሎች አዲስ ${count - 1} ጨረታዎች`;
+    const url = "https://t.me/SeledaGramBot";
     if (tender) {
       const message = getTenderForChannelPost(tender);
-      channelIds.forEach((id) => {
-        try {
-          sendUsernameOptions(id, message, {
-            parse_mode: "MarkdownV2",
-            reply_markup: {
-              inline_keyboard: [
-                [
-                  {
-                    text: `ሌሎች አዲስ የወጡ ${count - 1} ጨረታዎችን ይመልከቱ።`,
-                    url: "https://t.me/SeledaGramBot",
-                  },
-                ],
+      // channelIds.forEach((id) => {
+      try {
+        sendUsernameOptions(mainChannel, message, {
+          parse_mode: "MarkdownV2",
+          reply_markup: {
+            inline_keyboard: [
+              [
+                {
+                  text: text,
+                  url: url,
+                },
               ],
-            },
-          });
-        } catch (e) {
-          console.log("🚀 ~ Error posting to channel:", id);
-        }
-      });
+            ],
+          },
+        });
+        sendUsernameReplyOptions(mainGroup, message, {
+          reply_to_message_id: messageId,
+          parse_mode: "MarkdownV2",
+          reply_markup: {
+            inline_keyboard: [
+              [
+                {
+                  text: text,
+                  url: url,
+                },
+              ],
+            ],
+          },
+        });
+      } catch (e) {
+        console.log("🚀 ~ Error posting to channel:", mainChannel);
+        console.log("🚀 ~ Error posting to channel:", mainGroup);
+      }
+      // });
     }
   }
   return tenders;
@@ -168,7 +223,7 @@ export const getPackageDetails = async (r: {
         ? amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") +
           " " +
           (currency ? currency : "ETB")
-        : "Purchasing"
+        : Purchasing
       : "xx,xxx.xx ETB";
 
     const { status } = result;
@@ -324,10 +379,7 @@ export const getUserTags = async (chatId: number) => {
 export const processRecentTenderForUser = async (chatId: number) => {
   const bidder = await prisma.user.findFirst({ where: { chatId: chatId } });
   const tenders = await getActiveTenders();
-  // prisma.tender.findMany({
-  //   // where: { createdAt: { gte: new Date(Date.now() - 86400000) } },
-  //   where: { status: { in: ["active"] } },
-  // });
+
   if (tenders && bidder)
     tenders.forEach((tender: Tender) => {
       createQueueforUser(bidder, tender, "searched");
@@ -409,8 +461,10 @@ export const getActiveTenders = async (window = 1000 * 60 * 60 * 24 * 2) => {
 };
 
 export const processQueue = async () => {
-  const hasNotification = await processNotification();
-  if (!hasNotification) processMessage();
+  // const hasNotification = await
+  await processNotification();
+  // if (!hasNotification)
+  await processMessage();
 };
 
 export const processMessage = async () => {
@@ -419,7 +473,7 @@ export const processMessage = async () => {
     where: {
       OR: [{ createdAt: { lte: matureQueuesDate } }, { type: "searched" }],
     },
-    orderBy: { createdAt: "asc" },
+    orderBy: [{ createdAt: "asc" }, { atempt: "asc" }],
   });
   if (!queue) {
     return;
@@ -428,14 +482,12 @@ export const processMessage = async () => {
   const tender = await prisma.tender.findUnique({
     where: { id: queue.tenderId },
   });
-  if (
-    user &&
-    tender &&
-    queue &&
-    (env.NODE_ENV === "production" || user.chatId === 383604329)
-  ) {
+  if (user && tender && queue) {
     //only process on prod and for biniam on dev
-    const success = await sendTenderWithHelp(user.chatId, tender, queue);
+    let success = false;
+    if (env.NODE_ENV === "production" || user.chatId === 383604329) {
+      success = await sendTenderWithHelp(user.chatId, tender, queue);
+    }
     if (success) {
       try {
         const deleted = await prisma.message.delete({
@@ -444,6 +496,12 @@ export const processMessage = async () => {
       } catch (e) {
         console.log("🚀 ~ processQueue ~ error deleting message:", e);
       }
+    } else {
+      const atempt = queue.atempt + 1;
+      const deleted = await prisma.message.update({
+        where: { id: queue.id },
+        data: { atempt: atempt },
+      });
     }
   }
 };
@@ -454,24 +512,21 @@ export const processNotification = async () => {
     where: {
       createdAt: { lte: matureQueuesDate },
     },
-    orderBy: { createdAt: "asc" },
+    orderBy: [{ createdAt: "asc" }, { atempt: "asc" }],
   });
+
   if (!notification) {
     return false;
   }
   const user = await prisma.user.findUnique({
     where: { id: notification.userId },
   });
-  if (
-    user &&
-    notification &&
-    (env.NODE_ENV === "production" || user.chatId === 383604329)
-  ) {
+  if (user) {
     //only process on prod and for biniam on dev
-    const success = await sendTelegramMarkdown(
-      user.chatId,
-      notification.message
-    );
+    let success = false;
+    if (env.NODE_ENV === "production" || user.chatId === 383604329) {
+      success = await sendTelegramMarkdown(user.chatId, notification.message);
+    }
 
     if (success) {
       try {
@@ -481,6 +536,12 @@ export const processNotification = async () => {
       } catch (e) {
         console.log("🚀 ~ process notification ~ error deleting message:", e);
       }
+    } else {
+      const atempt = notification.atempt + 1;
+      const deleted = await prisma.notification.update({
+        where: { id: notification.id },
+        data: { atempt: atempt },
+      });
     }
   }
   return true;
@@ -761,4 +822,8 @@ function isValueNumber(
   }
 
   return true;
+}
+
+function formatNumber(amount: any): string {
+  return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }

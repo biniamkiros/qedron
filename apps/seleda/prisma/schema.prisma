@@ -54,6 +54,7 @@ model Message{
     tender        Tender  @relation(fields: [tenderId], references: [id])
     type          String  @default("")
     tags          String[]
+    atempt        Int     @default(0)
     createdAt     DateTime @default(now())
     
     @@unique([userId, tenderId], name: "messageId")
@@ -63,5 +64,6 @@ model Notification{
     id            String @id @default(auto()) @map("_id") @db.ObjectId
     userId        String  @db.ObjectId
     message       String  @default("")
+    atempt        Int     @default(0)
     createdAt     DateTime @default(now())
 }

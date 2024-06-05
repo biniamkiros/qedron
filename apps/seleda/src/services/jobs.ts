@@ -26,7 +26,7 @@ export const sendQueuedMessages = async () => {
   });
 };
 
-export const pullEPGTenders = () => {
+export const pullEPGTenders = async () => {
   const rule = new schedule.RecurrenceRule();
   // rule.hour = 0
   rule.minute = 0;
@@ -39,7 +39,7 @@ export const pullEPGTenders = () => {
   });
 };
 
-export const postTendersTochannels = () => {
+export const postTendersTochannels = async () => {
   const rule = new schedule.RecurrenceRule();
   if (env.NODE_ENV === "production") {
     // rule.hour = [9, 13, 17];
@@ -53,7 +53,7 @@ export const postTendersTochannels = () => {
   }
 };
 
-export const sendTenderSummary = () => {
+export const sendTenderSummary = async () => {
   const rule = new schedule.RecurrenceRule();
   if (env.NODE_ENV === "production") {
     rule.hour = 17;
