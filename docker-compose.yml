@@ -110,6 +110,7 @@ services:
       dockerfile: ./apps/seleda/Dockerfile
       args:
         SKIP_ENV_VALIDATION: 1
+        NODE_ENV: production
         SELEDA_DATABASE_URL: ${SELEDA_DATABASE_URL}
         SELEDA_BOT_TOKEN: ${SELEDA_BOT_TOKEN}
         NEXTAUTH_SECRET: h
