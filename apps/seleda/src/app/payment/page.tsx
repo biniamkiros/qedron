@@ -239,9 +239,11 @@ export default function HomePage() {
     ready = true;
   }, []);
 
-  return ready ? (
+  if (ready) return <div>loading</div>;
+
+  return (
     <SDKProvider acceptCustomStyles debug>
       <SeledaMiniApp />
     </SDKProvider>
-  ) : null;
+  );
 }
