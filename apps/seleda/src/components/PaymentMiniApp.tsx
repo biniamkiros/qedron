@@ -1,5 +1,13 @@
 "use client";
 import {
+  AppRoot,
+  Cell,
+  Link,
+  Section,
+  Image,
+  List,
+} from "@telegram-apps/telegram-ui";
+import {
   postEvent,
   on,
   requestViewport,
@@ -9,14 +17,20 @@ import {
   usePopup,
   useMainButton,
   MiniApp,
+  useLaunchParams,
 } from "@tma.js/sdk-react";
 import { useEffect } from "react";
+
+import tonSvg from "../components/ton.svg";
 
 export default function PaymentMiniApp() {
   if (typeof window === "undefined") return <div>loading...</div>;
   const miniApp = useMiniApp();
   const popup = usePopup();
   const mainButton = useMainButton();
+
+  const lp = useLaunchParams();
+
   useEffect(() => {
     postEvent("web_app_ready");
     postEvent("web_app_set_header_color", { color_key: "secondary_bg_color" });
@@ -95,63 +109,108 @@ export default function PaymentMiniApp() {
   }
 
   return (
-    <main>
-      <div style={{ alignContent: "center" }}>
-        <a href="https://ton.org/">
-          <img
-            width="48"
-            src="./assets/tapps.png"
-            alt="logo of telegram web apps"
-          />
-        </a>
-      </div>
-      <h1>Modals</h1>
-      <button
-        onClick={() => {
-          popup
-            .open({
-              title: "Hello!",
-              message: "Here is a test message.",
-              buttons: [{ id: "my-id", type: "default", text: "Default text" }],
-            })
-            .then((buttonId: string | null) => {
-              console.log(
-                buttonId === null
-                  ? "User did not click any button"
-                  : `User clicked a button with ID "${buttonId}"`
-              );
-            });
-        }}
-      >
-        Launch Alert
-      </button>
-      <button onClick={() => showPopup()}>Launch Popup</button>
+    <AppRoot
+      appearance={miniApp.isDark ? "dark" : "light"}
+      platform={["macos", "ios"].includes(lp.platform) ? "ios" : "base"}
+    >
+      <List>
+        <Section
+          header="Features"
+          footer="You can use these pages to learn more about features, provided by Telegram Mini Apps and other useful projects"
+        >
+          <Link href="/ton-connect">
+            <Cell
+              before={
+                <Image src={tonSvg} style={{ backgroundColor: "#007AFF" }} />
+              }
+              subtitle="Connect your TON wallet"
+            >
+              TON Connect
+            </Cell>
+          </Link>
+        </Section>
+        <Section
+          header="Application Launch Data"
+          footer="These pages help developer to learn more about current launch information"
+        >
+          <Link href="/init-data">
+            <Cell subtitle="User data, chat information, technical data">
+              Init Data
+            </Cell>
+          </Link>
+          <Link href="/launch-params">
+            <Cell subtitle="Platform identifier, Mini Apps version, etc.">
+              Launch Parameters
+            </Cell>
+          </Link>
+          <Link href="/theme-params">
+            <Cell subtitle="Telegram application palette information">
+              Theme Parameters
+            </Cell>
+          </Link>
+        </Section>
+      </List>
+      {/* <main>
+        <div style={{ alignContent: "center" }}>
+          <a href="https://ton.org/">
+            <img
+              width="48"
+              src="./assets/tapps.png"
+              alt="logo of telegram web apps"
+            />
+          </a>
+        </div>
+        <h1>Modals</h1>
+        <button
+          onClick={() => {
+            popup
+              .open({
+                title: "Hello!",
+                message: "Here is a test message.",
+                buttons: [
+                  { id: "my-id", type: "default", text: "Default text" },
+                ],
+              })
+              .then((buttonId: string | null) => {
+                console.log(
+                  buttonId === null
+                    ? "User did not click any button"
+                    : `User clicked a button with ID "${buttonId}"`
+                );
+              });
+          }}
+        >
+          Launch Alert
+        </button>
+        <button onClick={() => showPopup()}>Launch Popup</button>
 
-      <h1>Links</h1>
-      <ul>
-        <li>
-          <a href="javascript:Telegram.WebApp.openTelegramLink('https://t.me/trendingapps');">
-            Open link within Telegram
-          </a>
-        </li>
-        <li>
-          <a href="javascript:Telegram.WebApp.openLink('https://ton.org/');">
-            Open link in external browser
-          </a>
-        </li>
-        <li>
-          <a href="javascript:Telegram.WebApp.openLink('https://telegra.ph/api',{try_instant_view:true});">
-            Open link inside Telegram webview
-          </a>
-        </li>
-      </ul>
+        <h1>Links</h1>
+        <ul>
+          <li>
+            <a href="javascript:Telegram.WebApp.openTelegramLink('https://t.me/trendingapps');">
+              Open link within Telegram
+            </a>
+          </li>
+          <li>
+            <a href="javascript:Telegram.WebApp.openLink('https://ton.org/');">
+              Open link in external browser
+            </a>
+          </li>
+          <li>
+            <a href="javascript:Telegram.WebApp.openLink('https://telegra.ph/api',{try_instant_view:true});">
+              Open link inside Telegram webview
+            </a>
+          </li>
+        </ul>
 
-      <h1>Buttons</h1>
-      <button onClick={() => postEvent("web_app_expand")}>
-        Expand Webview
-      </button>
-      <button onClick={() => toggleMainButton()}>Toggle Main Button</button>
-    </main>
+        <h1>Buttons</h1>
+        <button onClick={() => postEvent("web_app_expand")}>
+          Expand Webview
+        </button>
+        <button onClick={() => toggleMainButton()}>Toggle Main Button</button>
+      </main> */}
+    </AppRoot>
+
     // <Page title="Home Page">
     //   <p>
     //     This page is a home page in this boilerplate. You can use the links

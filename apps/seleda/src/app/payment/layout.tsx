@@ -28,7 +28,7 @@ export default function PaymentLayout({
           name="viewport"
           content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
         />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
         <title>Telegram Mini Apps Vanilla JS Sample App</title>
         {/* <style>
           {`body {
