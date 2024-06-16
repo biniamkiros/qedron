@@ -6,6 +6,14 @@ import {
   Section,
   Image,
   List,
+  Banner,
+  Button,
+  // CardCell,
+  Card,
+  ColorInput,
+  IconContainer,
+  Input,
+  Slider,
 } from "@telegram-apps/telegram-ui";
 import {
   postEvent,
@@ -18,10 +26,17 @@ import {
   useMainButton,
   MiniApp,
   useLaunchParams,
+  bindMiniAppCSSVars,
+  bindThemeParamsCSSVars,
+  bindViewportCSSVars,
+  useThemeParams,
+  useViewport,
 } from "@tma.js/sdk-react";
 import { useEffect } from "react";
 
 import tonSvg from "../components/ton.svg";
+import { CardChip } from "@telegram-apps/telegram-ui/dist/components/Blocks/Card/components/CardChip/CardChip";
+import React from "react";
 
 export default function PaymentMiniApp() {
   if (typeof window === "undefined") return <div>loading...</div>;
@@ -30,6 +45,8 @@ export default function PaymentMiniApp() {
   const mainButton = useMainButton();
 
   const lp = useLaunchParams();
+  const themeParams = useThemeParams();
+  const viewport = useViewport();
 
   useEffect(() => {
     postEvent("web_app_ready");
@@ -58,6 +75,18 @@ export default function PaymentMiniApp() {
 
     on("main_button_pressed", (payload) => {});
   }, []);
+
+  useEffect(() => {
+    return bindMiniAppCSSVars(miniApp, themeParams);
+  }, [miniApp, themeParams]);
+
+  useEffect(() => {
+    return bindThemeParamsCSSVars(themeParams);
+  }, [themeParams]);
+
+  useEffect(() => {
+    return viewport && bindViewportCSSVars(viewport);
+  }, [viewport]);
 
   function showPopup() {
     popup
@@ -113,6 +142,49 @@ export default function PaymentMiniApp() {
       appearance={miniApp.isDark ? "dark" : "light"}
       platform={["macos", "ios"].includes(lp.platform) ? "ios" : "base"}
     >
+      <Section header="Banner inside section">
+        <Banner
+          before={<Image size={48} />}
+          header="Introducing TON Space"
+          subheader="Start exploring TON in a new, better way"
+        >
+          <Button size="s" Component="a" target="_blank" href={"TON_SITE_LINK"}>
+            Try it out
+          </Button>
+        </Banner>
+        <Card type="plain">
+          <React.Fragment key=".0">
+            <CardChip readOnly>Hot place</CardChip>
+            <img
+              alt="Dog"
+              src="https://i.imgur.com/892vhef.jpeg"
+              style={{
+                display: "block",
+                height: 308,
+                objectFit: "cover",
+                width: 254,
+              }}
+            />
+            <Cell readOnly subtitle="United states">
+              New York
+            </Cell>
+          </React.Fragment>
+        </Card>
+      </Section>
+      <Section header="Form section">
+        <Input header="Android title" placeholder="Something here" />
+        <ColorInput />
+        <Slider
+          step={25}
+          before={
+            <IconContainer>
+              {/* className={styles.sliderIcon}> */}
+              {/* <Icon24SunLow /> */}
+            </IconContainer>
+          }
+          after={<IconContainer>{/* <Icon24SunLow /> */}</IconContainer>}
+        />
+      </Section>
       <List>
         <Section
           header="Features"
