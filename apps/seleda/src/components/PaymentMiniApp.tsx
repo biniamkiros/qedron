@@ -14,6 +14,8 @@ import {
   IconContainer,
   Input,
   Slider,
+  LargeTitle,
+  FixedLayout,
 } from "@telegram-apps/telegram-ui";
 import {
   postEvent,
@@ -142,86 +144,37 @@ export default function PaymentMiniApp() {
       appearance={miniApp.isDark ? "dark" : "light"}
       platform={["macos", "ios"].includes(lp.platform) ? "ios" : "base"}
     >
-      <Section header="Banner inside section">
-        <Banner
-          before={<Image size={48} />}
-          header="Introducing TON Space"
-          subheader="Start exploring TON in a new, better way"
-        >
-          <Button size="s" Component="a" target="_blank" href={"TON_SITE_LINK"}>
-            Try it out
-          </Button>
-        </Banner>
-        <Card type="plain">
-          <React.Fragment key=".0">
-            <CardChip readOnly>Hot place</CardChip>
-            <img
-              alt="Dog"
-              src="https://i.imgur.com/892vhef.jpeg"
-              style={{
-                display: "block",
-                height: 308,
-                objectFit: "cover",
-                width: 254,
-              }}
-            />
-            <Cell readOnly subtitle="United states">
-              New York
-            </Cell>
-          </React.Fragment>
-        </Card>
-      </Section>
-      <Section header="Form section">
-        <Input header="Android title" placeholder="Something here" />
-        <ColorInput />
-        <Slider
-          step={25}
-          before={
-            <IconContainer>
-              {/* className={styles.sliderIcon}> */}
-              {/* <Icon24SunLow /> */}
-            </IconContainer>
-          }
-          after={<IconContainer>{/* <Icon24SunLow /> */}</IconContainer>}
-        />
-      </Section>
-      <List>
-        <Section
-          header="Features"
-          footer="You can use these pages to learn more about features, provided by Telegram Mini Apps and other useful projects"
-        >
-          <Link href="/ton-connect">
-            <Cell
-              before={
-                <Image src={tonSvg} style={{ backgroundColor: "#007AFF" }} />
-              }
-              subtitle="Connect your TON wallet"
+      <FixedLayout
+        vertical="top"
+        style={{
+          padding: 16,
+        }}
+      >
+        <Section header="seleda subscription">
+          <LargeTitle weight="3" color="accent">
+            br
+            <span
+              style={{ fontSize: "76px", color: "var(--tg-theme-link-color)" }}
             >
-              TON Connect
-            </Cell>
-          </Link>
+              $207
+            </span>
+          </LargeTitle>
+
+          <Card type="plain">
+            <React.Fragment key=".0">
+              <CardChip readOnly>Recomended</CardChip>
+              <Cell readOnly subtitle="United states">
+                3 months
+              </Cell>
+            </React.Fragment>
+          </Card>
         </Section>
-        <Section
-          header="Application Launch Data"
-          footer="These pages help developer to learn more about current launch information"
-        >
-          <Link href="/init-data">
-            <Cell subtitle="User data, chat information, technical data">
-              Init Data
-            </Cell>
-          </Link>
-          <Link href="/launch-params">
-            <Cell subtitle="Platform identifier, Mini Apps version, etc.">
-              Launch Parameters
-            </Cell>
-          </Link>
-          <Link href="/theme-params">
-            <Cell subtitle="Telegram application palette information">
-              Theme Parameters
-            </Cell>
-          </Link>
-        </Section>
-      </List>
+
+        <Button size="l" stretched>
+          This is FixedLayout with top vertical
+        </Button>
+      </FixedLayout>
+
       {/* <main>
         <div style={{ alignContent: "center" }}>
           <a href="https://ton.org/">
