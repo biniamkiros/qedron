@@ -234,9 +234,14 @@ const SeledaMiniApp = () => {
   );
 };
 export default function HomePage() {
-  return (
+  let ready = false;
+  useEffect(() => {
+    ready = true;
+  }, []);
+
+  return ready ? (
     <SDKProvider acceptCustomStyles debug>
       <SeledaMiniApp />
     </SDKProvider>
-  );
+  ) : null;
 }
