@@ -16,11 +16,11 @@ import { mock } from "../../config/mock.config";
 import { useEffect } from "react";
 
 const SeledaMiniApp = () => {
+  mock();
   const miniApp = useMiniApp();
   const popup = usePopup();
   const mainButton = useMainButton();
   useEffect(() => {
-    mock();
     postEvent("web_app_ready");
     postEvent("web_app_set_header_color", { color_key: "secondary_bg_color" });
     setViewportData();
