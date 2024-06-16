@@ -30,7 +30,7 @@ export default function PaymentLayout({
         />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <title>Telegram Mini Apps Vanilla JS Sample App</title>
-        <style>
+        {/* <style>
           {`body {
         --bg-color: var(--tg-theme-bg-color);
         font: 12px/18px "Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica,
@@ -90,7 +90,7 @@ export default function PaymentLayout({
       #viewport-params-expand {
         top: 30px;
       }`}
-        </style>
+        </style> */}
       </head>
       <body className={`font-sans ${inter.variable}`}>
         {children}
