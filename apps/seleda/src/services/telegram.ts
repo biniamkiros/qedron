@@ -15,7 +15,7 @@ let seledaGramBot: any = null;
 
 const NEW_TAG_RESULTS = "show_tenders_for_tags";
 const groupChatMessage =
-  "በቡድን ውስጥ የማውራት ብቃቴ የተወሰነ ስለሆኔ ይህን በዚህ ይጠቀሙ 👉 @TetherGramBot";
+  "በቡድን ውስጥ የማውራት ብቃቴ የተወሰነ ስለሆኔ ይህን በዚህ ይጠቀሙ 👉 @SeledaGramBot";
 
 export const initSeledaBot = async () => {
   return getBot().then((bot) => {
@@ -31,11 +31,21 @@ export const initSeledaBot = async () => {
     });
 
     bot.on("callback_query", (query: { data?: any; message?: any }) => {
+      console.log("🚀 ~ bot.on ~ query:", query);
       const { message: { chat: { id } } = {} } = query;
       switch (query.data) {
         case NEW_TAG_RESULTS:
-          bot.sendMessage(id, "Fetching....");
+          bot
+            .sendMessage(id, "Fetching....")
+            .catch((error: { code: any; response: { body: any } }) => {
+              console.log(error.code); // => 'ETELEGRAM'
+              console.log(error.response.body); // => { ok: false, error_code: 400, description: 'Bad Request: chat not found' }
+              handleError(id, error);
+            });
           processRecentTenderForUser(id);
+          break;
+        default:
+          console.log("🚀 ~ bot.on ~ query.data:", query.data);
           break;
       }
     });
@@ -49,7 +59,13 @@ export const initSeledaBot = async () => {
         chat: { id, type },
       } = msg;
       if (type !== "private") {
-        bot.sendMessage(id, groupChatMessage);
+        bot
+          .sendMessage(id, groupChatMessage)
+          .catch((error: { code: any; response: { body: any } }) => {
+            console.log(error.code); // => 'ETELEGRAM'
+            console.log(error.response.body); // => { ok: false, error_code: 400, description: 'Bad Request: chat not found' }
+            handleError(id, error);
+          });
         return;
       }
       const tags = await getUserTags(id);
@@ -100,22 +116,39 @@ export const initSeledaBot = async () => {
                     };
 
                 if (!isTooMuchAlert) processRecentTenderForUser(id);
-                bot.sendMessage(
-                  id,
-                  getMarkdownString(
-                    "Your alert tags is set. Tenders which contain these tags will be sent to you on your preffered time.\n\nYour current keywords are: "
-                  ) +
-                    "\n\n`" +
-                    user.tags.join(", ") +
-                    "`",
-                  options
-                );
+                bot
+                  .sendMessage(
+                    id,
+                    getMarkdownString(
+                      "Your alert tags is set. Tenders which contain these tags will be sent to you on your preffered time.\n\nYour current keywords are: "
+                    ) +
+                      "\n\n`" +
+                      user.tags.join(", ") +
+                      "`",
+                    options
+                  )
+                  .catch((error: { code: any; response: { body: any } }) => {
+                    console.log(error.code); // => 'ETELEGRAM'
+                    console.log(error.response.body); // => { ok: false, error_code: 400, description: 'Bad Request: chat not found' }
+                    handleError(id, error);
+                  });
               } else {
-                bot.sendMessage(id, "Error. Please try again.");
+                bot
+                  .sendMessage(id, "Error. Please try again.")
+                  .catch((error: { code: any; response: { body: any } }) => {
+                    console.log(error.code); // => 'ETELEGRAM'
+                    console.log(error.response.body); // => { ok: false, error_code: 400, description: 'Bad Request: chat not found' }
+                    handleError(id, error);
+                  });
               }
               bot.removeReplyListener(replyListenerId);
             }
           );
+        })
+        .catch((error: { code: any; response: { body: any } }) => {
+          console.log(error.code); // => 'ETELEGRAM'
+          console.log(error.response.body); // => { ok: false, error_code: 400, description: 'Bad Request: chat not found' }
+          handleError(id, error);
         });
     });
 
@@ -124,14 +157,28 @@ export const initSeledaBot = async () => {
         chat: { id, type },
       } = msg;
       if (type !== "private") {
-        bot.sendMessage(id, groupChatMessage);
+        bot
+          .sendMessage(id, groupChatMessage)
+          .catch((error: { code: any; response: { body: any } }) => {
+            console.log(error.code); // => 'ETELEGRAM'
+            console.log(error.response.body); // => { ok: false, error_code: 400, description: 'Bad Request: chat not found' }
+            handleError(id, error);
+          });
         return;
       }
       const { user, count } = await setTag(id, []);
-      bot.sendMessage(
-        id,
-        user ? "Your tags are cleared" : "Error clearing tags. Try again later"
-      );
+      bot
+        .sendMessage(
+          id,
+          user
+            ? "Your tags are cleared"
+            : "Error clearing tags. Try again later"
+        )
+        .catch((error: { code: any; response: { body: any } }) => {
+          console.log(error.code); // => 'ETELEGRAM'
+          console.log(error.response.body); // => { ok: false, error_code: 400, description: 'Bad Request: chat not found' }
+          handleError(id, error);
+        });
     });
 
     bot.onText(/\/tags/, async (msg: { chat: { id: any; type: any } }) => {
@@ -139,7 +186,13 @@ export const initSeledaBot = async () => {
         chat: { id, type },
       } = msg;
       if (type !== "private") {
-        bot.sendMessage(id, groupChatMessage);
+        bot
+          .sendMessage(id, groupChatMessage)
+          .catch((error: { code: any; response: { body: any } }) => {
+            console.log(error.code); // => 'ETELEGRAM'
+            console.log(error.response.body); // => { ok: false, error_code: 400, description: 'Bad Request: chat not found' }
+            handleError(id, error);
+          });
         return;
       }
 
@@ -155,7 +208,13 @@ export const initSeledaBot = async () => {
             getMarkdownString(tags.join(", ")) +
             "`"
           : getMarkdownString("You currently have no tags set.");
-      bot.sendMessage(id, escapedMessage, { parse_mode: "MarkdownV2" });
+      bot
+        .sendMessage(id, escapedMessage, { parse_mode: "MarkdownV2" })
+        .catch((error: { code: any; response: { body: any } }) => {
+          console.log(error.code); // => 'ETELEGRAM'
+          console.log(error.response.body); // => { ok: false, error_code: 400, description: 'Bad Request: chat not found' }
+          handleError(id, error);
+        });
     });
 
     bot.onText(/\/search/, async (msg: { chat: { id: any; type: any } }) => {
@@ -163,17 +222,29 @@ export const initSeledaBot = async () => {
         chat: { id, type },
       } = msg;
       if (type !== "private") {
-        bot.sendMessage(id, groupChatMessage);
+        bot
+          .sendMessage(id, groupChatMessage)
+          .catch((error: { code: any; response: { body: any } }) => {
+            console.log(error.code); // => 'ETELEGRAM'
+            console.log(error.response.body); // => { ok: false, error_code: 400, description: 'Bad Request: chat not found' }
+            handleError(id, error);
+          });
         return;
       }
 
-      bot.sendMessage(
-        id,
-        getMarkdownString("Search is coming soon. \nInfo +251911702254"),
-        {
-          parse_mode: "MarkdownV2",
-        }
-      );
+      bot
+        .sendMessage(
+          id,
+          getMarkdownString("Search is coming soon. \nInfo +251911702254"),
+          {
+            parse_mode: "MarkdownV2",
+          }
+        )
+        .catch((error: { code: any; response: { body: any } }) => {
+          console.log(error.code); // => 'ETELEGRAM'
+          console.log(error.response.body); // => { ok: false, error_code: 400, description: 'Bad Request: chat not found' }
+          handleError(id, error);
+        });
     });
 
     bot.onText(/\/start/, async (msg: { chat: { id: number; type: any } }) => {
@@ -181,15 +252,46 @@ export const initSeledaBot = async () => {
         chat: { id, type },
       } = msg;
       if (type !== "private") {
-        bot.sendMessage(id, groupChatMessage);
+        bot
+          .sendMessage(id, groupChatMessage)
+          .catch((error: { code: any; response: { body: any } }) => {
+            console.log(error.code); // => 'ETELEGRAM'
+            console.log(error.response.body); // => { ok: false, error_code: 400, description: 'Bad Request: chat not found' }
+            handleError(id, error);
+          });
         return;
       } else {
         handleChatUser(msg);
-        bot.sendMessage(
-          id,
-          "welcome, Don't miss any new tenders. get notification for new tender. \n\npress /alert to set alert to set keywords for new tenders. \n\nI'll notify you when tenders containing you keywords get published."
-        );
+        bot
+          .sendMessage(
+            id,
+            "welcome, Don't miss any new tenders. get notification for new tender. \n\npress /alert to set alert to set keywords for new tenders. \n\nI'll notify you when tenders containing you keywords get published."
+          )
+          .catch((error: { code: any; response: { body: any } }) => {
+            console.log(error.code); // => 'ETELEGRAM'
+            console.log(error.response.body); // => { ok: false, error_code: 400, description: 'Bad Request: chat not found' }
+            handleError(id, error);
+          });
       }
+    });
+
+    bot.onText(/\/subscribe/, async (msg: any) => {
+      const arrayButton = [];
+      arrayButton.push([
+        {
+          text: "ክፍያ ይፈጽሙ",
+          web_app: { url: "https://seleda.qedron.com/payment" },
+          // web_app: { url: "https://www.qedron.com/seleda/tma" },
+        },
+      ]);
+
+      const options = {
+        reply_markup: JSON.stringify({ inline_keyboard: arrayButton }),
+        parse_mode: "HTML",
+      };
+      const subDate = "gf";
+      const message = `የሰሌዳግራም ደንበኝነት ምዝገባዎ በ${subDate} ያልቃል። ለማራዘም ከስር ያለውን 👇 ማስፈንጠሪያ በመጫን ክፍያ ይፈጽሙ።`;
+      await bot.sendMessage(msg.chat.id, message, options);
     });
 
     bot.on(
@@ -199,7 +301,13 @@ export const initSeledaBot = async () => {
           chat: { id, type },
         } = msg;
         if (type !== "private") {
-          bot.sendMessage(id, groupChatMessage);
+          bot
+            .sendMessage(id, groupChatMessage)
+            .catch((error: { code: any; response: { body: any } }) => {
+              console.log(error.code); // => 'ETELEGRAM'
+              console.log(error.response.body); // => { ok: false, error_code: 400, description: 'Bad Request: chat not found' }
+              handleError(id, error);
+            });
           return;
         } else {
           handleChatUser(msg);
@@ -210,7 +318,13 @@ export const initSeledaBot = async () => {
             //   else if (/^\d$/.test(msg.text)) handlePagination(msg, msg.text);
             //   else
 
-            bot.sendMessage(id, "Please only use the commands from the menu.");
+            bot
+              .sendMessage(id, "Please only use the commands from the menu.")
+              .catch((error: { code: any; response: { body: any } }) => {
+                console.log(error.code); // => 'ETELEGRAM'
+                console.log(error.response.body); // => { ok: false, error_code: 400, description: 'Bad Request: chat not found' }
+                handleError(id, error);
+              });
           }
         }
       }
@@ -251,6 +365,7 @@ export const sendUsernameOptions = async (
     .catch((error: { code: any; response: { body: any } }) => {
       console.log(error.code); // => 'ETELEGRAM'
       console.log(error.response.body); // => { ok: false, error_code: 400, description: 'Bad Request: chat not found' }
+      handleError(username, error);
       return false;
     });
 };
@@ -286,6 +401,7 @@ export const sendUsernameReplyOptions = async (
     .catch((error: { code: any; response: { body: any } }) => {
       console.log(error.code); // => 'ETELEGRAM'
       console.log(error.response.body); // => { ok: false, error_code: 400, description: 'Bad Request: chat not found' }
+      handleError(username, error);
       return false;
     });
 };
@@ -303,7 +419,7 @@ export const handleChatUser = (msg: {
   const name =
     (first_name ? first_name : "") + " " + (last_name ? last_name : "");
   const formattedUsername = username ? "@" + username : "";
-  upsertUser(name.trim(), id, formattedUsername);
+  upsertUser(name.trim(), id, formattedUsername, "active");
 };
 
 export const sendTelegramMarkdown = async (
@@ -333,6 +449,7 @@ export const sendTelegramMarkdown = async (
     .catch((error: { code: any; response: { body: any } }) => {
       console.log(error.code); // => 'ETELEGRAM'
       console.log(error.response.body); // => { ok: false, error_code: 400, description: 'Bad Request: chat not found' }
+      handleError(chatId, error);
       return false;
     });
 };
@@ -365,6 +482,7 @@ export const sendTelegram = async (
     .catch((error: { code: any; response: { body: any } }) => {
       console.log(error.code); // => 'ETELEGRAM'
       console.log(error.response.body); // => { ok: false, error_code: 400, description: 'Bad Request: chat not found' }
+      handleError(chatId, error);
       return false;
     });
 };
@@ -384,5 +502,34 @@ export const handleUpdates = async (update: any) => {
     );
     return false;
   }
+  console.log("🚀 ~ handleUpdates ~ update:", update);
   seledaGramBot.processUpdate(update);
+};
+
+export const handleError = async (chatId: any, error: any) => {
+  // "error_code":403,"description":"Forbidden: Bot was blocked by the user"
+  const { error_code, description } = error.response.body;
+  if (error.response && error_code === 403) {
+    // ...snip...
+    // ok: false,
+    // error_code: 400,
+    // description: 'Bad Request: chat not found'
+    seledaGramBot.sendMessage("@biniamkiros", error);
+  }
+};
+
+export const setPaymentURl = async (chatId: any) => {
+  seledaGramBot.setChatMenuButton({
+    chat_id: chatId,
+    menu_button: JSON.stringify({
+      // text: 'Order food',
+      // type: 'commands',
+
+      text: "Order food",
+      type: "web_app",
+      web_app: {
+        url: "https://tg.elevator.com.et",
+      },
+    }),
+  });
 };

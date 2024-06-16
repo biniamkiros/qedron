@@ -738,11 +738,11 @@ export const setTag = async (chatId: number, tags: string[]) => {
 export const upsertUser = async (
   name: string,
   chatId: number,
-  username: string
+  username: string,
+  status: string
 ) => {
   const user = await prisma.user.findUnique({ where: { chatId: chatId } });
 
-  const status = "active";
   if (user) {
     const updatedUser = await prisma.user.update({
       where: { chatId: chatId },
