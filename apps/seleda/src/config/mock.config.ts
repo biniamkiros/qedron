@@ -4,13 +4,14 @@ import {
   parseInitData,
   retrieveLaunchParams,
 } from "@tma.js/sdk-react";
+import { env } from "process";
 
 export const mock = () => {
   // It is important, to mock the environment only for development purposes. When building the
   // application, import.meta.env.DEV will become false, and the code inside will be tree-shaken,
   // so you will not see it in your final bundle.
-  if (true) {
-    //  if (import.meta.env.DEV) {
+  // if (true) {
+  if (env.NODE_ENV !== "production") {
     let shouldMock: boolean;
 
     // Try to extract launch parameters to check if the current environment is Telegram-based.
