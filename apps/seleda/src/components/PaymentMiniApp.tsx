@@ -164,7 +164,7 @@ export default function PaymentMiniApp() {
           >
             br
             <span
-              style={{ fontSize: "76px", color: "var(--tg-theme-link-color)" }}
+              style={{ fontSize: "52px", color: "var(--tg-theme-link-color)" }}
             >
               $207
             </span>
@@ -197,12 +197,13 @@ export default function PaymentMiniApp() {
                 description="Description"
                 subhead="አንድ ወር"
                 subtitle="Subtitle"
+                interactiveAnimation="opacity"
               >
                 ብር{" "}
                 <span
                   style={{
                     fontSize: "26px",
-                    color: "var(--tg-theme-link-color)",
+                    // color: "var(--tg-theme-link-color)",
                   }}
                 >
                   207
@@ -214,6 +215,7 @@ export default function PaymentMiniApp() {
                 description="Description"
                 subhead="አንድ ዓመት"
                 subtitle="Subtitle"
+                interactiveAnimation="opacity"
               >
                 {/* titleBadge={
                   <Badge large mode="critical" type="number">
@@ -224,7 +226,7 @@ export default function PaymentMiniApp() {
                 <span
                   style={{
                     fontSize: "26px",
-                    color: "var(--tg-theme-link-color)",
+                    // color: "var(--tg-theme-link-color)",
                   }}
                 >
                   680
@@ -237,12 +239,13 @@ export default function PaymentMiniApp() {
                 description="Description"
                 subhead="ሶስት ወራት"
                 subtitle="Subtitle"
+                interactiveAnimation="opacity"
               >
                 ብር{" "}
                 <span
                   style={{
                     fontSize: "26px",
-                    color: "var(--tg-theme-link-color)",
+                    // color: "var(--tg-theme-link-color)",
                   }}
                 >
                   420
