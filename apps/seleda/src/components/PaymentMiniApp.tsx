@@ -14,8 +14,11 @@ import {
   IconContainer,
   Input,
   Slider,
+  InlineButtons,
   LargeTitle,
   FixedLayout,
+  Avatar,
+  Badge,
 } from "@telegram-apps/telegram-ui";
 import {
   postEvent,
@@ -39,6 +42,7 @@ import { useEffect } from "react";
 import tonSvg from "../components/ton.svg";
 import { CardChip } from "@telegram-apps/telegram-ui/dist/components/Blocks/Card/components/CardChip/CardChip";
 import React from "react";
+import { InlineButtonsItem } from "@telegram-apps/telegram-ui/dist/components/Blocks/InlineButtons/components/InlineButtonsItem/InlineButtonsItem";
 
 export default function PaymentMiniApp() {
   if (typeof window === "undefined") return <div>loading...</div>;
@@ -147,11 +151,17 @@ export default function PaymentMiniApp() {
       <FixedLayout
         vertical="top"
         style={{
-          padding: 16,
+          alignContent: "center",
         }}
       >
         <Section header="seleda subscription">
-          <LargeTitle weight="3" color="accent">
+          <LargeTitle
+            weight="3"
+            color="accent"
+            style={{
+              padding: 16,
+            }}
+          >
             br
             <span
               style={{ fontSize: "76px", color: "var(--tg-theme-link-color)" }}
@@ -160,19 +170,91 @@ export default function PaymentMiniApp() {
             </span>
           </LargeTitle>
 
-          <Card type="plain">
+          {/* <Card type="plain">
             <React.Fragment key=".0">
               <CardChip readOnly>Recomended</CardChip>
               <Cell readOnly subtitle="United states">
                 3 months
               </Cell>
             </React.Fragment>
-          </Card>
+          </Card> */}
+
+          {/* <Card type="plain">
+            <Cell
+              // after={<Badge type="number">99</Badge>}
+              // before={<Avatar size={48} />}
+              description="Description"
+              subhead="Subhead"
+              subtitle="Subtitle"
+              titleBadge={<Badge type="dot" />}
+            >
+              Title
+            </Cell>
+          </Card> */}
+          <InlineButtons mode="bezeled">
+            <InlineButtonsItem>
+              <Cell
+                description="Description"
+                subhead="አንድ ወር"
+                subtitle="Subtitle"
+              >
+                ብር{" "}
+                <span
+                  style={{
+                    fontSize: "32px",
+                    color: "var(--tg-theme-link-color)",
+                  }}
+                >
+                  207
+                </span>
+              </Cell>
+            </InlineButtonsItem>
+            <InlineButtonsItem>
+              <Cell
+                description="Description"
+                subhead="አንድ ዓመት"
+                subtitle="Subtitle"
+                titleBadge={
+                  <Badge large mode="critical" type="number">
+                    save 60%
+                  </Badge>
+                }
+              >
+                ብር{" "}
+                <span
+                  style={{
+                    fontSize: "32px",
+                    color: "var(--tg-theme-link-color)",
+                  }}
+                >
+                  680
+                </span>
+              </Cell>
+            </InlineButtonsItem>
+            <InlineButtonsItem>
+              {/* text="QR"> */}
+              <Cell
+                description="Description"
+                subhead="ሶስት ወራት"
+                subtitle="Subtitle"
+              >
+                ብር{" "}
+                <span
+                  style={{
+                    fontSize: "32px",
+                    color: "var(--tg-theme-link-color)",
+                  }}
+                >
+                  420
+                </span>
+              </Cell>
+            </InlineButtonsItem>
+          </InlineButtons>
         </Section>
 
-        <Button size="l" stretched>
+        {/* <Button size="l" stretched>
           This is FixedLayout with top vertical
-        </Button>
+        </Button> */}
       </FixedLayout>
 
       {/* <main>
