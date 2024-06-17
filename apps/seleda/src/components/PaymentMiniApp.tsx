@@ -201,7 +201,7 @@ export default function PaymentMiniApp() {
                 ብር{" "}
                 <span
                   style={{
-                    fontSize: "32px",
+                    fontSize: "26px",
                     color: "var(--tg-theme-link-color)",
                   }}
                 >
@@ -214,16 +214,16 @@ export default function PaymentMiniApp() {
                 description="Description"
                 subhead="አንድ ዓመት"
                 subtitle="Subtitle"
-                titleBadge={
+              >
+                {/* titleBadge={
                   <Badge large mode="critical" type="number">
                     save 60%
                   </Badge>
-                }
-              >
+                } */}
                 ብር{" "}
                 <span
                   style={{
-                    fontSize: "32px",
+                    fontSize: "26px",
                     color: "var(--tg-theme-link-color)",
                   }}
                 >
@@ -241,7 +241,7 @@ export default function PaymentMiniApp() {
                 ብር{" "}
                 <span
                   style={{
-                    fontSize: "32px",
+                    fontSize: "26px",
                     color: "var(--tg-theme-link-color)",
                   }}
                 >
