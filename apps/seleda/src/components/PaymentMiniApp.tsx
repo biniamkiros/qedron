@@ -191,7 +191,7 @@ export default function PaymentMiniApp() {
               Title
             </Cell>
           </Card> */}
-          <InlineButtons mode="bezeled">
+          {/* <InlineButtons mode="bezeled">
             <InlineButtonsItem>
               <Cell
                 description="Unlimited tender access"
@@ -217,11 +217,7 @@ export default function PaymentMiniApp() {
                 subtitle="Unlimited tender alert"
                 interactiveAnimation="opacity"
               >
-                {/* titleBadge={
-                  <Badge large mode="critical" type="number">
-                    save 60%
-                  </Badge>
-                } */}
+               
                 ብር{" "}
                 <span
                   style={{
@@ -234,7 +230,7 @@ export default function PaymentMiniApp() {
               </Cell>
             </InlineButtonsItem>
             <InlineButtonsItem>
-              {/* text="QR"> */}
+              
               <Cell
                 description="Unlimited tender access"
                 subhead="ሶስት ወራት"
@@ -252,13 +248,13 @@ export default function PaymentMiniApp() {
                 </span>
               </Cell>
             </InlineButtonsItem>
-          </InlineButtons>
+          </InlineButtons> */}
           <Cell
             after={<Badge type="number">99</Badge>}
             before={<Avatar size={48} />}
             description="Unlimited tender alert"
             interactiveAnimation="opacity"
-            subhead="Unlimited tender access"
+            subhead="ምዝገባ ርዝመት"
             // subtitle="Subtitle"
             titleBadge={<Badge type="dot" />}
           >
@@ -269,9 +265,13 @@ export default function PaymentMiniApp() {
             before={<Avatar size={48} />}
             description="Unlimited tender alert"
             interactiveAnimation="opacity"
-            subhead="Unlimited tender access"
+            subhead="ምዝገባ ርዝመት"
             subtitle="60% ቅናሽ"
-            titleBadge={<Badge type="dot" />}
+            titleBadge={
+              <Badge large mode="critical" type="number">
+                save 60%
+              </Badge>
+            }
           >
             አንድ ዓመት
           </Cell>
@@ -280,9 +280,13 @@ export default function PaymentMiniApp() {
             before={<Avatar size={48} />}
             description="Unlimited tender alert"
             interactiveAnimation="opacity"
-            subhead="Unlimited tender access"
+            subhead="ምዝገባ ርዝመት"
             subtitle="20% ቅናሽ"
-            titleBadge={<Badge type="dot" />}
+            titleBadge={
+              <Badge large mode="primary" type="number">
+                save 40%
+              </Badge>
+            }
           >
             ሶስት ወር
           </Cell>
