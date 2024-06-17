@@ -376,6 +376,22 @@ export const getUserTags = async (chatId: number) => {
   return bidder ? bidder.tags : [];
 };
 
+export const getSampleSubscribers = async (type: string) => {
+  // const today = new Date();
+  // const aMonth = new Date();
+  // const threeMonth = new Date();
+  // const yearDate = new Date();
+  // const bidders = await prisma.user.findMany({
+  //   where: {
+  //     activeEndDate: {
+  //       lte: new Date("2022-01-30"),
+  //       gte: new Date("2022-01-15"),
+  //     },
+  //   },
+  //   take: 3,
+  // });
+};
+
 export const processRecentTenderForUser = async (chatId: number) => {
   const bidder = await prisma.user.findFirst({ where: { chatId: chatId } });
   const tenders = await getActiveTenders();

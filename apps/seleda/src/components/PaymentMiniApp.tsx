@@ -19,6 +19,7 @@ import {
   FixedLayout,
   Avatar,
   Badge,
+  AvatarStack,
 } from "@telegram-apps/telegram-ui";
 import {
   postEvent,
@@ -250,23 +251,49 @@ export default function PaymentMiniApp() {
             </InlineButtonsItem>
           </InlineButtons> */}
           <Cell
-            after={<Badge type="number">99</Badge>}
-            before={<Avatar size={48} />}
+            // after={<Badge type="number">62</Badge>}
+            before={
+              <AvatarStack>
+                <Avatar size={48} src="subscribers/sb2.jpg" />
+                <Avatar
+                  size={48}
+                  src="https://avatars.githubusercontent.com/u/84640980?v=4"
+                />
+                <Avatar
+                  size={48}
+                  src="https://avatars.githubusercontent.com/u/84640980?v=4"
+                />
+              </AvatarStack>
+            }
             description="Unlimited tender alert"
             interactiveAnimation="opacity"
             subhead="ምዝገባ ርዝመት"
             // subtitle="Subtitle"
-            titleBadge={<Badge type="dot" />}
+            // titleBadge={<Badge type="dot" />}
           >
             አንድ ወር
           </Cell>
           <Cell
-            after={<Badge type="number">99</Badge>}
-            before={<Avatar size={48} />}
+            // after={<Badge type="number">3200+</Badge>}
+            before={
+              <AvatarStack>
+                <Avatar
+                  size={48}
+                  src="https://avatars.githubusercontent.com/u/84640980?v=4"
+                />
+                <Avatar
+                  size={48}
+                  src="https://avatars.githubusercontent.com/u/84640980?v=4"
+                />
+                <Avatar
+                  size={48}
+                  src="https://avatars.githubusercontent.com/u/84640980?v=4"
+                />
+              </AvatarStack>
+            }
             description="Unlimited tender alert"
             interactiveAnimation="opacity"
             subhead="ምዝገባ ርዝመት"
-            subtitle="60% ቅናሽ"
             titleBadge={
               <Badge large mode="critical" type="number">
                 save 60%
@@ -276,12 +303,26 @@ export default function PaymentMiniApp() {
             አንድ ዓመት
           </Cell>
           <Cell
-            after={<Badge type="number">99</Badge>}
-            before={<Avatar size={48} />}
+            // after={<Badge type="number">340+</Badge>}
+            before={
+              <AvatarStack>
+                <Avatar
+                  size={48}
+                  src="https://avatars.githubusercontent.com/u/84640980?v=4"
+                />
+                <Avatar
+                  size={48}
+                  src="https://avatars.githubusercontent.com/u/84640980?v=4"
+                />
+                <Avatar
+                  size={48}
+                  src="https://avatars.githubusercontent.com/u/84640980?v=4"
+                />
+              </AvatarStack>
+            }
             description="Unlimited tender alert"
             interactiveAnimation="opacity"
             subhead="ምዝገባ ርዝመት"
-            subtitle="20% ቅናሽ"
             titleBadge={
               <Badge large mode="primary" type="number">
                 save 40%

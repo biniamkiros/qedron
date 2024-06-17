@@ -519,17 +519,24 @@ export const handleError = async (chatId: any, error: any) => {
 };
 
 export const setPaymentURl = async (chatId: any) => {
-  seledaGramBot.setChatMenuButton({
-    chat_id: chatId,
-    menu_button: JSON.stringify({
-      // text: 'Order food',
-      // type: 'commands',
+  if (!seledaGramBot) {
+    console.error(
+      "🚀 ~ sendTelegram ~ has not been iniatialised. Initialising..."
+    );
+    seledaGramBot = await initSeledaBot();
+  } else {
+    seledaGramBot.setChatMenuButton({
+      chat_id: chatId,
+      menu_button: JSON.stringify({
+        // text: 'Order food',
+        // type: 'commands',
 
-      text: "Order food",
-      type: "web_app",
-      web_app: {
-        url: "https://tg.elevator.com.et",
-      },
-    }),
-  });
+        text: "Order food",
+        type: "web_app",
+        web_app: {
+          url: "https://tg.elevator.com.et",
+        },
+      }),
+    });
+  }
 };
