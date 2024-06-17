@@ -255,81 +255,57 @@ export default function PaymentMiniApp() {
             before={
               <AvatarStack>
                 <Avatar size={48} src="subscribers/sb2.jpg" />
-                <Avatar
-                  size={48}
-                  src="https://avatars.githubusercontent.com/u/84640980?v=4"
-                />
-                <Avatar
-                  size={48}
-                  src="https://avatars.githubusercontent.com/u/84640980?v=4"
-                />
+                <Avatar size={48} src="subscribers/sb3.jpg" />
+                <Avatar size={48} src="subscribers/sb4.jpg" />
               </AvatarStack>
             }
             description="Unlimited tender alert"
             interactiveAnimation="opacity"
-            subhead="ምዝገባ ርዝመት"
+            subhead="አንድ ወር"
             // subtitle="Subtitle"
             // titleBadge={<Badge type="dot" />}
           >
-            አንድ ወር
+            ብር 200
           </Cell>
           <Cell
             // after={<Badge type="number">3200+</Badge>}
             before={
               <AvatarStack>
-                <Avatar
-                  size={48}
-                  src="https://avatars.githubusercontent.com/u/84640980?v=4"
-                />
-                <Avatar
-                  size={48}
-                  src="https://avatars.githubusercontent.com/u/84640980?v=4"
-                />
-                <Avatar
-                  size={48}
-                  src="https://avatars.githubusercontent.com/u/84640980?v=4"
-                />
+                <Avatar size={48} src="subscribers/sb5.jpg" />
+                <Avatar size={48} src="subscribers/sb6.jpg" />
+                <Avatar size={48} src="subscribers/sb7.jpg" />
               </AvatarStack>
             }
             description="Unlimited tender alert"
             interactiveAnimation="opacity"
-            subhead="ምዝገባ ርዝመት"
+            subhead="አንድ ዓመት"
             titleBadge={
               <Badge large mode="critical" type="number">
                 save 60%
               </Badge>
             }
           >
-            አንድ ዓመት
+            ብር 680
           </Cell>
           <Cell
             // after={<Badge type="number">340+</Badge>}
             before={
               <AvatarStack>
-                <Avatar
-                  size={48}
-                  src="https://avatars.githubusercontent.com/u/84640980?v=4"
-                />
-                <Avatar
-                  size={48}
-                  src="https://avatars.githubusercontent.com/u/84640980?v=4"
-                />
-                <Avatar
-                  size={48}
-                  src="https://avatars.githubusercontent.com/u/84640980?v=4"
-                />
+                <Avatar size={48} src="subscribers/sb8.jpg" />
+                <Avatar size={48} src="subscribers/sb9.jpg" />
+                <Avatar size={48} src="subscribers/sb10.jpg" />
               </AvatarStack>
             }
             description="Unlimited tender alert"
             interactiveAnimation="opacity"
-            subhead="ምዝገባ ርዝመት"
+            subhead="ሶስት ወር"
             titleBadge={
               <Badge large mode="primary" type="number">
                 save 40%
               </Badge>
             }
           >
-            ሶስት ወር
+            ብር 420
           </Cell>
         </Section>
 
