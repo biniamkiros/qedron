@@ -154,11 +154,18 @@ export default function PaymentMiniApp() {
       appearance={miniApp.isDark ? "dark" : "light"}
       platform={["macos", "ios"].includes(lp.platform) ? "ios" : "base"}
     >
-      <FixedLayout vertical="top">
+      {/* <FixedLayout vertical="top"> */}
+      <List
+        style={{
+          background: "var(--tgui--secondary_bg_color)",
+          padding: "40px",
+          width: "100%",
+        }}
+      >
         <Section
-          style={{
-            backgroundColor: "#ffffff",
-          }}
+        // style={{
+        //   backgroundColor: "#ffffff",
+        // }}
         >
           {/* <Info subtitle="Subtitle" type="text"> */}
           <LargeTitle
@@ -173,7 +180,7 @@ export default function PaymentMiniApp() {
           >
             {amount > 0 ? (
               <span>
-                br
+                br{" "}
                 <span
                   style={{
                     fontSize: "52px",
@@ -189,14 +196,14 @@ export default function PaymentMiniApp() {
           </LargeTitle>
           {/* </Info> */}
         </Section>
-      </FixedLayout>
+        {/* </FixedLayout> */}
 
-      <FixedLayout
+        {/* <FixedLayout
         vertical="bottom"
         style={{
           alignContent: "center",
         }}
-      >
+      > */}
         <Section header="seleda subscription" footer="Footer for the section">
           <Cell
             // after={<Badge type="number">62</Badge>}
@@ -259,7 +266,8 @@ export default function PaymentMiniApp() {
             ብር {threeMonthPrice}
           </Cell>
         </Section>
-      </FixedLayout>
+        {/* </FixedLayout> */}
+      </List>
     </AppRoot>
   );
 }
