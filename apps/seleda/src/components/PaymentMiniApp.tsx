@@ -47,11 +47,11 @@ import { CardChip } from "@telegram-apps/telegram-ui/dist/components/Blocks/Card
 import React from "react";
 import { InlineButtonsItem } from "@telegram-apps/telegram-ui/dist/components/Blocks/InlineButtons/components/InlineButtonsItem/InlineButtonsItem";
 
-const discountMonth = 40;
+const discountMonth = 30;
 const discountYear = 60;
 const threeMonthPrice = 400;
-const sixMonthPrice = threeMonthPrice * 2 * (discountMonth / 100);
-const oneYearPrice = threeMonthPrice * 4 * (discountYear / 100);
+const sixMonthPrice = threeMonthPrice * 2 * ((100 - discountMonth) / 100);
+const oneYearPrice = threeMonthPrice * 4 * ((100 - discountYear) / 100);
 
 const features = "Unlimited tender alert";
 export default function PaymentMiniApp() {
@@ -163,7 +163,7 @@ export default function PaymentMiniApp() {
       <List
         style={{
           background: "var(--tgui--secondary_bg_color)",
-          padding: "12px",
+          // padding: "12px",
           width: "100%",
         }}
       >
@@ -183,7 +183,9 @@ export default function PaymentMiniApp() {
             style={{
               padding: 12,
               width: "100%",
+              height: "40vh",
               textAlign: "center",
+              alignContent: "center",
               verticalAlign: "center",
             }}
           >
