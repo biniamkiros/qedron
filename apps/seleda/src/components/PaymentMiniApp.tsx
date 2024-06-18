@@ -158,6 +158,7 @@ export default function PaymentMiniApp() {
     <AppRoot
       appearance={miniApp.isDark ? "dark" : "light"}
       platform={["macos", "ios"].includes(lp.platform) ? "ios" : "base"}
+      style={{ backgroundColor: "var(--tg-theme-bg-color)" }}
     >
       <FixedLayout vertical="bottom">
         <List
@@ -192,11 +193,17 @@ export default function PaymentMiniApp() {
               <Placeholder description="ዋጋው የዝውውር ክፍያን ይጨምራል">
                 {amount > 0 ? (
                   <span>
-                    ብር{" "}
+                    <span
+                      style={{
+                        color: "var(--tg-theme-hint-color)",
+                      }}
+                    >
+                      ብር{" "}
+                    </span>
                     <span
                       style={{
                         fontSize: "52px",
-                        color: "var(--tg-theme-link-color)",
+                        color: "var(--tg-theme-text-color)",
                       }}
                     >
                       {amount}
