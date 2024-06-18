@@ -158,7 +158,7 @@ export default function PaymentMiniApp() {
     <AppRoot
       appearance={miniApp.isDark ? "dark" : "light"}
       platform={["macos", "ios"].includes(lp.platform) ? "ios" : "base"}
-      style={{ backgroundColor: "var(--tg-theme-secondary-bg-color)" }}
+      // style={{ backgroundColor: "var(--tg-theme-secondary-bg-color)" }}
     >
       {/* <FixedLayout vertical="bottom"> */}
       <List
