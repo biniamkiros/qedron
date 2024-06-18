@@ -20,6 +20,7 @@ import {
   Avatar,
   Badge,
   AvatarStack,
+  Info,
 } from "@telegram-apps/telegram-ui";
 import {
   postEvent,
@@ -38,13 +39,16 @@ import {
   useThemeParams,
   useViewport,
 } from "@tma.js/sdk-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import tonSvg from "../components/ton.svg";
 import { CardChip } from "@telegram-apps/telegram-ui/dist/components/Blocks/Card/components/CardChip/CardChip";
 import React from "react";
 import { InlineButtonsItem } from "@telegram-apps/telegram-ui/dist/components/Blocks/InlineButtons/components/InlineButtonsItem/InlineButtonsItem";
 
+const oneMonthPrice = 200;
+const threeMonthPrice = 420;
+const oneYearPrice = 680;
 export default function PaymentMiniApp() {
   if (typeof window === "undefined") return <div>loading...</div>;
   const miniApp = useMiniApp();
@@ -54,6 +58,7 @@ export default function PaymentMiniApp() {
   const lp = useLaunchParams();
   const themeParams = useThemeParams();
   const viewport = useViewport();
+  const [amount, setAmount] = useState(0);
 
   useEffect(() => {
     postEvent("web_app_ready");
@@ -149,107 +154,50 @@ export default function PaymentMiniApp() {
       appearance={miniApp.isDark ? "dark" : "light"}
       platform={["macos", "ios"].includes(lp.platform) ? "ios" : "base"}
     >
-      <FixedLayout
-        vertical="top"
-        style={{
-          alignContent: "center",
-        }}
-      >
-        <Section header="seleda subscription">
+      <FixedLayout vertical="top">
+        <Section
+          style={{
+            backgroundColor: "#ffffff",
+          }}
+        >
+          {/* <Info subtitle="Subtitle" type="text"> */}
           <LargeTitle
             weight="3"
             color="accent"
             style={{
-              padding: 16,
+              padding: 76,
+              width: "100%",
+              textAlign: "center",
+              verticalAlign: "center",
             }}
           >
-            br
-            <span
-              style={{ fontSize: "52px", color: "var(--tg-theme-link-color)" }}
-            >
-              $207
-            </span>
+            {amount > 0 ? (
+              <span>
+                br
+                <span
+                  style={{
+                    fontSize: "52px",
+                    color: "var(--tg-theme-link-color)",
+                  }}
+                >
+                  {amount}
+                </span>
+              </span>
+            ) : (
+              "ጥቅል ይምረጡ"
+            )}
           </LargeTitle>
+          {/* </Info> */}
+        </Section>
+      </FixedLayout>
 
-          {/* <Card type="plain">
-            <React.Fragment key=".0">
-              <CardChip readOnly>Recomended</CardChip>
-              <Cell readOnly subtitle="United states">
-                3 months
-              </Cell>
-            </React.Fragment>
-          </Card> */}
-
-          {/* <Card type="plain">
-            <Cell
-              // after={<Badge type="number">99</Badge>}
-              // before={<Avatar size={48} />}
-              description="Description"
-              subhead="Subhead"
-              subtitle="Subtitle"
-              titleBadge={<Badge type="dot" />}
-            >
-              Title
-            </Cell>
-          </Card> */}
-          {/* <InlineButtons mode="bezeled">
-            <InlineButtonsItem>
-              <Cell
-                description="Unlimited tender access"
-                subhead="አንድ ወር"
-                subtitle="Unlimited tender alert"
-                interactiveAnimation="opacity"
-              >
-                ብር{" "}
-                <span
-                  style={{
-                    fontSize: "26px",
-                    // color: "var(--tg-theme-link-color)",
-                  }}
-                >
-                  207
-                </span>
-              </Cell>
-            </InlineButtonsItem>
-            <InlineButtonsItem>
-              <Cell
-                description="Unlimited tender access"
-                subhead="አንድ ዓመት"
-                subtitle="Unlimited tender alert"
-                interactiveAnimation="opacity"
-              >
-               
-                ብር{" "}
-                <span
-                  style={{
-                    fontSize: "26px",
-                    // color: "var(--tg-theme-link-color)",
-                  }}
-                >
-                  680
-                </span>
-              </Cell>
-            </InlineButtonsItem>
-            <InlineButtonsItem>
-              
-              <Cell
-                description="Unlimited tender access"
-                subhead="ሶስት ወራት"
-                subtitle="Unlimited tender alert"
-                interactiveAnimation="opacity"
-              >
-                ብር{" "}
-                <span
-                  style={{
-                    fontSize: "26px",
-                    // color: "var(--tg-theme-link-color)",
-                  }}
-                >
-                  420
-                </span>
-              </Cell>
-            </InlineButtonsItem>
-          </InlineButtons> */}
+      <FixedLayout
+        vertical="bottom"
+        style={{
+          alignContent: "center",
+        }}
+      >
+        <Section header="seleda subscription" footer="Footer for the section">
           <Cell
             // after={<Badge type="number">62</Badge>}
             before={
@@ -264,8 +212,9 @@ export default function PaymentMiniApp() {
             subhead="አንድ ወር"
             // subtitle="Subtitle"
             // titleBadge={<Badge type="dot" />}
+            onClick={() => setAmount(oneMonthPrice)}
           >
-            ብር 200
+            ብር {oneMonthPrice}
           </Cell>
           <Cell
             // after={<Badge type="number">3200+</Badge>}
@@ -284,8 +233,9 @@ export default function PaymentMiniApp() {
                 save 60%
               </Badge>
             }
+            onClick={() => setAmount(oneYearPrice)}
           >
-            ብር 680
+            ብር {oneYearPrice}
           </Cell>
           <Cell
             // after={<Badge type="number">340+</Badge>}
@@ -300,156 +250,16 @@ export default function PaymentMiniApp() {
             interactiveAnimation="opacity"
             subhead="ሶስት ወር"
             titleBadge={
-              <Badge large mode="primary" type="number">
+              <Badge large mode="secondary" type="number">
                 save 40%
               </Badge>
             }
+            onClick={() => setAmount(threeMonthPrice)}
           >
-            ብር 420
+            ብር {threeMonthPrice}
           </Cell>
         </Section>
-
-        {/* <Button size="l" stretched>
-          This is FixedLayout with top vertical
-        </Button> */}
       </FixedLayout>
-
-      {/* <main>
-        <div style={{ alignContent: "center" }}>
-          <a href="https://ton.org/">
-            <img
-              width="48"
-              src="./assets/tapps.png"
-              alt="logo of telegram web apps"
-            />
-          </a>
-        </div>
-        <h1>Modals</h1>
-        <button
-          onClick={() => {
-            popup
-              .open({
-                title: "Hello!",
-                message: "Here is a test message.",
-                buttons: [
-                  { id: "my-id", type: "default", text: "Default text" },
-                ],
-              })
-              .then((buttonId: string | null) => {
-                console.log(
-                  buttonId === null
-                    ? "User did not click any button"
-                    : `User clicked a button with ID "${buttonId}"`
-                );
-              });
-          }}
-        >
-          Launch Alert
-        </button>
-        <button onClick={() => showPopup()}>Launch Popup</button>
-
-        <h1>Links</h1>
-        <ul>
-          <li>
-            <a href="javascript:Telegram.WebApp.openTelegramLink('https://t.me/trendingapps');">
-              Open link within Telegram
-            </a>
-          </li>
-          <li>
-            <a href="javascript:Telegram.WebApp.openLink('https://ton.org/');">
-              Open link in external browser
-            </a>
-          </li>
-          <li>
-            <a href="javascript:Telegram.WebApp.openLink('https://telegra.ph/api',{try_instant_view:true});">
-              Open link inside Telegram webview
-            </a>
-          </li>
-        </ul>
-
-        <h1>Buttons</h1>
-        <button onClick={() => postEvent("web_app_expand")}>
-          Expand Webview
-        </button>
-        <button onClick={() => toggleMainButton()}>Toggle Main Button</button>
-      </main> */}
     </AppRoot>
-
-    // <Page title="Home Page">
-    //   <p>
-    //     This page is a home page in this boilerplate. You can use the links
-    //     below to visit other pages with their own functionality.
-    //   </p>
-    //   <ul className="list-style: none; padding-left: 0;">
-    //     {routes.map(
-    //       ({ path, title, icon }) =>
-    //         title && (
-    //           <li style={{ marginTop: "10px" }} key={path}>
-    //             <a
-    //               style={{
-    //                 fontWeight: "bold",
-    //                 display: "inline-flex",
-    //                 gap: "5px",
-    //               }}
-    //               href={path}
-    //             >
-    //               {/* {icon && (
-    //                 <i className="width: 20px; display: block;">{icon}</i>
-    //               )} */}
-    //               {title}
-    //             </a>
-    //           </li>
-    //         )
-    //     )}
-    //   </ul>
-    // </Page>
-    // <AppRoot>
-    //   <Placeholder header="Title" description="Description">
-    //     <img
-    //       alt="Telegram sticker"
-    //       src="https://xelene.me/telegram.gif"
-    //       style={{ display: "block", width: "144px", height: "144px" }}
-    //     />
-    //     <Button>hvjvj</Button>
-    //   </Placeholder>
-    // </AppRoot>
-
-    // <List>
-    //   <Section
-    //     header="Features"
-    //     footer="You can use these pages to learn more about features, provided by Telegram Mini Apps and other useful projects"
-    //   >
-    //     <Link to="/ton-connect">
-    //       <Cell
-    //         before={
-    //           <Image src={tonSvg} style={{ backgroundColor: "#007AFF" }} />
-    //         }
-    //         subtitle="Connect your TON wallet"
-    //       >
-    //         TON Connect
-    //       </Cell>
-    //     </Link>
-    //   </Section>
-    //   <Section
-    //     header="Application Launch Data"
-    //     footer="These pages help developer to learn more about current launch information"
-    //   >
-    //     <Link to="/init-data">
-    //       <Cell subtitle="User data, chat information, technical data">
-    //         Init Data
-    //       </Cell>
-    //     </Link>
-    //     <Link to="/launch-params">
-    //       <Cell subtitle="Platform identifier, Mini Apps version, etc.">
-    //         Launch Parameters
-    //       </Cell>
-    //     </Link>
-    //     <Link to="/theme-params">
-    //       <Cell subtitle="Telegram application palette information">
-    //         Theme Parameters
-    //       </Cell>
-    //     </Link>
-    //   </Section>
-    // </List>
   );
 }

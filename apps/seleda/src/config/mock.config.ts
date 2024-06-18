@@ -11,6 +11,7 @@ export const mock = () => {
   // application, import.meta.env.DEV will become false, and the code inside will be tree-shaken,
   // so you will not see it in your final bundle.
   // if (true) {
+  console.log("🚀 ~ shouldMock:");
   if (env.NODE_ENV !== "production") {
     let shouldMock: boolean;
 
