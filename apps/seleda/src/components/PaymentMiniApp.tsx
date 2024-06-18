@@ -21,6 +21,7 @@ import {
   Badge,
   AvatarStack,
   Info,
+  Placeholder,
 } from "@telegram-apps/telegram-ui";
 import {
   postEvent,
@@ -46,9 +47,13 @@ import { CardChip } from "@telegram-apps/telegram-ui/dist/components/Blocks/Card
 import React from "react";
 import { InlineButtonsItem } from "@telegram-apps/telegram-ui/dist/components/Blocks/InlineButtons/components/InlineButtonsItem/InlineButtonsItem";
 
-const oneMonthPrice = 200;
-const threeMonthPrice = 420;
-const oneYearPrice = 680;
+const discountMonth = 40;
+const discountYear = 60;
+const threeMonthPrice = 400;
+const sixMonthPrice = threeMonthPrice * 2 * (discountMonth / 100);
+const oneYearPrice = threeMonthPrice * 4 * (discountYear / 100);
+
+const features = "Unlimited tender alert";
 export default function PaymentMiniApp() {
   if (typeof window === "undefined") return <div>loading...</div>;
   const miniApp = useMiniApp();
@@ -158,53 +163,55 @@ export default function PaymentMiniApp() {
       <List
         style={{
           background: "var(--tgui--secondary_bg_color)",
-          padding: "40px",
+          padding: "12px",
           width: "100%",
         }}
       >
         <Section
-        // style={{
-        //   backgroundColor: "#ffffff",
-        // }}
+        // footer="The official Telegram app is available for Android, iPhone, iPad, Windows, macOS and Linux."
+        // header="Main Settings"
         >
+          {/* <Section
+        style={{
+          backgroundColor: "#ffffff",
+        }}
+        > */}
           {/* <Info subtitle="Subtitle" type="text"> */}
           <LargeTitle
             weight="3"
             color="accent"
             style={{
-              padding: 76,
+              padding: 12,
               width: "100%",
               textAlign: "center",
               verticalAlign: "center",
             }}
           >
-            {amount > 0 ? (
-              <span>
-                br{" "}
-                <span
-                  style={{
-                    fontSize: "52px",
-                    color: "var(--tg-theme-link-color)",
-                  }}
-                >
-                  {amount}
+            <Placeholder description="ዋጋው የዝውውር ክፍያን ይጨምራል">
+              {amount > 0 ? (
+                <span>
+                  ብር{" "}
+                  <span
+                    style={{
+                      fontSize: "52px",
+                      color: "var(--tg-theme-link-color)",
+                    }}
+                  >
+                    {amount}
+                  </span>
                 </span>
-              </span>
-            ) : (
-              "ጥቅል ይምረጡ"
-            )}
+              ) : (
+                <span>ጥቅል ይምረጡ</span>
+              )}
+            </Placeholder>
           </LargeTitle>
           {/* </Info> */}
         </Section>
-        {/* </FixedLayout> */}
 
-        {/* <FixedLayout
-        vertical="bottom"
-        style={{
-          alignContent: "center",
-        }}
-      > */}
-        <Section header="seleda subscription" footer="Footer for the section">
+        <Section
+          header="የምዝገባ አማራጮች"
+          footer="የነጻ ሙከራ ጊዜ ለማግኘየት @qedron_chat ላይ መሄድ ይችላሉ።"
+        >
           <Cell
             // after={<Badge type="number">62</Badge>}
             before={
@@ -214,14 +221,14 @@ export default function PaymentMiniApp() {
                 <Avatar size={48} src="subscribers/sb4.jpg" />
               </AvatarStack>
             }
-            description="Unlimited tender alert"
+            description={features}
             interactiveAnimation="opacity"
-            subhead="አንድ ወር"
+            subhead="ሶስት ወራት"
             // subtitle="Subtitle"
             // titleBadge={<Badge type="dot" />}
-            onClick={() => setAmount(oneMonthPrice)}
+            onClick={() => setAmount(threeMonthPrice)}
           >
-            ብር {oneMonthPrice}
+            ብር {threeMonthPrice}
           </Cell>
           <Cell
             // after={<Badge type="number">3200+</Badge>}
@@ -232,12 +239,12 @@ export default function PaymentMiniApp() {
                 <Avatar size={48} src="subscribers/sb7.jpg" />
               </AvatarStack>
             }
-            description="Unlimited tender alert"
+            description={features}
             interactiveAnimation="opacity"
             subhead="አንድ ዓመት"
             titleBadge={
               <Badge large mode="critical" type="number">
-                save 60%
+                save {discountYear}%
               </Badge>
             }
             onClick={() => setAmount(oneYearPrice)}
@@ -253,20 +260,19 @@ export default function PaymentMiniApp() {
                 <Avatar size={48} src="subscribers/sb10.jpg" />
               </AvatarStack>
             }
-            description="Unlimited tender alert"
+            description={features}
             interactiveAnimation="opacity"
-            subhead="ሶስት ወር"
+            subhead="ስድስት ወራት"
             titleBadge={
               <Badge large mode="secondary" type="number">
-                save 40%
+                save {discountMonth}%
               </Badge>
             }
-            onClick={() => setAmount(threeMonthPrice)}
+            onClick={() => setAmount(sixMonthPrice)}
           >
-            ብር {threeMonthPrice}
+            ብር {sixMonthPrice}
           </Cell>
         </Section>
-        {/* </FixedLayout> */}
       </List>
     </AppRoot>
   );
