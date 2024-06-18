@@ -13,9 +13,10 @@ import {
 } from "@tma.js/sdk-react";
 
 import { mock } from "../../config/mock.config";
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect, useMemo, useState } from "react";
 import PaymentMiniApp from "../../components/PaymentMiniApp";
 import { ErrorBoundary } from "../../components/ErrorBoundary";
+import { TonConnectUIProvider } from "@tonconnect/ui-react";
 
 const ErrorBoundaryError: FC<{ error: unknown }> = ({ error }) => (
   <div>
@@ -45,12 +46,16 @@ export default function HomePage() {
 
   // console.log("🚀 ~ HomePage ~ ready:", ready);
   // if (!ready) return <div>loading</div>;
-
+  const manifestUrl = useMemo(() => {
+    return new URL("tonconnect-manifest.json", window.location.href).toString();
+  }, []);
   return (
     <ErrorBoundary fallback={ErrorBoundaryError}>
-      <SDKProvider acceptCustomStyles debug>
-        <PaymentMiniApp />
-      </SDKProvider>
+      <TonConnectUIProvider manifestUrl={manifestUrl}>
+        <SDKProvider acceptCustomStyles debug>
+          <PaymentMiniApp />
+        </SDKProvider>
+      </TonConnectUIProvider>
     </ErrorBoundary>
   );
 }

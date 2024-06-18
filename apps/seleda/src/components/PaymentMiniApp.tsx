@@ -158,7 +158,7 @@ export default function PaymentMiniApp() {
     <AppRoot
       appearance={miniApp.isDark ? "dark" : "light"}
       platform={["macos", "ios"].includes(lp.platform) ? "ios" : "base"}
-      style={{ backgroundColor: "var(--tg-theme-bg-color)" }}
+      style={{ backgroundColor: "var(--tg-theme-secondary-bg-color)" }}
     >
       {/* <FixedLayout vertical="bottom"> */}
       <List
@@ -219,12 +219,7 @@ export default function PaymentMiniApp() {
 
         <Section
           header="የምዝገባ አማራጮች"
-          footer={
-            <>
-              የነጻ ሙከራ ጊዜ ለማግኘየት{" "}
-              <a onClick={() => console.log("c")}>@qedron_chat</a> ላይ መሄድ ይችላሉ።
-            </>
-          }
+          footer="የነጻ ሙከራ ጊዜ ለማግኘየት@qedron_chat</a> ላይ መሄድ ይችላሉ።"
         >
           <Cell
             // after={<Badge type="number">62</Badge>}
