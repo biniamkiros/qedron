@@ -47,7 +47,7 @@ export default function HomePage() {
   // console.log("🚀 ~ HomePage ~ ready:", ready);
   // if (!ready) return <div>loading</div>;
   const manifestUrl = useMemo(() => {
-    return new URL("tonconnect-manifest.json", "localhost").toString();
+    return new URL("tonconnect-manifest.json", "seleda.qedron.com").toString();
   }, []);
   return (
     <ErrorBoundary fallback={ErrorBoundaryError}>
