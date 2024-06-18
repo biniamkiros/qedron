@@ -190,7 +190,8 @@ export default function PaymentMiniApp() {
               verticalAlign: "center",
             }}
           >
-            <Placeholder description="ዋጋው የዝውውር ክፍያን ይጨምራል">
+            <Placeholder>
+              {/* description="ዋጋው የዝውውር ክፍያን ይጨምራል"> */}
               {amount > 0 ? (
                 <span>
                   <span
@@ -219,7 +220,7 @@ export default function PaymentMiniApp() {
 
         <Section
           header="የምዝገባ አማራጮች"
-          footer="የነጻ ሙከራ ጊዜ ለማግኘየት@qedron_chat</a> ላይ መሄድ ይችላሉ።"
+          // footer="የነጻ ሙከራ ጊዜ ለማግኘየት@qedron_chat</a> ላይ መሄድ ይችላሉ።"
         >
           <Cell
             // after={<Badge type="number">62</Badge>}
