@@ -47,7 +47,10 @@ export default function HomePage() {
   // console.log("🚀 ~ HomePage ~ ready:", ready);
   // if (!ready) return <div>loading</div>;
   const manifestUrl = useMemo(() => {
-    return new URL("tonconnect-manifest.json", window.location.href).toString();
+    return new URL(
+      "tonconnect-manifest.json",
+      window ? window.location.href : "localhost"
+    ).toString();
   }, []);
   return (
     <ErrorBoundary fallback={ErrorBoundaryError}>
