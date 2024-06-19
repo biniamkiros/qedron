@@ -16,7 +16,6 @@ import { mock } from "../../config/mock.config";
 import { FC, useEffect, useMemo, useState } from "react";
 import PaymentMiniApp from "../../components/PaymentMiniApp";
 import { ErrorBoundary } from "../../components/ErrorBoundary";
-import { TonConnectUIProvider } from "@tonconnect/ui-react";
 
 const ErrorBoundaryError: FC<{ error: unknown }> = ({ error }) => (
   <div>
@@ -54,11 +53,9 @@ export default function HomePage() {
   }, []);
   return (
     <ErrorBoundary fallback={ErrorBoundaryError}>
-      <TonConnectUIProvider manifestUrl={manifestUrl}>
-        <SDKProvider acceptCustomStyles debug>
-          <PaymentMiniApp />
-        </SDKProvider>
-      </TonConnectUIProvider>
+      <SDKProvider acceptCustomStyles debug>
+        <PaymentMiniApp />
+      </SDKProvider>
     </ErrorBoundary>
   );
 }

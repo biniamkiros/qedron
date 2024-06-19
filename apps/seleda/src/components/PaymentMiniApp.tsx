@@ -85,13 +85,15 @@ export default function PaymentMiniApp() {
       document.documentElement.className = miniApp.isDark ? "dark" : "light";
     });
 
-    postEvent("web_app_setup_main_button", {
-      is_visible: true,
-      text: "Pay now",
-    });
-
     on("main_button_pressed", (payload) => {});
   }, []);
+
+  useEffect(() => {
+    postEvent("web_app_setup_main_button", {
+      is_visible: amount > 0 ? true : false,
+      text: `ብር${amount} ይክፈሉ`,
+    });
+  }, [amount]);
 
   useEffect(() => {
     return bindMiniAppCSSVars(miniApp, themeParams);
@@ -168,30 +170,28 @@ export default function PaymentMiniApp() {
           width: "100%",
         }}
       >
-        <Section
-        // footer="The official Telegram app is available for Android, iPhone, iPad, Windows, macOS and Linux."
-        // header="Main Settings"
-        >
-          {/* <Section
+        {/* <Section */}
+        // footer="The official Telegram app is available for Android, iPhone,
+        iPad, Windows, macOS and Linux." // header="Main Settings"
+        {/* > */}
+        {/* <Section
         style={{
           backgroundColor: "#ffffff",
         }}
         > */}
-          {/* <Info subtitle="Subtitle" type="text"> */}
-          <LargeTitle
+        {/* <Info subtitle="Subtitle" type="text"> */}
+        {/* <LargeTitle
             weight="3"
             color="accent"
             style={{
               padding: 12,
               width: "100%",
-              // height: "40vh",
               textAlign: "center",
               alignContent: "center",
               verticalAlign: "center",
             }}
           >
             <Placeholder>
-              {/* description="ዋጋው የዝውውር ክፍያን ይጨምራል"> */}
               {amount > 0 ? (
                 <span>
                   <span
@@ -203,7 +203,6 @@ export default function PaymentMiniApp() {
                   </span>
                   <span
                     style={{
-                      // fontSize: "52px",
                       color: "var(--tg-theme-text-color)",
                     }}
                   >
@@ -214,10 +213,9 @@ export default function PaymentMiniApp() {
                 <span>ጥቅል ይምረጡ</span>
               )}
             </Placeholder>
-          </LargeTitle>
-          {/* </Info> */}
-        </Section>
-
+          </LargeTitle> */}
+        {/* </Info> */}
+        {/* </Section> */}
         <Section
           header="የምዝገባ አማራጮች"
           // footer="የነጻ ሙከራ ጊዜ ለማግኘየት@qedron_chat</a> ላይ መሄድ ይችላሉ።"
