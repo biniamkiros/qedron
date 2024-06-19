@@ -164,19 +164,22 @@ export default function PaymentMiniApp() {
     >
       <List
         style={{
-          // background: "var(--tgui--secondary_bg_color)",
-          // padding: "12px",
           width: "100%",
+          backgroundColor: "var(--tg-theme-secondary-bg-color)",
         }}
       >
         <Section
           header="የምዝገባ አማራጮች"
           footer={
             <span>
-              የነጻ ሙከራ ጊዜ ለማግኘት <Link href="t.me/qedron_chat">@qedron_chat</Link>
+              የነጻ ሙከራ ጊዜ ለማግኘት{" "}
+              <Link onClick={() => showPopup()}>@qedron_chat</Link>
               ላይ መሄድ ይችላሉ።
             </span>
           }
+          style={{
+            backgroundColor: "var(--tg-theme-secondary-bg-color)",
+          }}
         >
           <Cell
             after={amount === threeMonthPrice ? <Badge type="dot" /> : null}
