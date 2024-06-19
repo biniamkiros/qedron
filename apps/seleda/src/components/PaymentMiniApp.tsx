@@ -157,132 +157,84 @@ export default function PaymentMiniApp() {
   }
 
   return (
-    <AppRoot
-      appearance={miniApp.isDark ? "dark" : "light"}
-      platform={["macos", "ios"].includes(lp.platform) ? "ios" : "base"}
-      // style={{ backgroundColor: "var(--tg-theme-secondary-bg-color)" }}
+    // <AppRoot
+    //   appearance={miniApp.isDark ? "dark" : "light"}
+    //   platform={["macos", "ios"].includes(lp.platform) ? "ios" : "base"}
+    //   // style={{ backgroundColor: "var(--tg-theme-secondary-bg-color)" }}
+    // >
+    <List
+      style={{
+        // background: "var(--tgui--secondary_bg_color)",
+        // padding: "12px",
+        width: "100%",
+      }}
     >
-      {/* <FixedLayout vertical="bottom"> */}
-      <List
-        style={{
-          // background: "var(--tgui--secondary_bg_color)",
-          // padding: "12px",
-          width: "100%",
-        }}
+      <Section
+        header="የምዝገባ አማራጮች"
+        // footer="የነጻ ሙከራ ጊዜ ለማግኘየት@qedron_chat</a> ላይ መሄድ ይችላሉ።"
       >
-        {/* <Section */}
-        // footer="The official Telegram app is available for Android, iPhone,
-        iPad, Windows, macOS and Linux." // header="Main Settings"
-        {/* > */}
-        {/* <Section
-        style={{
-          backgroundColor: "#ffffff",
-        }}
-        > */}
-        {/* <Info subtitle="Subtitle" type="text"> */}
-        {/* <LargeTitle
-            weight="3"
-            color="accent"
-            style={{
-              padding: 12,
-              width: "100%",
-              textAlign: "center",
-              alignContent: "center",
-              verticalAlign: "center",
-            }}
-          >
-            <Placeholder>
-              {amount > 0 ? (
-                <span>
-                  <span
-                    style={{
-                      color: "var(--tg-theme-hint-color)",
-                    }}
-                  >
-                    ብር{" "}
-                  </span>
-                  <span
-                    style={{
-                      color: "var(--tg-theme-text-color)",
-                    }}
-                  >
-                    {amount}
-                  </span>
-                </span>
-              ) : (
-                <span>ጥቅል ይምረጡ</span>
-              )}
-            </Placeholder>
-          </LargeTitle> */}
-        {/* </Info> */}
-        {/* </Section> */}
-        <Section
-          header="የምዝገባ አማራጮች"
-          // footer="የነጻ ሙከራ ጊዜ ለማግኘየት@qedron_chat</a> ላይ መሄድ ይችላሉ።"
+        <Cell
+          // after={<Badge type="number">62</Badge>}
+          before={
+            <AvatarStack>
+              <Avatar size={48} src="subscribers/sb2.jpg" />
+              <Avatar size={48} src="subscribers/sb3.jpg" />
+              <Avatar size={48} src="subscribers/sb4.jpg" />
+            </AvatarStack>
+          }
+          description={features}
+          interactiveAnimation="opacity"
+          subhead="ሶስት ወራት"
+          // subtitle="Subtitle"
+          // titleBadge={<Badge type="dot" />}
+          onClick={() => setAmount(threeMonthPrice)}
         >
-          <Cell
-            // after={<Badge type="number">62</Badge>}
-            before={
-              <AvatarStack>
-                <Avatar size={48} src="subscribers/sb2.jpg" />
-                <Avatar size={48} src="subscribers/sb3.jpg" />
-                <Avatar size={48} src="subscribers/sb4.jpg" />
-              </AvatarStack>
-            }
-            description={features}
-            interactiveAnimation="opacity"
-            subhead="ሶስት ወራት"
-            // subtitle="Subtitle"
-            // titleBadge={<Badge type="dot" />}
-            onClick={() => setAmount(threeMonthPrice)}
-          >
-            ብር {threeMonthPrice}
-          </Cell>
-          <Cell
-            // after={<Badge type="number">3200+</Badge>}
-            before={
-              <AvatarStack>
-                <Avatar size={48} src="subscribers/sb5.jpg" />
-                <Avatar size={48} src="subscribers/sb6.jpg" />
-                <Avatar size={48} src="subscribers/sb7.jpg" />
-              </AvatarStack>
-            }
-            description={features}
-            interactiveAnimation="opacity"
-            subhead="አንድ ዓመት"
-            titleBadge={
-              <Badge large mode="critical" type="number">
-                save {discountYear}%
-              </Badge>
-            }
-            onClick={() => setAmount(oneYearPrice)}
-          >
-            ብር {oneYearPrice}
-          </Cell>
-          <Cell
-            // after={<Badge type="number">340+</Badge>}
-            before={
-              <AvatarStack>
-                <Avatar size={48} src="subscribers/sb8.jpg" />
-                <Avatar size={48} src="subscribers/sb9.jpg" />
-                <Avatar size={48} src="subscribers/sb10.jpg" />
-              </AvatarStack>
-            }
-            description={features}
-            interactiveAnimation="opacity"
-            subhead="ስድስት ወራት"
-            titleBadge={
-              <Badge large mode="secondary" type="number">
-                save {discountMonth}%
-              </Badge>
-            }
-            onClick={() => setAmount(sixMonthPrice)}
-          >
-            ብር {sixMonthPrice}
-          </Cell>
-        </Section>
-      </List>
-      {/* </FixedLayout> */}
-    </AppRoot>
+          ብር {threeMonthPrice}
+        </Cell>
+        <Cell
+          // after={<Badge type="number">3200+</Badge>}
+          before={
+            <AvatarStack>
+              <Avatar size={48} src="subscribers/sb5.jpg" />
+              <Avatar size={48} src="subscribers/sb6.jpg" />
+              <Avatar size={48} src="subscribers/sb7.jpg" />
+            </AvatarStack>
+          }
+          description={features}
+          interactiveAnimation="opacity"
+          subhead="አንድ ዓመት"
+          titleBadge={
+            <Badge large mode="critical" type="number">
+              save {discountYear}%
+            </Badge>
+          }
+          onClick={() => setAmount(oneYearPrice)}
+        >
+          ብር {oneYearPrice}
+        </Cell>
+        <Cell
+          // after={<Badge type="number">340+</Badge>}
+          before={
+            <AvatarStack>
+              <Avatar size={48} src="subscribers/sb8.jpg" />
+              <Avatar size={48} src="subscribers/sb9.jpg" />
+              <Avatar size={48} src="subscribers/sb10.jpg" />
+            </AvatarStack>
+          }
+          description={features}
+          interactiveAnimation="opacity"
+          subhead="ስድስት ወራት"
+          titleBadge={
+            <Badge large mode="secondary" type="number">
+              save {discountMonth}%
+            </Badge>
+          }
+          onClick={() => setAmount(sixMonthPrice)}
+        >
+          ብር {sixMonthPrice}
+        </Cell>
+      </Section>
+    </List>
+    // </AppRoot>
   );
 }
