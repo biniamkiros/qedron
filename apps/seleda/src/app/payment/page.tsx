@@ -42,15 +42,6 @@ export default function HomePage() {
     // client-side-only code
     mock();
   }
-
-  // console.log("🚀 ~ HomePage ~ ready:", ready);
-  // if (!ready) return <div>loading</div>;
-  const manifestUrl = useMemo(() => {
-    return new URL(
-      "tonconnect-manifest.json",
-      "https://seleda.qedron.com"
-    ).toString();
-  }, []);
   return (
     <ErrorBoundary fallback={ErrorBoundaryError}>
       <SDKProvider acceptCustomStyles debug>

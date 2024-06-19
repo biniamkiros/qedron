@@ -63,7 +63,7 @@ export default function PaymentMiniApp() {
   const lp = useLaunchParams();
   const themeParams = useThemeParams();
   const viewport = useViewport();
-  const [amount, setAmount] = useState(0);
+  const [amount, setAmount] = useState(oneYearPrice);
 
   useEffect(() => {
     postEvent("web_app_ready");
@@ -160,7 +160,7 @@ export default function PaymentMiniApp() {
     <AppRoot
       appearance={miniApp.isDark ? "dark" : "light"}
       platform={["macos", "ios"].includes(lp.platform) ? "ios" : "base"}
-      // style={{ backgroundColor: "var(--tg-theme-secondary-bg-color)" }}
+      style={{ backgroundColor: "var(--tg-theme-secondary-bg-color)" }}
     >
       <List
         style={{
@@ -171,10 +171,10 @@ export default function PaymentMiniApp() {
       >
         <Section
           header="የምዝገባ አማራጮች"
-          // footer="የነጻ ሙከራ ጊዜ ለማግኘየት@qedron_chat</a> ላይ መሄድ ይችላሉ።"
+          footer="የነጻ ሙከራ ጊዜ ለማግኘየት@qedron_chat</a> ላይ መሄድ ይችላሉ።"
         >
           <Cell
-            // after={<Badge type="number">62</Badge>}
+            after={amount === threeMonthPrice ? <Badge type="dot" /> : null}
             before={
               <AvatarStack>
                 <Avatar size={48} src="subscribers/sb2.jpg" />
@@ -192,7 +192,7 @@ export default function PaymentMiniApp() {
             ብር {threeMonthPrice}
           </Cell>
           <Cell
-            // after={<Badge type="number">3200+</Badge>}
+            after={amount === oneYearPrice ? <Badge type="dot" /> : null}
             before={
               <AvatarStack>
                 <Avatar size={48} src="subscribers/sb5.jpg" />
@@ -213,7 +213,7 @@ export default function PaymentMiniApp() {
             ብር {oneYearPrice}
           </Cell>
           <Cell
-            // after={<Badge type="number">340+</Badge>}
+            after={amount === sixMonthPrice ? <Badge type="dot" /> : null}
             before={
               <AvatarStack>
                 <Avatar size={48} src="subscribers/sb8.jpg" />
