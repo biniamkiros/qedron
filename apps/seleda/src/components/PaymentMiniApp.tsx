@@ -244,8 +244,7 @@ export default function PaymentMiniApp() {
           <Section.Footer centered>
             <span>
               የነጻ ሙከራ ጊዜ ለማግኘት{" "}
-              <Link onClick={() => showPopup()}>@qedron_chat</Link>
-              ላይ መሄድ ይችላሉ።
+              <Link onClick={() => showPopup()}>@qedron_chat</Link> ላይ መሄድ ይችላሉ።
             </span>
           </Section.Footer>
         </Section>
