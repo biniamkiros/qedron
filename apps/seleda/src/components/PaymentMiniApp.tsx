@@ -63,7 +63,7 @@ export default function PaymentMiniApp() {
   const lp = useLaunchParams();
   const themeParams = useThemeParams();
   const viewport = useViewport();
-  const [amount, setAmount] = useState(oneYearPrice);
+  const [amount, setAmount] = useState(0);
 
   useEffect(() => {
     postEvent("web_app_ready");
@@ -171,7 +171,12 @@ export default function PaymentMiniApp() {
       >
         <Section
           header="የምዝገባ አማራጮች"
-          footer="የነጻ ሙከራ ጊዜ ለማግኘየት@qedron_chat</a> ላይ መሄድ ይችላሉ።"
+          footer={
+            <span>
+              የነጻ ሙከራ ጊዜ ለማግኘት <Link href="t.me/qedron_chat">@qedron_chat</Link>
+              ላይ መሄድ ይችላሉ።
+            </span>
+          }
         >
           <Cell
             after={amount === threeMonthPrice ? <Badge type="dot" /> : null}
@@ -233,6 +238,9 @@ export default function PaymentMiniApp() {
           >
             ብር {sixMonthPrice}
           </Cell>
+          {/* <Section.Footer centered>
+            
+          </Section.Footer> */}
         </Section>
       </List>
     </AppRoot>
