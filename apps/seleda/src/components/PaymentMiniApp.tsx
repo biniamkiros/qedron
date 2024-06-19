@@ -203,7 +203,7 @@ export default function PaymentMiniApp() {
                   </span>
                   <span
                     style={{
-                      fontSize: "52px",
+                      // fontSize: "52px",
                       color: "var(--tg-theme-text-color)",
                     }}
                   >
