@@ -160,12 +160,12 @@ export default function PaymentMiniApp() {
     <AppRoot
       appearance={miniApp.isDark ? "dark" : "light"}
       platform={["macos", "ios"].includes(lp.platform) ? "ios" : "base"}
-      style={{ backgroundColor: "var(--tg-theme-secondary-bg-color)" }}
+      style={{ backgroundColor: "var(--tg-theme-bg-color)" }}
     >
       <List
         style={{
           width: "100%",
-          backgroundColor: "var(--tg-theme-secondary-bg-color)",
+          backgroundColor: "var(--tg-theme-bg-color)",
         }}
       >
         <Section
@@ -178,7 +178,7 @@ export default function PaymentMiniApp() {
           //   </span>
           // }
           style={{
-            backgroundColor: "var(--tg-theme-secondary-bg-color)",
+            backgroundColor: "var(--tg-theme-bg-color)",
           }}
         >
           <Cell
