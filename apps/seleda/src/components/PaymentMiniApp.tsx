@@ -157,84 +157,84 @@ export default function PaymentMiniApp() {
   }
 
   return (
-    // <AppRoot
-    //   appearance={miniApp.isDark ? "dark" : "light"}
-    //   platform={["macos", "ios"].includes(lp.platform) ? "ios" : "base"}
-    //   // style={{ backgroundColor: "var(--tg-theme-secondary-bg-color)" }}
-    // >
-    <List
-      style={{
-        // background: "var(--tgui--secondary_bg_color)",
-        // padding: "12px",
-        width: "100%",
-      }}
+    <AppRoot
+      appearance={miniApp.isDark ? "dark" : "light"}
+      platform={["macos", "ios"].includes(lp.platform) ? "ios" : "base"}
+      // style={{ backgroundColor: "var(--tg-theme-secondary-bg-color)" }}
     >
-      <Section
-        header="የምዝገባ አማራጮች"
-        // footer="የነጻ ሙከራ ጊዜ ለማግኘየት@qedron_chat</a> ላይ መሄድ ይችላሉ።"
+      <List
+        style={{
+          // background: "var(--tgui--secondary_bg_color)",
+          // padding: "12px",
+          width: "100%",
+        }}
       >
-        <Cell
-          // after={<Badge type="number">62</Badge>}
-          before={
-            <AvatarStack>
-              <Avatar size={48} src="subscribers/sb2.jpg" />
-              <Avatar size={48} src="subscribers/sb3.jpg" />
-              <Avatar size={48} src="subscribers/sb4.jpg" />
-            </AvatarStack>
-          }
-          description={features}
-          interactiveAnimation="opacity"
-          subhead="ሶስት ወራት"
-          // subtitle="Subtitle"
-          // titleBadge={<Badge type="dot" />}
-          onClick={() => setAmount(threeMonthPrice)}
+        <Section
+          header="የምዝገባ አማራጮች"
+          // footer="የነጻ ሙከራ ጊዜ ለማግኘየት@qedron_chat</a> ላይ መሄድ ይችላሉ።"
         >
-          ብር {threeMonthPrice}
-        </Cell>
-        <Cell
-          // after={<Badge type="number">3200+</Badge>}
-          before={
-            <AvatarStack>
-              <Avatar size={48} src="subscribers/sb5.jpg" />
-              <Avatar size={48} src="subscribers/sb6.jpg" />
-              <Avatar size={48} src="subscribers/sb7.jpg" />
-            </AvatarStack>
-          }
-          description={features}
-          interactiveAnimation="opacity"
-          subhead="አንድ ዓመት"
-          titleBadge={
-            <Badge large mode="critical" type="number">
-              save {discountYear}%
-            </Badge>
-          }
-          onClick={() => setAmount(oneYearPrice)}
-        >
-          ብር {oneYearPrice}
-        </Cell>
-        <Cell
-          // after={<Badge type="number">340+</Badge>}
-          before={
-            <AvatarStack>
-              <Avatar size={48} src="subscribers/sb8.jpg" />
-              <Avatar size={48} src="subscribers/sb9.jpg" />
-              <Avatar size={48} src="subscribers/sb10.jpg" />
-            </AvatarStack>
-          }
-          description={features}
-          interactiveAnimation="opacity"
-          subhead="ስድስት ወራት"
-          titleBadge={
-            <Badge large mode="secondary" type="number">
-              save {discountMonth}%
-            </Badge>
-          }
-          onClick={() => setAmount(sixMonthPrice)}
-        >
-          ብር {sixMonthPrice}
-        </Cell>
-      </Section>
-    </List>
-    // </AppRoot>
+          <Cell
+            // after={<Badge type="number">62</Badge>}
+            before={
+              <AvatarStack>
+                <Avatar size={48} src="subscribers/sb2.jpg" />
+                <Avatar size={48} src="subscribers/sb3.jpg" />
+                <Avatar size={48} src="subscribers/sb4.jpg" />
+              </AvatarStack>
+            }
+            description={features}
+            interactiveAnimation="opacity"
+            subhead="ሶስት ወራት"
+            // subtitle="Subtitle"
+            // titleBadge={<Badge type="dot" />}
+            onClick={() => setAmount(threeMonthPrice)}
+          >
+            ብር {threeMonthPrice}
+          </Cell>
+          <Cell
+            // after={<Badge type="number">3200+</Badge>}
+            before={
+              <AvatarStack>
+                <Avatar size={48} src="subscribers/sb5.jpg" />
+                <Avatar size={48} src="subscribers/sb6.jpg" />
+                <Avatar size={48} src="subscribers/sb7.jpg" />
+              </AvatarStack>
+            }
+            description={features}
+            interactiveAnimation="opacity"
+            subhead="አንድ ዓመት"
+            titleBadge={
+              <Badge large mode="critical" type="number">
+                save {discountYear}%
+              </Badge>
+            }
+            onClick={() => setAmount(oneYearPrice)}
+          >
+            ብር {oneYearPrice}
+          </Cell>
+          <Cell
+            // after={<Badge type="number">340+</Badge>}
+            before={
+              <AvatarStack>
+                <Avatar size={48} src="subscribers/sb8.jpg" />
+                <Avatar size={48} src="subscribers/sb9.jpg" />
+                <Avatar size={48} src="subscribers/sb10.jpg" />
+              </AvatarStack>
+            }
+            description={features}
+            interactiveAnimation="opacity"
+            subhead="ስድስት ወራት"
+            titleBadge={
+              <Badge large mode="secondary" type="number">
+                save {discountMonth}%
+              </Badge>
+            }
+            onClick={() => setAmount(sixMonthPrice)}
+          >
+            ብር {sixMonthPrice}
+          </Cell>
+        </Section>
+      </List>
+    </AppRoot>
   );
 }
