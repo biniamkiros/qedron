@@ -170,13 +170,13 @@ export default function PaymentMiniApp() {
       >
         <Section
           header="የምዝገባ አማራጮች"
-          footer={
-            <span>
-              የነጻ ሙከራ ጊዜ ለማግኘት{" "}
-              <Link onClick={() => showPopup()}>@qedron_chat</Link>
-              ላይ መሄድ ይችላሉ።
-            </span>
-          }
+          // footer={
+          //   <span>
+          //     የነጻ ሙከራ ጊዜ ለማግኘት{" "}
+          //     <Link onClick={() => showPopup()}>@qedron_chat</Link>
+          //     ላይ መሄድ ይችላሉ።
+          //   </span>
+          // }
           style={{
             backgroundColor: "var(--tg-theme-secondary-bg-color)",
           }}
@@ -241,9 +241,13 @@ export default function PaymentMiniApp() {
           >
             ብር {sixMonthPrice}
           </Cell>
-          {/* <Section.Footer centered>
-            
-          </Section.Footer> */}
+          <Section.Footer centered>
+            <span>
+              የነጻ ሙከራ ጊዜ ለማግኘት{" "}
+              <Link onClick={() => showPopup()}>@qedron_chat</Link>
+              ላይ መሄድ ይችላሉ።
+            </span>
+          </Section.Footer>
         </Section>
       </List>
     </AppRoot>
