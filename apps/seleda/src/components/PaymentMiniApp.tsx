@@ -89,9 +89,10 @@ const initSeledaPayment = async (user: any, amount: number) => {
     // redirect: "follow",
   };
   const payment = await fetch(
-    (env.NODE_ENV === "production"
-      ? "https://seleda.qedron.com/api/chapa/payment"
-      : window.location.origin) + "/api/chapa/payment",
+    // (env.NODE_ENV === "production"
+    //   ?
+    "https://seleda.qedron.com/api/chapa/payment",
+    // : window.location.origin) + "/api/chapa/payment",
     requestOptions
   );
   console.log("🚀 ~ initPayment ~ xrr:", payment);
@@ -159,6 +160,7 @@ export default function PaymentMiniApp() {
       text: `ብር${amount} ይክፈሉ`,
     });
     if (amount > 0) mainButton.enable();
+    initSeledaPayment(user, 1000);
     mainButton.on("click", async () => {
       if (user) {
         const { status, data } = await initSeledaPayment(user, amount);
