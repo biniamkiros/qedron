@@ -40,13 +40,31 @@ import {
   useThemeParams,
   useViewport,
   initUtils,
+  User,
+  useInitData,
+  parseInitData,
 } from "@tma.js/sdk-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import tonSvg from "../components/ton.svg";
 import { CardChip } from "@telegram-apps/telegram-ui/dist/components/Blocks/Card/components/CardChip/CardChip";
 import React from "react";
 import { InlineButtonsItem } from "@telegram-apps/telegram-ui/dist/components/Blocks/InlineButtons/components/InlineButtonsItem/InlineButtonsItem";
+
+// function getUserRows(user: User): DisplayDataRow[] {
+//   return [
+//     { title: "id", value: user.id.toString() },
+//     { title: "username", value: user.username },
+//     { title: "photo_url", value: user.photoUrl },
+//     { title: "last_name", value: user.lastName },
+//     { title: "first_name", value: user.firstName },
+//     { title: "is_bot", value: user.isBot },
+//     { title: "is_premium", value: user.isPremium },
+//     { title: "language_code", value: user.languageCode },
+//     { title: "allows_to_write_to_pm", value: user.allowsWriteToPm },
+//     { title: "added_to_attachment_menu", value: user.addedToAttachmentMenu },
+//   ];
+// }
 
 const discountMonth = 30;
 const discountYear = 60;
@@ -56,12 +74,21 @@ const oneYearPrice = threeMonthPrice * 4 * ((100 - discountYear) / 100);
 
 const features = "ያልተገደበ የጨረታ ማሳወቂያ";
 export default function PaymentMiniApp() {
-  if (typeof window === "undefined") return <div>loading...</div>;
   const miniApp = useMiniApp();
   const popup = usePopup();
   const mainButton = useMainButton();
   const utils = initUtils();
   const lp = useLaunchParams();
+  // if (typeof window === "undefined")
+  // return (
+  //   <AppRoot
+  //     appearance={miniApp.isDark ? "dark" : "light"}
+  //     platform={["macos", "ios"].includes(lp.platform) ? "ios" : "base"}
+  //     style={{ backgroundColor: "var(--tg-theme-bg-color)" }}
+  //   >
+  //     loading...
+  //   </AppRoot>
+  // );
   const themeParams = useThemeParams();
   const viewport = useViewport();
   const [amount, setAmount] = useState(0);
@@ -69,11 +96,11 @@ export default function PaymentMiniApp() {
   useEffect(() => {
     postEvent("web_app_ready");
     postEvent("web_app_set_header_color", { color_key: "secondary_bg_color" });
-    setViewportData();
+    // setViewportData();
     // Telegram.WebApp.onEvent("viewportChanged", setViewportData);
     on("viewport_changed", (payload) => {
       // console.log('Viewport changed:', payload);
-      setViewportData();
+      // setViewportData();
     });
 
     on("theme_changed", (payload) => {
@@ -102,9 +129,37 @@ export default function PaymentMiniApp() {
 
     if (amount > 0) mainButton.enable();
     mainButton.on("click", () => {
-      // mainButton.hide();
-      // showPopup();
-      utils.openLink("https://seleda.seleda.com", true);
+      var raw = JSON.stringify({
+        amount: amount,
+        currency: "ETB",
+        email: null,
+        first_name: "firstName",
+        last_name: "lastName",
+        phone_number: "phoneNumber",
+        tx_ref: "ref",
+        callback_url: "callbackUrl",
+        return_url: "returnUrl",
+        "customization[title]": "pay",
+        "customization[description]": "pay now",
+      });
+
+      var requestOptions: any = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: raw,
+        redirect: "follow",
+      };
+
+      return fetch("/api/chapa/payment", requestOptions)
+        .then((response) => response.json())
+        .then((result) => {
+          const { status, body: checkout } = result;
+          if (status == 200 && checkout) utils.openLink(checkout);
+          else showPopup();
+        })
+        .catch((error) => {
+          showPopup();
+        });
     });
     // .on("click", () => {
     // });
@@ -147,29 +202,32 @@ export default function PaymentMiniApp() {
     }
   }
 
-  async function setViewportData() {
-    requestViewport().then((data) => {
-      var sizeEl = document.getElementById("viewport-params-size");
-      if (sizeEl) {
-        // Output:
-        // { height: 122, isExpanded: false, width: 375, isStateStable: true }
-        console.log(data);
+  // async function setViewportData() {
+  //   requestViewport().then((data) => {
+  //     var sizeEl = document.getElementById("viewport-params-size");
+  //     if (sizeEl) {
+  //       // Output:
+  //       // { height: 122, isExpanded: false, width: 375, isStateStable: true }
+  //       console.log(data);
+  //       const appHeight = data.height;
+  //       sizeEl.innerText =
+  //         "width: " + window.innerWidth + " x " + "height: " + appHeight;
+  //       var expandEl: HTMLElement | null = document.querySelector(
+  //         "#viewport-params-expand"
+  //       );
+  //       if (expandEl) {
+  //         const isAppExpanded = data.isExpanded;
+  //         expandEl.innerText =
+  //           "Is Expanded: " + (isAppExpanded ? "true" : "false");
+  //       }
+  //     }
+  //   });
+  // }
 
-        const appHeight = data.height;
-        sizeEl.innerText =
-          "width: " + window.innerWidth + " x " + "height: " + appHeight;
-
-        var expandEl: HTMLElement | null = document.querySelector(
-          "#viewport-params-expand"
-        );
-        if (expandEl) {
-          const isAppExpanded = data.isExpanded;
-          expandEl.innerText =
-            "Is Expanded: " + (isAppExpanded ? "true" : "false");
-        }
-      }
-    });
-  }
+  const initDataRaw = useLaunchParams().initDataRaw;
+  const initData = useInitData();
+  const { user } = initData;
+  console.log("🚀 ~ PaymentMiniApp ~ initData:", user);
 
   return (
     <AppRoot

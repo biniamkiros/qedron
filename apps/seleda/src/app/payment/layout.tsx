@@ -3,6 +3,7 @@
 import "@telegram-apps/telegram-ui/dist/styles.css";
 
 import { Inter } from "next/font/google";
+import ClientOnly from "~/components/ClientOnly";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -21,9 +22,9 @@ export default function PaymentLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={`font-sans ${inter.variable}`}>{children}</body>
-    </html>
+    <ClientOnly>
+      <section>{children}</section>
+    </ClientOnly>
   );
   // return (
   //   <html lang="en">

@@ -7,7 +7,7 @@ myHeaders.append("Authorization", "Bearer CHASECK-xxxxxxxxxxxxxxxx");
 myHeaders.append("Content-Type", "application/json");
 
 //return data.checkout_url
-export const requestPayment = (
+export const requestPayment = async (
   amount: any,
   currency: any,
   email: any,
@@ -41,8 +41,8 @@ export const requestPayment = (
     redirect: "follow",
   };
 
-  fetch("https://api.chapa.co/v1/transaction/initialize", requestOptions)
-    .then((response) => response.text())
+  return fetch("https://api.chapa.co/v1/transaction/initialize", requestOptions)
+    .then((response) => response.json())
     .then((result) => {
       console.log(result);
       return { payment: result, error: null };
