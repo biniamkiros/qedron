@@ -85,16 +85,18 @@ export default function PaymentMiniApp() {
 
       document.documentElement.className = miniApp.isDark ? "dark" : "light";
     });
-
-    on("main_button_pressed", (payload) => {
-      showPopup();
-    });
   }, []);
 
   useEffect(() => {
     postEvent("web_app_setup_main_button", {
       is_visible: amount > 0 ? true : false,
       text: `ብር${amount} ይክፈሉ`,
+    });
+    // on("main_button_pressed", (payload) => {
+    //   showPopup();
+    // });
+    mainButton.on("click", () => {
+      showPopup();
     });
   }, [amount]);
 
