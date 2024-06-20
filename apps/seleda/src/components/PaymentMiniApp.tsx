@@ -92,6 +92,7 @@ export default function PaymentMiniApp() {
   const themeParams = useThemeParams();
   const viewport = useViewport();
   const [amount, setAmount] = useState(0);
+  const [fet, setFet] = useState("fetching");
 
   useEffect(() => {
     postEvent("web_app_ready");
@@ -153,11 +154,13 @@ export default function PaymentMiniApp() {
       return fetch("/api/chapa/payment", requestOptions)
         .then((response) => response.json())
         .then((result) => {
+          setFet(JSON.stringify(result));
           const { status, body: checkout } = result;
           if (status == 200 && checkout) utils.openLink(checkout);
           else showPopup();
         })
         .catch((error) => {
+          setFet(JSON.stringify(error));
           showPopup();
         });
     });
@@ -322,7 +325,8 @@ export default function PaymentMiniApp() {
                   utils.openTelegramLink("https://t.me/trendingapps")
                 }
               >
-                @qedron_chat
+                {fet}
+                {/* @qedron_chat */}
               </Link>{" "}
               ላይ መሄድ ይችላሉ።
             </span>
