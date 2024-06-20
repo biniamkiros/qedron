@@ -5,7 +5,6 @@ const ENCRYPTION_KEY = "VXQNbFYsgPIVCydQ6kv1j603";
 
 var myHeaders = new Headers();
 myHeaders.append("Authorization", "Bearer " + env.SELEDA_CHAPA_KEY);
-console.log("🚀 ~ env:", env.SELEDA_CHAPA_KEY);
 myHeaders.append("Content-Type", "application/json");
 
 //return data.checkout_url
@@ -46,11 +45,9 @@ export const requestPayment = async (
   return fetch("https://api.chapa.co/v1/transaction/initialize", requestOptions)
     .then((response) => response.json())
     .then((result) => {
-      console.log("🚀 ~ .Chapa ~ result:", result);
       return { payment: result, error: null };
     })
     .catch((error) => {
-      console.log("error", error);
       return { payment: null, error: error };
     });
 };

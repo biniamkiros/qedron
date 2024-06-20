@@ -66,7 +66,18 @@ import { env } from "~/env";
 //     { title: "added_to_attachment_menu", value: user.addedToAttachmentMenu },
 //   ];
 // }
-
+function makeid(length: number) {
+  let result = "";
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  const charactersLength = characters.length;
+  let counter = 0;
+  while (counter < length) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    counter += 1;
+  }
+  return result;
+}
 const initSeledaPayment = async (user: any, amount: number) => {
   var raw = JSON.stringify({
     amount: amount,
@@ -75,7 +86,7 @@ const initSeledaPayment = async (user: any, amount: number) => {
     first_name: user.firstName,
     last_name: user.lastName,
     phone_number: user.phoneNumber,
-    tx_ref: user.id,
+    tx_ref: makeid(8), //"user.id",
     callback_url: window.location.origin + "/api/chapa/confirm",
     return_url: "https://t.me/SeledaGramBot",
     "customization[title]": "ሰሌዳግራም ምዝገባ",
@@ -86,16 +97,15 @@ const initSeledaPayment = async (user: any, amount: number) => {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: raw,
-    // redirect: "follow",
+    redirect: "follow",
   };
   const payment = await fetch(
     // (env.NODE_ENV === "production"
-    //   ?
-    "https://seleda.qedron.com/api/chapa/payment",
-    // : window.location.origin) + "/api/chapa/payment",
+    // ? "https://seleda.qedron.com/api/chapa/payment"
+    // : window.location.origin)+ "/api/chapa/payment",
+    window.location.origin + "/api/chapa/payment",
     requestOptions
   );
-  console.log("🚀 ~ initPayment ~ xrr:", payment);
   return payment.json();
 };
 
@@ -160,7 +170,7 @@ export default function PaymentMiniApp() {
       text: `ብር${amount} ይክፈሉ`,
     });
     if (amount > 0) mainButton.enable();
-    initSeledaPayment(user, 1000);
+
     mainButton.on("click", async () => {
       if (user) {
         const { status, data } = await initSeledaPayment(user, amount);
@@ -235,7 +245,6 @@ export default function PaymentMiniApp() {
   const initDataRaw = useLaunchParams().initDataRaw;
   const initData = useInitData();
   const user = initData ? initData.user : null;
-  console.log("🚀 ~ PaymentMiniApp ~ initData:", user);
 
   return (
     <AppRoot

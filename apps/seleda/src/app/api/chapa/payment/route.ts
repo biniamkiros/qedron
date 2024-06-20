@@ -10,7 +10,6 @@ export async function POST(
   request: NextRequest,
   { params }: { params: { token: string } }
 ) {
-  console.log("🚀 ~ params:", params);
   const {
     amount,
     currency,
