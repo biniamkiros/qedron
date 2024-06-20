@@ -121,7 +121,6 @@ export default function PaymentMiniApp() {
   const themeParams = useThemeParams();
   const viewport = useViewport();
   const [amount, setAmount] = useState(0);
-  const [fet, setFet] = useState("fetching");
 
   useEffect(() => {
     postEvent("web_app_ready");
@@ -318,20 +317,15 @@ export default function PaymentMiniApp() {
           >
             ብር {sixMonthPrice}
           </Cell>
-          <Section.Footer centered>
-            <span>
-              የነጻ ሙከራ ጊዜ ለማግኘት{" "}
-              <Link
-                onClick={() =>
-                  utils.openTelegramLink("https://t.me/trendingapps")
-                }
-              >
-                {fet}
-                {/* @qedron_chat */}
-              </Link>{" "}
-              ላይ መሄድ ይችላሉ።
-            </span>
-          </Section.Footer>
+          {/* <Section.Footer centered>
+            የነጻ ሙከራ ጊዜ ለማግኘት{" "}
+            <Link
+              onClick={() => utils.openTelegramLink("https://t.me/qedron_chat")}
+            >
+              @qedron_chat
+            </Link>{" "}
+            ላይ መሄድ ይችላሉ።
+          </Section.Footer> */}
         </Section>
       </List>
     </AppRoot>
