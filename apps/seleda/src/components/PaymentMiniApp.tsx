@@ -50,6 +50,7 @@ import tonSvg from "../components/ton.svg";
 import { CardChip } from "@telegram-apps/telegram-ui/dist/components/Blocks/Card/components/CardChip/CardChip";
 import React from "react";
 import { InlineButtonsItem } from "@telegram-apps/telegram-ui/dist/components/Blocks/InlineButtons/components/InlineButtonsItem/InlineButtonsItem";
+import { env } from "~/env";
 
 // function getUserRows(user: User): DisplayDataRow[] {
 //   return [
@@ -88,7 +89,9 @@ const initSeledaPayment = async (user: any, amount: number) => {
     // redirect: "follow",
   };
   const payment = await fetch(
-    window.location.origin + "/api/chapa/payment",
+    (env.NODE_ENV === "production"
+      ? "https://seleda.qedron.com/api/chapa/payment"
+      : window.location.origin) + "/api/chapa/payment",
     requestOptions
   );
   console.log("🚀 ~ initPayment ~ xrr:", payment);
