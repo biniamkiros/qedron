@@ -155,15 +155,16 @@ export default function PaymentMiniApp() {
         "https://seleda.qedron.com/api/chapa/payment",
         requestOptions
       )
-        .then((response) => response.json())
+        .then((response) => {
+          setFet(response.toString());
+          return response.json();
+        })
         .then((result) => {
-          setFet(JSON.stringify(result));
           const { status, body: checkout } = result;
           if (status == 200 && checkout) utils.openLink(checkout);
           else showPopup();
         })
         .catch((error) => {
-          setFet(JSON.stringify(error));
           showPopup();
         });
     });
