@@ -85,7 +85,9 @@ export default function PaymentMiniApp() {
       document.documentElement.className = miniApp.isDark ? "dark" : "light";
     });
 
-    on("main_button_pressed", (payload) => {});
+    on("main_button_pressed", (payload) => {
+      showPopup();
+    });
   }, []);
 
   useEffect(() => {
