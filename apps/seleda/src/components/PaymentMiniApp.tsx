@@ -96,11 +96,11 @@ export default function PaymentMiniApp() {
     //   showPopup();
     // });
     mainButton.setParams({
-      // backgroundColor: '#aa1388',
       isVisible: amount > 0 ? true : false,
       text: `ብር${amount} ይክፈሉ`,
     });
 
+    if (amount > 0) mainButton.enable();
     mainButton.on("click", () => {
       showPopup();
     });
