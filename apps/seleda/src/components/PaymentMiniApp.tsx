@@ -162,8 +162,8 @@ export default function PaymentMiniApp() {
         const { status, data } = await initSeledaPayment(user, amount);
         if (status === "success" && data)
           utils.openLink(data.checkout_url, true);
-        else showPopup("ስህተት", "እንደገና ይሞክሩ");
-      } else showPopup("ስህተት", "እንደገና ይሞክሩ");
+        else showPopup("ስህተት", "የክፍያ ስራዓቱ ችግር አጋጥሞታል። ትንሽ ቆይተው እንደገና ይሞክሩ!");
+      } else showPopup("ስህተት", "የእርስዎን መረጃ ማግኘት አልተቻለም። ትንሽ ቆይተው እንደገና ይሞክሩ!");
     });
     // .on("click", () => {
     // });
