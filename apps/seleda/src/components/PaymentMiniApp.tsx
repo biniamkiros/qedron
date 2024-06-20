@@ -102,8 +102,11 @@ export default function PaymentMiniApp() {
 
     if (amount > 0) mainButton.enable();
     mainButton.on("click", () => {
+      mainButton.hide();
       showPopup();
     });
+    // .on("click", () => {
+    // });
   }, [amount]);
 
   useEffect(() => {
