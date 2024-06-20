@@ -106,7 +106,9 @@ const initSeledaPayment = async (user: any, amount: number) => {
     window.location.origin + "/api/chapa/payment",
     requestOptions
   );
-  return payment.json();
+  const r = await payment.json();
+  // console.log("🚀 ~ initSeledaPayment ~ payment:", r);
+  return r;
 };
 
 const discountMonth = 30;
@@ -169,7 +171,12 @@ export default function PaymentMiniApp() {
       isVisible: amount > 0 ? true : false,
       text: `ብር${amount} ይክፈሉ`,
     });
-    if (amount > 0) mainButton.enable();
+    if (amount > 0) {
+      mainButton.enable();
+      // if (user)
+      //{
+      // initSeledaPayment(user, amount);
+    }
 
     mainButton.on("click", async () => {
       if (user) {
