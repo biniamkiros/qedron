@@ -88,13 +88,19 @@ export default function PaymentMiniApp() {
   }, []);
 
   useEffect(() => {
-    postEvent("web_app_setup_main_button", {
-      is_visible: amount > 0 ? true : false,
-      text: `ብር${amount} ይክፈሉ`,
-    });
+    // postEvent("web_app_setup_main_button", {
+    //   is_visible: amount > 0 ? true : false,
+    //   text: `ብር${amount} ይክፈሉ`,
+    // });
     // on("main_button_pressed", (payload) => {
     //   showPopup();
     // });
+    mainButton.setParams({
+      // backgroundColor: '#aa1388',
+      isVisible: amount > 0 ? true : false,
+      text: `ብር${amount} ይክፈሉ`,
+    });
+
     mainButton.on("click", () => {
       showPopup();
     });
