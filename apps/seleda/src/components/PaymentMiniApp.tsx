@@ -39,6 +39,7 @@ import {
   bindViewportCSSVars,
   useThemeParams,
   useViewport,
+  initUtils,
 } from "@tma.js/sdk-react";
 import { useEffect, useState } from "react";
 
@@ -59,7 +60,7 @@ export default function PaymentMiniApp() {
   const miniApp = useMiniApp();
   const popup = usePopup();
   const mainButton = useMainButton();
-
+  const utils = initUtils();
   const lp = useLaunchParams();
   const themeParams = useThemeParams();
   const viewport = useViewport();
@@ -246,7 +247,14 @@ export default function PaymentMiniApp() {
           <Section.Footer centered>
             <span>
               የነጻ ሙከራ ጊዜ ለማግኘት{" "}
-              <Link onClick={() => showPopup()}>@qedron_chat</Link> ላይ መሄድ ይችላሉ።
+              <Link
+                onClick={() =>
+                  utils.openTelegramLink("https://t.me/trendingapps")
+                }
+              >
+                @qedron_chat
+              </Link>{" "}
+              ላይ መሄድ ይችላሉ።
             </span>
           </Section.Footer>
         </Section>
