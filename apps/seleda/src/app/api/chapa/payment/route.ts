@@ -38,16 +38,19 @@ export async function POST(
     description
   );
   if (payment && !error) {
-    const {
-      data: { checkout_url },
-      status,
-      message,
-    } = payment;
-    if (status === "success" && checkout_url)
-      return NextResponse.json(
-        { messsage: status, checkout: checkout_url },
-        { status: 200 }
-      );
+    const { data, status, message } = payment;
+    if (status === "success" && data) {
+      const { checkout_url } = data;
+      if (checkout_url)
+        return NextResponse.json(
+          { messsage: status, checkout: checkout_url },
+          { status: 200 }
+        );
+    }
+    return NextResponse.json(
+      { messsage: payment, checkout: null },
+      { status: 400 }
+    );
   }
   if (!payment && error)
     return NextResponse.json(

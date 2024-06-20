@@ -66,6 +66,35 @@ import { InlineButtonsItem } from "@telegram-apps/telegram-ui/dist/components/Bl
 //   ];
 // }
 
+const initSeledaPayment = async (user: any, amount: number) => {
+  var raw = JSON.stringify({
+    amount: amount,
+    currency: "ETB",
+    email: null,
+    first_name: user.firstName,
+    last_name: user.lastName,
+    phone_number: user.phoneNumber,
+    tx_ref: user.id,
+    callback_url: window.location.origin + "/api/chapa/confirm",
+    return_url: "https://t.me/SeledaGramBot",
+    "customization[title]": "ሰሌዳግራም ምዝገባ",
+    "customization[description]": "ሰሌዳግራም ጨረታ ማሳወቂያ አገልግሎት ክፍያ",
+  });
+
+  var requestOptions: any = {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: raw,
+    // redirect: "follow",
+  };
+  const payment = await fetch(
+    window.location.origin + "/api/chapa/payment",
+    requestOptions
+  );
+  console.log("🚀 ~ initPayment ~ xrr:", payment);
+  return payment.json();
+};
+
 const discountMonth = 30;
 const discountYear = 60;
 const threeMonthPrice = 400;
@@ -127,46 +156,14 @@ export default function PaymentMiniApp() {
       isVisible: amount > 0 ? true : false,
       text: `ብር${amount} ይክፈሉ`,
     });
-
     if (amount > 0) mainButton.enable();
-    mainButton.on("click", () => {
-      var raw = JSON.stringify({
-        amount: amount,
-        currency: "ETB",
-        email: null,
-        first_name: "firstName",
-        last_name: "lastName",
-        phone_number: "phoneNumber",
-        tx_ref: "ref",
-        callback_url: "callbackUrl",
-        return_url: "returnUrl",
-        "customization[title]": "pay",
-        "customization[description]": "pay now",
-      });
-
-      var requestOptions: any = {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: raw,
-        redirect: "follow",
-      };
-
-      return fetch(
-        "https://seleda.qedron.com/api/chapa/payment",
-        requestOptions
-      )
-        .then((response) => {
-          setFet(response.toString());
-          return response.json();
-        })
-        .then((result) => {
-          const { status, body: checkout } = result;
-          if (status == 200 && checkout) utils.openLink(checkout);
-          else showPopup();
-        })
-        .catch((error) => {
-          showPopup();
-        });
+    mainButton.on("click", async () => {
+      if (user) {
+        const { status, data } = await initSeledaPayment(user, amount);
+        if (status === "success" && data)
+          utils.openLink(data.checkout_url, true);
+        else showPopup("ስህተት", "እንደገና ይሞክሩ");
+      } else showPopup("ስህተት", "እንደገና ይሞክሩ");
     });
     // .on("click", () => {
     // });
@@ -184,12 +181,12 @@ export default function PaymentMiniApp() {
     return viewport && bindViewportCSSVars(viewport);
   }, [viewport]);
 
-  function showPopup() {
+  function showPopup(title = "Hello!", message = "Here is a test message.") {
     popup
       .open({
-        title: "Hello!",
-        message: "Here is a test message.",
-        buttons: [{ id: "my-id", type: "default", text: "Default text" }],
+        title: title,
+        message: message,
+        buttons: [{ id: "my-id", type: "default", text: "Okay" }],
       })
       .then((buttonId: string | null) => {
         console.log(

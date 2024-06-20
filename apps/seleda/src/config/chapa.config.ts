@@ -1,9 +1,11 @@
+import { env } from "~/env";
+
 const PUBLIC_KEY = "CHAPUBK_TEST-cUIpL7Da4wXkXiwQEt73OBwJLTErdyNz";
-const SECRET_KEY = "CHASECK_TEST-CxnLmmk928zivPjYIpIExxhSaOZek4cD";
 const ENCRYPTION_KEY = "VXQNbFYsgPIVCydQ6kv1j603";
 
 var myHeaders = new Headers();
-myHeaders.append("Authorization", "Bearer CHASECK-xxxxxxxxxxxxxxxx");
+myHeaders.append("Authorization", "Bearer " + env.SELEDA_CHAPA_KEY);
+console.log("🚀 ~ env:", env.SELEDA_CHAPA_KEY);
 myHeaders.append("Content-Type", "application/json");
 
 //return data.checkout_url
@@ -44,7 +46,7 @@ export const requestPayment = async (
   return fetch("https://api.chapa.co/v1/transaction/initialize", requestOptions)
     .then((response) => response.json())
     .then((result) => {
-      console.log(result);
+      console.log("🚀 ~ .Chapa ~ result:", result);
       return { payment: result, error: null };
     })
     .catch((error) => {
