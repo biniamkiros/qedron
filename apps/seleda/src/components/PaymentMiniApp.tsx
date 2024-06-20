@@ -151,7 +151,7 @@ export default function PaymentMiniApp() {
         redirect: "follow",
       };
 
-      return fetch("/api/chapa/payment", requestOptions)
+      return fetch(window.location.href + "/api/chapa/payment", requestOptions)
         .then((response) => response.json())
         .then((result) => {
           setFet(JSON.stringify(result));
