@@ -102,8 +102,9 @@ export default function PaymentMiniApp() {
 
     if (amount > 0) mainButton.enable();
     mainButton.on("click", () => {
-      mainButton.hide();
-      showPopup();
+      // mainButton.hide();
+      // showPopup();
+      utils.openLink("https://seleda.seleda.com", true);
     });
     // .on("click", () => {
     // });
