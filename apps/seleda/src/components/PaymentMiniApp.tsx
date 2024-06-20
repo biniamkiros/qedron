@@ -226,7 +226,7 @@ export default function PaymentMiniApp() {
 
   const initDataRaw = useLaunchParams().initDataRaw;
   const initData = useInitData();
-  const { user } = initData;
+  const user = initData ? initData.user : null;
   console.log("🚀 ~ PaymentMiniApp ~ initData:", user);
 
   return (
