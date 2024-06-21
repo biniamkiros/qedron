@@ -75,9 +75,7 @@ export async function POST(request: NextRequest) {
 
       from ${tx_ref} ${amount} 
       
-      signature: ${request.headers.get("Chapa-Signature")} 
-      
-      x-signature: ${request.headers.get("x-chapa-signature")}`
+      signature: ${request.headers.get("Chapa-Signature")} `
     );
     return NextResponse.json({ messsage: "confirmed" }, { status: 200 });
   } else {
@@ -104,7 +102,7 @@ export async function POST(request: NextRequest) {
       
       signature: ${request.headers.get("Chapa-Signature")} 
       
-      header: ${JSON.stringify(request.headers)}`
+      header: ${request.headers.toString()}`
     );
     NextResponse.json({ messsage: "error" }, { status: 400 });
   }
