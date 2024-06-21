@@ -57,7 +57,7 @@ export async function POST(
       { status: 400 }
     );
   return NextResponse.json(
-    { status: "unknown error", messsage: "Unknown error", checkout: null },
+    { status: "error", messsage: "Unknown error", checkout: null },
     { status: 400 }
   );
 }
