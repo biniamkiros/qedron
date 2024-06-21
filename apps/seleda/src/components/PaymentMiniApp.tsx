@@ -102,8 +102,10 @@ const initSeledaPayment = async (user: any, amount: number) => {
     tx_ref: user.id + "-" + sub + "-" + makeid(8), //"user.id",
     callback_url: window.location.origin + "/api/chapa/confirm",
     return_url: "https://t.me/SeledaGramBot",
-    "customization[title]": "ሰሌዳግራም ምዝገባ",
-    "customization[description]": "ሰሌዳግራም ጨረታ ማሳወቂያ አገልግሎት ክፍያ",
+    customization: {
+      title: "ሰሌዳግራም ምዝገባ",
+      description: "ሰሌዳግራም ጨረታ ማሳወቂያ አገልግሎት ክፍያ",
+    },
   });
 
   var requestOptions: any = {

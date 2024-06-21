@@ -9,8 +9,9 @@ export async function POST(request: NextRequest) {
   const body = await request.json();
   const hash = crypto
     .createHmac("sha256", env.SELEDA_CHAPA_SECRET_HASH)
-    .update(JSON.stringify(body))
+    .update(JSON.stringify(request.body))
     .digest("hex");
+
   const {
     event,
     first_name,
