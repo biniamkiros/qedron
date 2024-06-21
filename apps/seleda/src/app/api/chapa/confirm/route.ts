@@ -10,7 +10,7 @@ export async function POST(request: NextRequest) {
   const body = await request.json();
   notifyAdmin("BODY:" + JSON.stringify(body));
   const hash = crypto
-    .createHmac("sha256", env.SELEDA_BOT_TOKEN)
+    .createHmac("sha256", env.SELEDA_CHAPA_SECRET_HASH)
     .update(JSON.stringify(body))
     .digest("hex");
   if (hash == request.headers.get("Chapa-Signature")) {
