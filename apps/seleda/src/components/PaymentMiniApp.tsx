@@ -107,7 +107,6 @@ const initSeledaPayment = async (user: any, amount: number) => {
     requestOptions
   );
   const r = await payment.json();
-  // console.log("🚀 ~ initSeledaPayment ~ payment:", r);
   return r;
 };
 
@@ -173,25 +172,11 @@ export default function PaymentMiniApp() {
     });
     if (amount > 0) {
       mainButton.enable();
-      // if (user)
-      //{
-      // initSeledaPayment(user, amount);
     }
 
-    mainButton.on("click", async () => {
-      if (user) {
-        const { status, data, message } = await initSeledaPayment(user, amount);
-        if (status === "success" && data)
-          utils.openLink(data.checkout_url, true);
-        else
-          showPopup(
-            "ስህተት: " + status,
-            "የክፍያ ስራዓቱ ችግር አጋጥሞታል። ትንሽ ቆይተው እንደገና ይሞክሩ!" + message
-          );
-      } else showPopup("ስህተት", "የእርስዎን መረጃ ማግኘት አልተቻለም። ትንሽ ቆይተው እንደገና ይሞክሩ!");
+    mainButton.on("click", () => {
+      handleMainButton();
     });
-    // .on("click", () => {
-    // });
   }, [amount]);
 
   useEffect(() => {
@@ -230,6 +215,21 @@ export default function PaymentMiniApp() {
       mainButton.show();
     }
   }
+
+  const handleMainButton = async () => {
+    if (user) {
+      console.log("🚀 ~ handleMainButton ~ user:", user);
+      const payment = await initSeledaPayment(user, amount);
+      console.log("🚀 ~ handleMainButton ~ payment:", payment);
+      const { status, data, message } = payment;
+      if (status === "success" && data) utils.openLink(data.checkout_url, true);
+      else
+        showPopup(
+          "ስህተት: " + status,
+          "የክፍያ ስራዓቱ ችግር አጋጥሞታል። ትንሽ ቆይተው እንደገና ይሞክሩ!" + JSON.stringify(payment)
+        );
+    } else showPopup("ስህተት", "የእርስዎን መረጃ ማግኘት አልተቻለም። ትንሽ ቆይተው እንደገና ይሞክሩ!");
+  };
 
   // async function setViewportData() {
   //   requestViewport().then((data) => {
@@ -296,7 +296,10 @@ export default function PaymentMiniApp() {
             subhead="ሶስት ወራት"
             // subtitle="Subtitle"
             // titleBadge={<Badge type="dot" />}
-            onClick={() => setAmount(threeMonthPrice)}
+            onClick={() => {
+              setAmount(threeMonthPrice);
+              handleMainButton();
+            }}
           >
             ብር {threeMonthPrice}
           </Cell>
