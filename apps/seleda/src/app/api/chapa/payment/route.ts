@@ -4,8 +4,6 @@ import { requestPayment } from "~/config/chapa.config";
 import { env } from "~/env";
 import { handleUpdates } from "~/services/telegram";
 
-const SELEDA_BOT_TOKEN = env.SELEDA_BOT_TOKEN;
-
 export async function POST(
   request: NextRequest,
   { params }: { params: { token: string } }
