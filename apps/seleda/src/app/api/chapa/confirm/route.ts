@@ -6,14 +6,50 @@ import { env } from "~/env";
 import { handleUpdates, notifyAdmin } from "~/services/telegram";
 
 export async function POST(request: NextRequest) {
-  notifyAdmin("confirm body");
   const body = await request.json();
-  notifyAdmin("BODY:" + JSON.stringify(body));
   const hash = crypto
     .createHmac("sha256", env.SELEDA_CHAPA_SECRET_HASH)
     .update(JSON.stringify(body))
     .digest("hex");
+  const {
+    event,
+    first_name,
+    last_name,
+    mobile,
+    currency,
+    amount,
+    charge,
+    status,
+    mode,
+    reference,
+    type,
+    tx_ref,
+    payment_method,
+  } = body;
+  notifyAdmin(
+    `Payment from ${tx_ref} ${amount} signature: ${request.headers.get("Chapa-Signature")} x-signature: ${request.headers.get("Chapa-Signature")}`
+  );
   if (hash == request.headers.get("Chapa-Signature")) {
+    // const v = {
+    //   event: "charge.success",
+    //   first_name: "ቢኒያም",
+    //   last_name: "ኪሮስ",
+    //   email: null,
+    //   mobile: "251913201724",
+    //   currency: "ETB",
+    //   amount: "10.00",
+    //   charge: "0.35",
+    //   status: "success",
+    //   mode: "live",
+    //   reference: "APIwnXSt2Iuu",
+    //   created_at: "2024-06-21T14:45:26.000000Z",
+    //   updated_at: "2024-06-21T14:45:34.000000Z",
+    //   type: "API",
+    //   tx_ref: "383604329-7776000000-K5lvlwjD",
+    //   payment_method: "telebirr",
+    //   customization: { title: null, description: null, logo: null },
+    //   meta: "null",
+    // };
     const {
       account_name, //: "Abebe Bikila",
       account_number, //: "1000XXXXXXXXXXXX",
@@ -45,7 +81,7 @@ export async function POST(request: NextRequest) {
       created_at, //: "2023-02-02T07:53:28.000000Z",
     } = body;
     const chatId = reference.slice("-")[0];
-    notifyAdmin(`Hash error: Payment from ${chatId} ${amount}`);
+
     NextResponse.json({ messsage: "error" }, { status: 400 });
   }
 }
