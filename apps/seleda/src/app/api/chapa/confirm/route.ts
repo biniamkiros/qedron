@@ -29,8 +29,9 @@ export async function POST(request: NextRequest) {
   } = body;
 
   if (
-    hash === request.headers.get("Chapa-Signature") ||
-    hash === request.headers.get("x-chapa-signature")
+    hash == request.headers.get("Chapa-Signature")
+    // ||
+    // hash == request.headers.get("x-chapa-signature")
   ) {
     // const v = {
     //   event: "charge.success",
@@ -103,7 +104,9 @@ export async function POST(request: NextRequest) {
       
       signature: ${request.headers.get("Chapa-Signature")} 
       
-      x-signature: ${request.headers.get("x-chapa-signature")}`
+      x-signature: ${request.headers.get("x-chapa-signature")}
+      
+      header: ${JSON.stringify(request.headers)}`
     );
     NextResponse.json({ messsage: "error" }, { status: 400 });
   }
