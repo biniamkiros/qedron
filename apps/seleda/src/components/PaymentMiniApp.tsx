@@ -112,10 +112,8 @@ const initSeledaPayment = async (user: any, amount: number) => {
     body: raw,
     redirect: "follow",
   };
+
   const payment = await fetch(
-    // (env.NODE_ENV === "production"
-    // ? "https://seleda.qedron.com/api/chapa/payment"
-    // : window.location.origin)+ "/api/chapa/payment",
     window.location.origin + "/api/chapa/payment",
     requestOptions
   );
