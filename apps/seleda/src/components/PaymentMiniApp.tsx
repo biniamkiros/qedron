@@ -52,20 +52,14 @@ import React from "react";
 import { InlineButtonsItem } from "@telegram-apps/telegram-ui/dist/components/Blocks/InlineButtons/components/InlineButtonsItem/InlineButtonsItem";
 import { env } from "~/env";
 
-// function getUserRows(user: User): DisplayDataRow[] {
-//   return [
-//     { title: "id", value: user.id.toString() },
-//     { title: "username", value: user.username },
-//     { title: "photo_url", value: user.photoUrl },
-//     { title: "last_name", value: user.lastName },
-//     { title: "first_name", value: user.firstName },
-//     { title: "is_bot", value: user.isBot },
-//     { title: "is_premium", value: user.isPremium },
-//     { title: "language_code", value: user.languageCode },
-//     { title: "allows_to_write_to_pm", value: user.allowsWriteToPm },
-//     { title: "added_to_attachment_menu", value: user.addedToAttachmentMenu },
-//   ];
-// }
+const discountMonth = 30;
+const discountYear = 60;
+const threeMonthPrice = 400;
+const sixMonthPrice = threeMonthPrice * 2 * ((100 - discountMonth) / 100);
+const oneYearPrice = threeMonthPrice * 4 * ((100 - discountYear) / 100);
+
+const features = "ያልተገደበ የጨረታ ማሳወቂያ";
+
 function makeid(length: number) {
   let result = "";
   const characters =
@@ -78,7 +72,26 @@ function makeid(length: number) {
   }
   return result;
 }
+
 const initSeledaPayment = async (user: any, amount: number) => {
+  let sub = -1;
+  switch (amount) {
+    case threeMonthPrice:
+      sub = 1000 * 60 * 60 * 24 * 30 * 3;
+      break;
+    case sixMonthPrice:
+      sub = 1000 * 60 * 60 * 24 * 30 * 6;
+      break;
+    case oneYearPrice:
+      sub = 1000 * 60 * 60 * 24 * 365;
+      break;
+    default:
+      sub = -1;
+      break;
+  }
+  if (sub < 0)
+    return { status: "failed", messsage: "invalid amount", checkout: null };
+
   var raw = JSON.stringify({
     amount: amount,
     currency: "ETB",
@@ -86,7 +99,7 @@ const initSeledaPayment = async (user: any, amount: number) => {
     first_name: user.firstName,
     last_name: user.lastName,
     phone_number: user.phoneNumber,
-    tx_ref: makeid(8), //"user.id",
+    tx_ref: user.id + "-" + sub + "-" + makeid(8), //"user.id",
     callback_url: window.location.origin + "/api/chapa/confirm",
     return_url: "https://t.me/SeledaGramBot",
     "customization[title]": "ሰሌዳግራም ምዝገባ",
@@ -110,13 +123,6 @@ const initSeledaPayment = async (user: any, amount: number) => {
   return r;
 };
 
-const discountMonth = 30;
-const discountYear = 60;
-const threeMonthPrice = 400;
-const sixMonthPrice = threeMonthPrice * 2 * ((100 - discountMonth) / 100);
-const oneYearPrice = threeMonthPrice * 4 * ((100 - discountYear) / 100);
-
-const features = "ያልተገደበ የጨረታ ማሳወቂያ";
 export default function PaymentMiniApp() {
   const miniApp = useMiniApp();
   const popup = usePopup();

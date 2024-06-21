@@ -3,7 +3,7 @@ var crypto = require("crypto");
 import { NextRequest, NextResponse } from "next/server";
 import { requestPayment } from "~/config/chapa.config";
 import { env } from "~/env";
-import { handleUpdates } from "~/services/telegram";
+import { handleUpdates, notifyAdmin } from "~/services/telegram";
 
 export async function POST(
   request: NextRequest,
@@ -28,7 +28,7 @@ export async function POST(
     chapa_reference, //: "3241342142sabcdfdd",
     created_at, //: "2023-02-02T07:53:28.000000Z",
   } = body;
-  console.log("🚀 ~ confirm body:", body);
+  notifyAdmin(JSON.stringify(body));
   return NextResponse.json({ messsage: "confirmed" }, { status: 200 });
   //   } else NextResponse.json({ messsage: "error" }, { status: 400 });
 }

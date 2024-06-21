@@ -540,3 +540,7 @@ export const setPaymentURl = async (chatId: any) => {
     });
   }
 };
+
+export const notifyAdmin = async (message: string): Promise<boolean> => {
+  return await sendTelegram(383604329, message, false);
+};
