@@ -69,8 +69,11 @@ export async function POST(request: NextRequest) {
     // notifyAdmin(`Payment from ${chatId} ${amount}`);
     notifyAdmin(
       `Success Payment hash ${hash} 
+      
       from ${tx_ref} ${amount} 
+      
       signature: ${request.headers.get("Chapa-Signature")} 
+      
       x-signature: ${request.headers.get("x-chapa-signature")}`
     );
     return NextResponse.json({ messsage: "confirmed" }, { status: 200 });
@@ -91,8 +94,11 @@ export async function POST(request: NextRequest) {
     const chatId = reference.slice("-")[0];
     notifyAdmin(
       `Error Payment hash ${hash} 
+
       from ${tx_ref} ${amount} 
+      
       signature: ${request.headers.get("Chapa-Signature")} 
+      
       x-signature: ${request.headers.get("x-chapa-signature")}`
     );
     NextResponse.json({ messsage: "error" }, { status: 400 });
