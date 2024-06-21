@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
   const body = await request.json();
   const hash = crypto
     .createHmac("sha256", env.SELEDA_CHAPA_SECRET_HASH)
-    .update(JSON.stringify(request.body))
+    .update(JSON.stringify(body))
     .digest("hex");
 
   const {
@@ -70,6 +70,8 @@ export async function POST(request: NextRequest) {
     notifyAdmin(
       `Success Payment hash ${hash} 
       
+      secret ${env.SELEDA_CHAPA_SECRET_HASH}
+
       from ${tx_ref} ${amount} 
       
       signature: ${request.headers.get("Chapa-Signature")} 
@@ -94,6 +96,8 @@ export async function POST(request: NextRequest) {
     const chatId = reference.slice("-")[0];
     notifyAdmin(
       `Error Payment hash ${hash} 
+
+      secret ${env.SELEDA_CHAPA_SECRET_HASH}
 
       from ${tx_ref} ${amount} 
       
