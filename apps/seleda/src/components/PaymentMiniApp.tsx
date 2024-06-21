@@ -217,18 +217,22 @@ export default function PaymentMiniApp() {
   }
 
   const handleMainButton = async () => {
-    if (user) {
-      console.log("🚀 ~ handleMainButton ~ user:", user);
-      const payment = await initSeledaPayment(user, amount);
-      console.log("🚀 ~ handleMainButton ~ payment:", payment);
-      const { status, data, message } = payment;
-      if (status === "success" && data) utils.openLink(data.checkout_url, true);
-      else
-        showPopup(
-          "ስህተት: " + status,
-          "የክፍያ ስራዓቱ ችግር አጋጥሞታል። ትንሽ ቆይተው እንደገና ይሞክሩ!" + JSON.stringify(payment)
-        );
-    } else showPopup("ስህተት", "የእርስዎን መረጃ ማግኘት አልተቻለም። ትንሽ ቆይተው እንደገና ይሞክሩ!");
+    if (amount < 100) {
+      showPopup("ስህተት", "ክፍያ ከ100 ብር ማነስ አይችልም። ምርጫዎን ያስተካክሉ እና እንደገና ይሞክሩ!");
+      return;
+    }
+    if (!user) {
+      showPopup("ስህተት", "የእርስዎን መረጃ ማግኘት አልተቻለም። ትንሽ ቆይተው እንደገና ይሞክሩ!");
+      return;
+    }
+    const payment = await initSeledaPayment(user, amount);
+    const { status, data, message } = payment;
+    if (status === "success" && data) utils.openLink(data.checkout_url, true);
+    else
+      showPopup(
+        "ስህተት: " + status,
+        "የክፍያ ስራዓቱ ችግር አጋጥሞታል። ትንሽ ቆይተው እንደገና ይሞክሩ!" + JSON.stringify(payment)
+      );
   };
 
   // async function setViewportData() {
@@ -296,10 +300,7 @@ export default function PaymentMiniApp() {
             subhead="ሶስት ወራት"
             // subtitle="Subtitle"
             // titleBadge={<Badge type="dot" />}
-            onClick={() => {
-              setAmount(threeMonthPrice);
-              handleMainButton();
-            }}
+            onClick={() => setAmount(threeMonthPrice)}
           >
             ብር {threeMonthPrice}
           </Cell>
