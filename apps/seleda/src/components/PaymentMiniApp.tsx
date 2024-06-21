@@ -173,7 +173,6 @@ export default function PaymentMiniApp() {
     if (amount > 0) {
       mainButton.enable();
       mainButton.on("click", () => {
-        showPopup("Amount", "> " + amount);
         handleMainButton(amount);
       });
     }
