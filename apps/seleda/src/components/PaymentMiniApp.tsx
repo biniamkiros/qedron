@@ -175,7 +175,7 @@ export default function PaymentMiniApp() {
     }
 
     mainButton.on("click", () => {
-      handleMainButton();
+      handleMainButton(amount);
     });
   }, [amount]);
 
@@ -216,7 +216,7 @@ export default function PaymentMiniApp() {
     }
   }
 
-  const handleMainButton = async () => {
+  const handleMainButton = async (amount: number) => {
     if (amount < 100) {
       showPopup("ስህተት", "ክፍያ ከ100 ብር ማነስ አይችልም። ምርጫዎን ያስተካክሉ እና እንደገና ይሞክሩ!");
       return;
