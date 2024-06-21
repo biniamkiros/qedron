@@ -172,11 +172,10 @@ export default function PaymentMiniApp() {
     });
     if (amount > 0) {
       mainButton.enable();
+      mainButton.on("click", () => {
+        handleMainButton(amount);
+      });
     }
-
-    mainButton.on("click", () => {
-      handleMainButton(amount);
-    });
   }, [amount]);
 
   useEffect(() => {
@@ -192,19 +191,20 @@ export default function PaymentMiniApp() {
   }, [viewport]);
 
   function showPopup(title = "Hello!", message = "Here is a test message.") {
-    popup
-      .open({
-        title: title,
-        message: message,
-        buttons: [{ id: "my-id", type: "default", text: "Okay" }],
-      })
-      .then((buttonId: string | null) => {
-        console.log(
-          buttonId === null
-            ? "User did not click any button"
-            : `User clicked a button with ID "${buttonId}"`
-        );
-      });
+    if (!popup.isOpened)
+      popup
+        .open({
+          title: title,
+          message: message,
+          buttons: [{ id: "my-id", type: "default", text: "Okay" }],
+        })
+        .then((buttonId: string | null) => {
+          console.log(
+            buttonId === null
+              ? "User did not click any button"
+              : `User clicked a button with ID "${buttonId}"`
+          );
+        });
   }
 
   // Function to toggle main TWA button
@@ -304,10 +304,7 @@ export default function PaymentMiniApp() {
             subhead="ሶስት ወራት"
             // subtitle="Subtitle"
             // titleBadge={<Badge type="dot" />}
-            onClick={() => {
-              setAmount(threeMonthPrice);
-              // handleMainButton(amount);
-            }}
+            onClick={() => setAmount(threeMonthPrice)}
           >
             ብር {threeMonthPrice}
           </Cell>
