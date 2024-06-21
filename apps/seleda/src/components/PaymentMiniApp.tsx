@@ -218,20 +218,24 @@ export default function PaymentMiniApp() {
 
   const handleMainButton = async (amount: number) => {
     if (amount < 100) {
-      showPopup("ስህተት", "ክፍያ ከ100 ብር ማነስ አይችልም። ምርጫዎን ያስተካክሉ እና እንደገና ይሞክሩ!");
+      showPopup(
+        "ስህተት",
+        "ክፍያ ከ100 ብር ማነስ አይችልም። ምርጫዎን ያስተካክሉ እና እንደገና ይሞክሩ!" + amount
+      );
       return;
     }
     if (!user) {
       showPopup("ስህተት", "የእርስዎን መረጃ ማግኘት አልተቻለም። ትንሽ ቆይተው እንደገና ይሞክሩ!");
       return;
     }
-    const payment = await initSeledaPayment(user, amount);
-    const { status, data, message } = payment;
-    if (status === "success" && data) utils.openLink(data.checkout_url, true);
-    else
+
+    const { status, checkout } = await initSeledaPayment(user, amount);
+    if (status === "success" && checkout) {
+      utils.openLink(checkout, true);
+    } else
       showPopup(
         "ስህተት: " + status,
-        "የክፍያ ስራዓቱ ችግር አጋጥሞታል። ትንሽ ቆይተው እንደገና ይሞክሩ!" + JSON.stringify(payment)
+        "የክፍያ ስራዓቱ ችግር አጋጥሞታል። ትንሽ ቆይተው እንደገና ይሞክሩ!" //+ JSON.stringify(payment)
       );
   };
 
@@ -300,7 +304,10 @@ export default function PaymentMiniApp() {
             subhead="ሶስት ወራት"
             // subtitle="Subtitle"
             // titleBadge={<Badge type="dot" />}
-            onClick={() => setAmount(threeMonthPrice)}
+            onClick={() => {
+              setAmount(threeMonthPrice);
+              // handleMainButton(amount);
+            }}
           >
             ብር {threeMonthPrice}
           </Cell>

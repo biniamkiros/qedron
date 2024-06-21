@@ -42,12 +42,12 @@ export async function POST(
       const { checkout_url } = data;
       if (checkout_url)
         return NextResponse.json(
-          { messsage: status, checkout: checkout_url },
+          { status: status, messsage: message, checkout: checkout_url },
           { status: 200 }
         );
     }
     return NextResponse.json(
-      { messsage: payment, checkout: null },
+      { data, status, message, checkout: null },
       { status: 400 }
     );
   }
