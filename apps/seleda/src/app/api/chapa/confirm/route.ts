@@ -5,12 +5,10 @@ import { requestPayment } from "~/config/chapa.config";
 import { env } from "~/env";
 import { handleUpdates, notifyAdmin } from "~/services/telegram";
 
-export async function POST(
-  request: NextRequest,
-  { params }: { params: { token: string } }
-) {
+export async function POST(request: NextRequest) {
+  notifyAdmin("confirm body");
   const body = await request.json();
-  notifyAdmin(JSON.stringify(body));
+  notifyAdmin("BODY:" + JSON.stringify(body));
   //   const hash = crypto
   //     .createHmac("sha256", env.secret)
   //     .update(JSON.stringify(body))
