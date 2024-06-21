@@ -180,10 +180,14 @@ export default function PaymentMiniApp() {
 
     mainButton.on("click", async () => {
       if (user) {
-        const { status, data } = await initSeledaPayment(user, amount);
+        const { status, data, message } = await initSeledaPayment(user, amount);
         if (status === "success" && data)
           utils.openLink(data.checkout_url, true);
-        else showPopup("ስህተት", "የክፍያ ስራዓቱ ችግር አጋጥሞታል። ትንሽ ቆይተው እንደገና ይሞክሩ!");
+        else
+          showPopup(
+            "ስህተት: " + status,
+            "የክፍያ ስራዓቱ ችግር አጋጥሞታል። ትንሽ ቆይተው እንደገና ይሞክሩ!" + message
+          );
       } else showPopup("ስህተት", "የእርስዎን መረጃ ማግኘት አልተቻለም። ትንሽ ቆይተው እንደገና ይሞክሩ!");
     });
     // .on("click", () => {
