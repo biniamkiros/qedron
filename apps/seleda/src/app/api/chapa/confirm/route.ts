@@ -30,12 +30,19 @@ export async function POST(request: NextRequest) {
     if (status === "success" && data) {
       const { tx_ref } = data;
       if (tx_ref) {
-        const transaction = tx_ref.slice("-");
-        // const user =
-        const f = transaction[1];
-        const days = f / (1000 * 60 * 60 * 24);
-        notifyAdmin(`Payment from ${transaction[0]} for ${days} days`);
-        return NextResponse.json({ messsage: message }, { status: 200 });
+        const transaction = tx_ref.split("-");
+        const chatId = transaction[0];
+        const duration = transaction[1];
+
+        if (chatId && duration) {
+          const days = duration / (1000 * 60 * 60 * 24);
+          notifyAdmin(`Payment from ${chatId} for ${days} days`);
+          return NextResponse.json({ messsage: message }, { status: 200 });
+        } else
+          return NextResponse.json(
+            { messsage: "incomplete data" },
+            { status: 400 }
+          );
       }
     }
     notifyAdmin(`Payment verification failed ${tx_ref} `);
