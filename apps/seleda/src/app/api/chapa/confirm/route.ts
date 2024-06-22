@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
         // const user =
         const f = transaction[1];
         const days = f / (1000 * 60 * 60 * 24);
-        notifyAdmin(`Payment from ${transaction[0]} for ${days} `);
+        notifyAdmin(`Payment from ${transaction[0]} for ${days} days`);
         return NextResponse.json({ messsage: message }, { status: 200 });
       }
     }
