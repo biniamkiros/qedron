@@ -80,7 +80,7 @@ const initSeledaPayment = async (user: any, amount: number) => {
       sub = 1000 * 60 * 60 * 24 * 30 * 3;
       break;
     case sixMonthPrice:
-      sub = 1000 * 60 * 60 * 24 * 30 * 6;
+      sub = 1000 * 60 * 60 * 24 * 182;
       break;
     case oneYearPrice:
       sub = 1000 * 60 * 60 * 24 * 365;

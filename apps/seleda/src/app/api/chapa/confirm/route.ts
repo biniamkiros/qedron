@@ -3,6 +3,7 @@ var crypto = require("crypto");
 import { NextRequest, NextResponse } from "next/server";
 import { requestPayment, verifyPayment } from "~/config/chapa.config";
 import { env } from "~/env";
+import { getUserTags } from "~/services/egp";
 import { handleUpdates, notifyAdmin } from "~/services/telegram";
 
 export async function POST(request: NextRequest) {
@@ -28,9 +29,14 @@ export async function POST(request: NextRequest) {
     const { data, status, message } = payment;
     if (status === "success" && data) {
       const { tx_ref } = data;
-      notifyAdmin(`Payment verified ${tx_ref} `);
-      if (tx_ref)
+      if (tx_ref) {
+        const transaction = tx_ref.slice("-");
+        // const user =
+        const f = transaction[1];
+        const days = f / (1000 * 60 * 60 * 24);
+        notifyAdmin(`Payment from ${transaction[0]} for ${days} `);
         return NextResponse.json({ messsage: message }, { status: 200 });
+      }
     }
     notifyAdmin(`Payment verification failed ${tx_ref} `);
     return NextResponse.json({ message }, { status: 400 });
