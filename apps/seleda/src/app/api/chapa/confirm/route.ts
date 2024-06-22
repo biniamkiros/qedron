@@ -102,7 +102,7 @@ export async function POST(request: NextRequest) {
       
       signature: ${request.headers.get("Chapa-Signature")} 
       
-      header: ${request.headers.toString()}`
+      header: ${JSON.stringify(Object.fromEntries(request.headers))}`
     );
     NextResponse.json({ messsage: "error" }, { status: 400 });
   }
