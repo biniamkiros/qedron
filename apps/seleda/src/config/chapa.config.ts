@@ -51,3 +51,24 @@ export const requestPayment = async (
       return { payment: null, error: error };
     });
 };
+
+export const verifyPayment = async (ref: any) => {
+  var requestOptions: any = {
+    method: "GET",
+    headers: myHeaders,
+    redirect: "follow",
+  };
+
+  return fetch(
+    `https://api.chapa.co/v1/transaction/verify/${ref}`,
+    requestOptions
+  )
+    .then((response) => response.json())
+    .then((result) => {
+      if (result.data) return { payment: result, error: null };
+      else return { payment: null, error: result.message };
+    })
+    .catch((error) => {
+      return { payment: null, error: error };
+    });
+};
