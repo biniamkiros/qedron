@@ -842,16 +842,18 @@ export const updateBlockedUser = async (chatId: number) => {
 
 export const updateUserSubscription = async (
   chatId: number,
-  activeEndDate: Date,
+  duration: number,
   paymentInfo: string
 ) => {
   const user = await prisma.user.findUnique({ where: { chatId: chatId } });
 
   if (user) {
     const details = `${user.username ? user.username : user.name} ${paymentInfo}`;
+    const endDate = user.activeEndDate ? user.activeEndDate : new Date();
+    const newEndDate = new Date(endDate.getTime() + duration);
     const updatedUser = await prisma.user.update({
       where: { chatId: chatId },
-      data: { activeEndDate: activeEndDate },
+      data: { activeEndDate: newEndDate },
     });
     notifyAdmin(`Payment from ${details} ${updatedUser.activeEndDate}`);
 

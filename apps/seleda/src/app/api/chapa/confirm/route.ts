@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
           const endDate = new Date(today.getTime() + duration);
           const subscriber = await updateUserSubscription(
             chatId,
-            endDate,
+            duration,
             `${amount} ${currency}`
           );
           if (subscriber)
