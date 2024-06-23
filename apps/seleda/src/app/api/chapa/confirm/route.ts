@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
 
         if (chatId && duration) {
           const today = new Date();
-          const endDate = new Date(today.getTime() + duration);
+          const endDate = new Date(today.getTime() + duration * 1); //to convert duration to number
           // (1000 * 60 * 60 * 24);
           notifyAdmin(`payment from ${endDate}`);
 
