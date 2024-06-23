@@ -863,6 +863,8 @@ export const updateUserSubscription = async (
       message += `የሰሌዳግራም አገልግሎት ምዝገባዎ ዘምኗል።`;
       message += `አገልግሎቱ የሚያበቃበት ቀን >${subEndDate}**`;
 
+      notifyAdmin(message);
+
       sendTelegramMarkdown(chatId, message);
     } else {
       sendTelegramMarkdown(
