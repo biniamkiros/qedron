@@ -845,10 +845,11 @@ export const updateUserSubscription = async (
   activeEndDate: Date,
   paymentInfo: string
 ) => {
+  notifyAdmin(`updating Payment`);
   const user = await prisma.user.findUnique({ where: { chatId: chatId } });
 
-  notifyAdmin(`updating Payment`);
   if (user) {
+    notifyAdmin(`updating Payment` + user.name);
     const updatedUser = await prisma.user.update({
       where: { chatId: chatId },
       data: { activeEndDate: activeEndDate },
