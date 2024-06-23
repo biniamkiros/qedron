@@ -9,8 +9,6 @@ import {
 import { nullable, object } from "zod";
 import { format } from "date-fns";
 import { env } from "~/env";
-import { Old_Standard_TT } from "next/font/google";
-import { userAgent } from "next/server";
 // import { PrismaClient } from '../../../../node_modules/.pnpm/@prisma+client@5.13.0_prisma@5.13.0/node_modules/@prisma/client'
 const prisma = new PrismaClient();
 
@@ -328,7 +326,9 @@ export const upsertEGPTender = async (r: {
           ...raw,
         },
       });
-      const bidders = await prisma.user.findMany();
+      const bidders = await prisma.user.findMany({
+        where: { status: "active" },
+      });
       bidders.forEach(async (bidder: User) => {
         const today = new Date();
         if (bidder.activeEndDate && bidder.activeEndDate > today)
@@ -520,7 +520,9 @@ export const processMessage = async () => {
   if (!queue) {
     return;
   }
-  const user = await prisma.user.findUnique({ where: { id: queue.userId } });
+  const user = await prisma.user.findUnique({
+    where: { id: queue.userId },
+  });
   const tender = await prisma.tender.findUnique({
     where: { id: queue.tenderId },
   });
@@ -807,6 +809,24 @@ export const upsertUser = async (
       },
     });
     return newUser;
+  }
+};
+
+export const updateBlockedUser = async (chatId: number) => {
+  const user = await prisma.user.findUnique({ where: { chatId: chatId } });
+
+  if (user) {
+    const updatedUser = await prisma.user.update({
+      where: { chatId: chatId },
+      data: { status: "blocked" },
+    });
+
+    notifyAdmin(
+      `Seleda blocked by ${updatedUser.username} > ${updatedUser.name}`
+    );
+    return updatedUser;
+  } else {
+    return null;
   }
 };
 

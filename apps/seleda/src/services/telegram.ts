@@ -7,6 +7,7 @@ import {
   processRecentTenderForUser,
   pullTenders,
   setTag,
+  updateBlockedUser,
   upsertUser,
 } from "./egp";
 import { getBot } from "~/config/gram.config";
@@ -538,7 +539,7 @@ export const handleError = async (chatId: any, error: any) => {
     // ok: false,
     // error_code: 400,
     // description: 'Bad Request: chat not found'
-    seledaGramBot.sendMessage("@biniamkiros", error);
+    updateBlockedUser(chatId);
   }
 };
 
