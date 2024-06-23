@@ -405,7 +405,7 @@ export const getUserActiveEndDate = async (chatId: number) => {
       ? bidder.activeEndDate
       : new Date()
     : new Date();
-  return formattedDate(date.toDateString());
+  return formattedDate(date.toISOString());
 };
 
 export const getSampleSubscribers = async (type: string) => {
@@ -856,10 +856,10 @@ export const updateUserSubscription = async (
     notifyAdmin(`Payment from ${details} ${updatedUser.activeEndDate}`);
 
     if (updatedUser.activeEndDate) {
-      const subEndDate = formattedDate(updatedUser.activeEndDate.toISOString());
+      const subEndDate = ""; //.formattedDate(updatedUser.activeEndDate.toISOString());
       let message = "";
       message += `የሰሌዳግራም አገልግሎት ምዝገባዎ ዘምኗል።`;
-      message += `አገልግሎቱ የሚያበቃበት ቀን >${subEndDate}**`;
+      message += `አገልግሎቱ የሚያበቃበት ቀን ${subEndDate}`;
 
       sendTelegramMarkdown(chatId, message);
     } else {
