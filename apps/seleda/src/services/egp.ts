@@ -398,6 +398,16 @@ export const getUserTags = async (chatId: number) => {
   return bidder ? bidder.tags : [];
 };
 
+export const getUserActiveEndDate = async (chatId: number) => {
+  const bidder = await prisma.user.findFirst({ where: { chatId: chatId } });
+  const date = bidder
+    ? bidder.activeEndDate
+      ? bidder.activeEndDate
+      : new Date()
+    : new Date();
+  return formattedDate(date.toDateString());
+};
+
 export const getSampleSubscribers = async (type: string) => {
   // const today = new Date();
   // const aMonth = new Date();

@@ -3,6 +3,7 @@ import {
   getRecentTenders,
   getTenderDetails,
   getTenderForChannelPost,
+  getUserActiveEndDate,
   getUserTags,
   processRecentTenderForUser,
   pullTenders,
@@ -293,6 +294,9 @@ export const initSeledaBot = async () => {
     );
 
     bot.onText(/\/subscribe/, async (msg: any) => {
+      const {
+        chat: { id, type },
+      } = msg;
       const arrayButton = [];
       arrayButton.push([
         {
@@ -306,7 +310,7 @@ export const initSeledaBot = async () => {
         reply_markup: JSON.stringify({ inline_keyboard: arrayButton }),
         parse_mode: "HTML",
       };
-      const subDate = "gf";
+      const subDate = getUserActiveEndDate(id);
       const message = `የሰሌዳግራም ደንበኝነት ምዝገባዎ በ${subDate} ያልቃል። ለማራዘም ከስር ያለውን 👇 ማስፈንጠሪያ በመጫን ክፍያ ይፈጽሙ።`;
       await bot.sendMessage(msg.chat.id, message, options);
     });
