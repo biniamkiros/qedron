@@ -855,11 +855,19 @@ export const updateUserSubscription = async (
     });
     notifyAdmin(`Payment from ${details} ${updatedUser.activeEndDate}`);
 
-    let message = "";
-    message += `የሰሌዳግራም አገልግሎት ምዝገባዎ ዘምኗል።`;
-    message += `አገልግሎቱ የሚያበቃበት ቀን >${formattedDate(activeEndDate.toDateString())}**`;
+    if (updatedUser.activeEndDate) {
+      const subEndDate = formattedDate(updatedUser.activeEndDate.toISOString());
+      let message = "";
+      message += `የሰሌዳግራም አገልግሎት ምዝገባዎ ዘምኗል።`;
+      message += `አገልግሎቱ የሚያበቃበት ቀን >${subEndDate}**`;
 
-    sendTelegramMarkdown(chatId, message);
+      sendTelegramMarkdown(chatId, message);
+    } else {
+      sendTelegramMarkdown(
+        chatId,
+        "የሰሌዳግራም አገልግሎት ምዝገባዎ ማዘመን አልተቻለም። ለድጋፍ +251911702254 ላይ ይደውሉ።"
+      );
+    }
     return updatedUser;
   } else {
     return null;
