@@ -359,7 +359,9 @@ export const initSeledaBot = async () => {
       }
     );
 
+    bot.sendMessage(383604329, `SeledaGramBot started`);
     seledaGramBot = bot;
+
     return bot;
   });
 };

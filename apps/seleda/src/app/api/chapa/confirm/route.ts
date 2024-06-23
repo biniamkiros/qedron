@@ -38,6 +38,7 @@ export async function POST(request: NextRequest) {
           const today = new Date();
           const endDate = new Date(today.getTime() + duration);
           // (1000 * 60 * 60 * 24);
+          notifyAdmin(`payment from ${endDate}`);
 
           const u = await updateUserSubscription(
             chatId,
