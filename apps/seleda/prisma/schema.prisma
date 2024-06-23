@@ -35,15 +35,16 @@ model Tender {
 }
 
 model User {
-    id            String @id @default(auto()) @map("_id") @db.ObjectId
-    chatId        Int @unique
-    name          String
-    username      String?
-    activeEndDate DateTime? 
-    notifTime     String?
-    status        String @default("active")
-    tags          String[]
-    messages      Message[]
+    id                  String @id @default(auto()) @map("_id") @db.ObjectId
+    chatId              Int @unique
+    name                String
+    username            String?
+    lastsubRemindDate   DateTime? 
+    activeEndDate       DateTime? 
+    notifTime           String?
+    status              String @default("active")
+    tags                String[]
+    messages            Message[]
 }
 
 model Message{

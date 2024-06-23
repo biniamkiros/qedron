@@ -1,5 +1,6 @@
 import { PrismaClient, User, Tender, Message } from "@prisma/client";
 import {
+  notifyAdmin,
   sendTelegram,
   sendTelegramMarkdown,
   sendUsernameOptions,
@@ -9,6 +10,7 @@ import { nullable, object } from "zod";
 import { format } from "date-fns";
 import { env } from "~/env";
 import { Old_Standard_TT } from "next/font/google";
+import { userAgent } from "next/server";
 // import { PrismaClient } from '../../../../node_modules/.pnpm/@prisma+client@5.13.0_prisma@5.13.0/node_modules/@prisma/client'
 const prisma = new PrismaClient();
 
@@ -134,6 +136,7 @@ export const pullTenders = async () => {
   tenders.forEach((tender) => {
     upsertEGPTender(tender);
   });
+  notifyAdmin(`Seleda is updating ${tenders.length} tenders`);
   return tenders;
 };
 
@@ -297,8 +300,6 @@ export const upsertEGPTender = async (r: {
 }) => {
   try {
     const { status, security, link } = await getPackageDetails(r);
-    console.log("🚀 ~ details:", r.sourceApplication, status, security, link);
-
     const raw = {
       egpId: r.id,
       title: r.lotName || "",
@@ -328,8 +329,29 @@ export const upsertEGPTender = async (r: {
         },
       });
       const bidders = await prisma.user.findMany();
-      bidders.forEach((bidder: User) => {
-        createQueueforUser(bidder, upsertTender, old ? "Updated" : "New");
+      bidders.forEach(async (bidder: User) => {
+        const today = new Date();
+        if (bidder.activeEndDate && bidder.activeEndDate > today)
+          createQueueforUser(bidder, upsertTender, old ? "Updated" : "New");
+        else if (
+          bidder.lastsubRemindDate &&
+          bidder.lastsubRemindDate <
+            new Date(today.getTime() - 1000 * 60 * 60 * 24)
+        ) {
+          const message = `የእርስዎን መስፈርት የሚያሟላ ጨረታ አምልጥዎታል። ምዝገባዎን ለማዘመን ይህን /subscribe ይጫኑ`;
+          await prisma.notification.create({
+            data: {
+              userId: bidder.id,
+              message: message,
+            },
+          });
+          await prisma.user.update({
+            where: { id: bidder.id },
+            data: {
+              lastsubRemindDate: new Date(),
+            },
+          });
+        }
       });
     }
   } catch (e) {
@@ -410,7 +432,11 @@ export const createQueueforUser = async (
   bidder.tags.forEach(async (t: string) => {
     let rep = tender.title + " ";
     rep += tender.description + " ";
-    if (rep.toLowerCase().includes(t.toLocaleLowerCase())) {
+    if (
+      typeof t === "string" &&
+      t.length > 0 &&
+      rep.toLowerCase().includes(t.toLocaleLowerCase())
+    ) {
       upsertQueue(t, bidder, tender, type);
     }
   });
@@ -723,7 +749,7 @@ export const getTenderForChannelPost = (tender: Tender) => {
 export const setTag = async (chatId: number, tags: string[]) => {
   const user = await prisma.user.update({
     where: { chatId: chatId },
-    data: { tags: tags },
+    data: { tags: tags.filter((t) => typeof t === "string" && t.length > 0) },
   });
   const messages = await prisma.message.deleteMany({
     where: { userId: user.id },
@@ -735,7 +761,11 @@ export const setTag = async (chatId: number, tags: string[]) => {
       user.tags.forEach(async (t: string) => {
         let rep = tender.title + " ";
         rep += tender.description + " ";
-        if (rep.toLowerCase().includes(t.toLocaleLowerCase())) {
+        if (
+          typeof t === "string" &&
+          t.length > 0 &&
+          rep.toLowerCase().includes(t.toLocaleLowerCase())
+        ) {
           // const queue = await prisma.message.findUnique({
           //   where: {
           //     messageId: { userId: user.id, tenderId: tender.id },
@@ -766,15 +796,41 @@ export const upsertUser = async (
     });
     return updatedUser;
   } else {
+    const today = new Date();
     const newUser = await prisma.user.create({
       data: {
         chatId: chatId,
         name: name,
         username: username,
         status: status,
+        activeEndDate: new Date(today.getTime() + 1000 * 60 * 60 * 24),
       },
     });
     return newUser;
+  }
+};
+
+export const updateUserSubscription = async (
+  chatId: number,
+  activeEndDate: Date,
+  paymentInfo: string
+) => {
+  const user = await prisma.user.findUnique({ where: { chatId: chatId } });
+
+  if (user) {
+    const updatedUser = await prisma.user.update({
+      where: { chatId: chatId },
+      data: { activeEndDate: activeEndDate },
+    });
+    let message = "";
+    message += `የሰሌዳግራም አገልግሎት ምዝገባዎ ዘምኗል።`;
+    message += `አገልግሎቱ የሚያበቃበት ቀን >${formattedDate(activeEndDate.toDateString())}**`;
+
+    notifyAdmin(`Payment from ${paymentInfo}`);
+    sendTelegramMarkdown(chatId, message);
+    return updatedUser;
+  } else {
+    return null;
   }
 };
 

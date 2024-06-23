@@ -3,7 +3,7 @@ var crypto = require("crypto");
 import { NextRequest, NextResponse } from "next/server";
 import { requestPayment, verifyPayment } from "~/config/chapa.config";
 import { env } from "~/env";
-import { getUserTags } from "~/services/egp";
+import { getUserTags, updateUserSubscription } from "~/services/egp";
 import { handleUpdates, notifyAdmin } from "~/services/telegram";
 
 export async function POST(request: NextRequest) {
@@ -35,8 +35,10 @@ export async function POST(request: NextRequest) {
         const duration = transaction[1];
 
         if (chatId && duration) {
-          const days = duration / (1000 * 60 * 60 * 24);
-          notifyAdmin(`Payment from ${chatId} for ${days} days`);
+          const today = new Date();
+          const endDate = new Date(today.getTime() + duration);
+          // (1000 * 60 * 60 * 24);
+          updateUserSubscription(chatId, endDate, `${amount}  ${currency}`);
           return NextResponse.json({ messsage: message }, { status: 200 });
         } else
           return NextResponse.json(

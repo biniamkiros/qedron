@@ -93,7 +93,10 @@ export const initSeledaBot = async () => {
             alertMsg.message_id,
             async (msg: { text: string }) => {
               const tags = msg.text.split(",").map((t) => t.trim());
-              const { user, count } = await setTag(alertMsg.chat.id, tags);
+              const { user, count } = await setTag(
+                alertMsg.chat.id,
+                tags.filter((t) => typeof t === "string" && t.length > 0)
+              );
 
               if (user) {
                 const isTooMuchAlert = count > 0;
@@ -247,33 +250,46 @@ export const initSeledaBot = async () => {
         });
     });
 
-    bot.onText(/\/start/, async (msg: { chat: { id: number; type: any } }) => {
-      const {
-        chat: { id, type },
-      } = msg;
-      if (type !== "private") {
-        bot
-          .sendMessage(id, groupChatMessage)
-          .catch((error: { code: any; response: { body: any } }) => {
-            console.log(error.code); // => 'ETELEGRAM'
-            console.log(error.response.body); // => { ok: false, error_code: 400, description: 'Bad Request: chat not found' }
-            handleError(id, error);
-          });
-        return;
-      } else {
-        handleChatUser(msg);
-        bot
-          .sendMessage(
-            id,
-            "welcome, Don't miss any new tenders. get notification for new tender. \n\npress /alert to set alert to set keywords for new tenders. \n\nI'll notify you when tenders containing you keywords get published."
-          )
-          .catch((error: { code: any; response: { body: any } }) => {
-            console.log(error.code); // => 'ETELEGRAM'
-            console.log(error.response.body); // => { ok: false, error_code: 400, description: 'Bad Request: chat not found' }
-            handleError(id, error);
-          });
+    bot.onText(
+      /\/start/,
+      async (msg: {
+        chat: any;
+        from: any;
+        text?: any;
+        reply_to_message?: any;
+      }) => {
+        const {
+          chat: { id, type },
+          from: { username, first_name, last_name },
+        } = msg;
+        if (type !== "private") {
+          bot
+            .sendMessage(id, groupChatMessage)
+            .catch((error: { code: any; response: { body: any } }) => {
+              console.log(error.code); // => 'ETELEGRAM'
+              console.log(error.response.body); // => { ok: false, error_code: 400, description: 'Bad Request: chat not found' }
+              handleError(id, error);
+            });
+          return;
+        } else {
+          handleChatUser(msg);
+          const name =
+            (first_name ? first_name : "") + " " + (last_name ? last_name : "");
+          const formattedUsername = username ? "@" + username : "";
+          notifyAdmin(`Starting chat with ${formattedUsername}`);
+          bot
+            .sendMessage(
+              id,
+              "welcome, Don't miss any new tenders. get notification for new tender. \n\npress /alert to set alert to set keywords for new tenders. \n\nI'll notify you when tenders containing you keywords get published."
+            )
+            .catch((error: { code: any; response: { body: any } }) => {
+              console.log(error.code); // => 'ETELEGRAM'
+              console.log(error.response.body); // => { ok: false, error_code: 400, description: 'Bad Request: chat not found' }
+              handleError(id, error);
+            });
+        }
       }
-    });
+    );
 
     bot.onText(/\/subscribe/, async (msg: any) => {
       const arrayButton = [];
@@ -319,7 +335,15 @@ export const initSeledaBot = async () => {
             //   else
 
             bot
-              .sendMessage(id, "Please only use the commands from the menu.")
+              .sendMessage(
+                id,
+                `እባክዎ ከሜኑ ላይ ያሉትን ተዕዛዞች ብቻ ይጠቀሙ። ወይም እነዚህን አማራጮች ይጠቀሙ 
+                
+/alert - የመረጥኩት ቃላቶችን የያዙ ጨረታዎች ሲወጡ ላክልኝ
+/tags - የመረጥኩት ቃላቶችን አሳየኝ
+/search - የመረጥኩት ቃላቶችን የያዙ ጨረታዎችን ፈልግልኝ
+/subscribe - የምዝገባ ክፍያ ለመክፈል `
+              )
               .catch((error: { code: any; response: { body: any } }) => {
                 console.log(error.code); // => 'ETELEGRAM'
                 console.log(error.response.body); // => { ok: false, error_code: 400, description: 'Bad Request: chat not found' }
