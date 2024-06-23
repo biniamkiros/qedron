@@ -38,14 +38,14 @@ export async function POST(request: NextRequest) {
           const today = new Date();
           const endDate = new Date(today.getTime() + duration * 1); //to convert duration to number
           // (1000 * 60 * 60 * 24);
-          notifyAdmin(`payment from ${endDate}`);
+          // notifyAdmin(`payment from ${endDate}`);
 
           const u = await updateUserSubscription(
             chatId,
             endDate,
             `${amount}  ${currency}`
           );
-          notifyAdmin(`payment from ${u ? u.name : "null"}`);
+          // notifyAdmin(`payment from ${u ? u.name : "null"}`);
           return NextResponse.json({ messsage: message }, { status: 200 });
         } else
           return NextResponse.json(
