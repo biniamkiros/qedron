@@ -847,6 +847,7 @@ export const updateUserSubscription = async (
 ) => {
   const user = await prisma.user.findUnique({ where: { chatId: chatId } });
 
+  notifyAdmin(`updating Payment`);
   if (user) {
     const updatedUser = await prisma.user.update({
       where: { chatId: chatId },
