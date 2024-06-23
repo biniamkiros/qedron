@@ -37,16 +37,18 @@ export async function POST(request: NextRequest) {
         if (chatId && duration) {
           const today = new Date();
           const endDate = new Date(today.getTime() + duration);
-          // (1000 * 60 * 60 * 24);
-          // notifyAdmin(`payment from ${endDate}`);
-
-          const u = await updateUserSubscription(
+          const subscriber = await updateUserSubscription(
             chatId,
             endDate,
-            `${amount}  ${currency}`
+            `${amount} ${currency}`
           );
-          // notifyAdmin(`payment from ${u ? u.name : "null"}`);
-          return NextResponse.json({ messsage: message }, { status: 200 });
+          if (subscriber)
+            return NextResponse.json({ messsage: message }, { status: 200 });
+          else
+            return NextResponse.json(
+              { messsage: "data not saved" },
+              { status: 400 }
+            );
         } else
           return NextResponse.json(
             { messsage: "incomplete data" },

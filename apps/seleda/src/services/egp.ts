@@ -845,20 +845,20 @@ export const updateUserSubscription = async (
   activeEndDate: Date,
   paymentInfo: string
 ) => {
-  notifyAdmin(`updating Payment`);
   const user = await prisma.user.findUnique({ where: { chatId: chatId } });
 
-  notifyAdmin(`updating Payment for user: ` + user);
   if (user) {
+    const details = `${user.username ? user.username : user.name} ${paymentInfo}`;
     const updatedUser = await prisma.user.update({
       where: { chatId: chatId },
       data: { activeEndDate: activeEndDate },
     });
+    notifyAdmin(`Payment from ${details} ${updatedUser.activeEndDate}`);
+
     let message = "";
     message += `የሰሌዳግራም አገልግሎት ምዝገባዎ ዘምኗል።`;
     message += `አገልግሎቱ የሚያበቃበት ቀን >${formattedDate(activeEndDate.toDateString())}**`;
 
-    notifyAdmin(`Payment from ${paymentInfo}`);
     sendTelegramMarkdown(chatId, message);
     return updatedUser;
   } else {
