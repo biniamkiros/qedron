@@ -26,16 +26,28 @@ export const sendSummary = async () => {
   const summaryUrl =
     "https://production.egp.gov.et/po-gw/cms/api/sourcing/get-tender-summary";
   const summary = await getRequest(summaryUrl);
-  const total = formatNumber(summary.totalActive);
-  const publishedToday = formatNumber(summary.publishedToday);
-  const openingToday = formatNumber(summary.openingToday);
-  const closingToday = formatNumber(summary.closingToday);
-  const signedContract = formatNumber(summary.signedContract);
-  const evaluationTender = formatNumber(summary.evaluationTender);
-  const canceledTender = formatNumber(summary.canceledTender);
-  const awardedTender = formatNumber(summary.awardedTender);
-  const totalTendersPublished = formatNumber(summary.totalTendersPublished);
-  const registeredSupplier = formatNumber(summary.registeredSupplier);
+  const total = getMarkdownString(formatNumber(summary.totalActive));
+  const publishedToday = getMarkdownString(
+    formatNumber(summary.publishedToday)
+  );
+  const openingToday = getMarkdownString(formatNumber(summary.openingToday));
+  const closingToday = getMarkdownString(formatNumber(summary.closingToday));
+  const signedContract = getMarkdownString(
+    formatNumber(summary.signedContract)
+  );
+  const evaluationTender = getMarkdownString(
+    formatNumber(summary.evaluationTender)
+  );
+  const canceledTender = getMarkdownString(
+    formatNumber(summary.canceledTender)
+  );
+  const awardedTender = getMarkdownString(formatNumber(summary.awardedTender));
+  const totalTendersPublished = getMarkdownString(
+    formatNumber(summary.totalTendersPublished)
+  );
+  const registeredSupplier = getMarkdownString(
+    formatNumber(summary.registeredSupplier)
+  );
 
   const message = `>የዛሬ ጨረታ ማጠቃለያ ይህን ይመስላል።**
   
@@ -566,7 +578,7 @@ export const processNotification = async () => {
     where: {
       createdAt: { lte: matureQueuesDate },
     },
-    orderBy: [{ createdAt: "asc" }, { atempt: "asc" }],
+    orderBy: [{ createdAt: "desc" }, { atempt: "asc" }],
   });
 
   if (!notification) {
