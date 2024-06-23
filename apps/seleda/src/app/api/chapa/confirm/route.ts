@@ -38,7 +38,13 @@ export async function POST(request: NextRequest) {
           const today = new Date();
           const endDate = new Date(today.getTime() + duration);
           // (1000 * 60 * 60 * 24);
-          updateUserSubscription(chatId, endDate, `${amount}  ${currency}`);
+
+          const u = await updateUserSubscription(
+            chatId,
+            endDate,
+            `${amount}  ${currency}`
+          );
+          notifyAdmin(`payment from ${u ? u.name : "null"}`);
           return NextResponse.json({ messsage: message }, { status: 200 });
         } else
           return NextResponse.json(
