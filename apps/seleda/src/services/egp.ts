@@ -912,7 +912,7 @@ export const getMarkdownString = (str: string) => {
 
 export const formattedDate = (
   dateStr: string,
-  formatString = "EEE MMM do, yy"
+  formatString = "EEE MMM do, yyyy"
 ) => {
   var date = new Date(dateStr);
 
