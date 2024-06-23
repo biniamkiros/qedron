@@ -31,12 +31,12 @@ export async function POST(request: NextRequest) {
       const { tx_ref } = data;
       if (tx_ref) {
         const transaction = tx_ref.split("-");
-        const chatId = transaction[0];
-        const duration = transaction[1];
+        const chatId = transaction[0] * 1; //to convert to number
+        const duration = transaction[1] * 1; //to convert to number
 
         if (chatId && duration) {
           const today = new Date();
-          const endDate = new Date(today.getTime() + duration * 1); //to convert duration to number
+          const endDate = new Date(today.getTime() + duration);
           // (1000 * 60 * 60 * 24);
           // notifyAdmin(`payment from ${endDate}`);
 
