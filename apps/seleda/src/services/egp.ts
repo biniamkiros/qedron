@@ -861,18 +861,15 @@ export const updateUserSubscription = async (
     if (updatedUser.activeEndDate) {
       const subEndDate = formattedDate(updatedUser.activeEndDate.toISOString());
       let message = "";
-      message += `የሰሌዳግራም አገልግሎት ምዝገባዎ ዘምኗል።`;
-      message += `አገልግሎቱ የሚያበቃበት ቀን >${subEndDate}**`;
+      message += `የሰሌዳግራም አገልግሎት ምዝገባዎ ዘምኗል። አገልግሎቱ የሚያበቃበት ቀን`;
+      message += "\n\n";
+      message += `>${getMarkdownString(subEndDate)}**`;
 
-      // notifyAdmin(message);
-
-      sendTelegramMarkdown(chatId, getMarkdownString(message));
+      sendTelegramMarkdown(chatId, message);
     } else {
       sendTelegramMarkdown(
         chatId,
-        getMarkdownString(
-          "የሰሌዳግራም አገልግሎት ምዝገባዎ ማዘመን አልተቻለም። ለድጋፍ +251911702254 ላይ ይደውሉ።"
-        )
+        "የሰሌዳግራም አገልግሎት ምዝገባዎ ማዘመን አልተቻለም። ለድጋፍ +251911702254 ላይ ይደውሉ።"
       );
     }
     return updatedUser;

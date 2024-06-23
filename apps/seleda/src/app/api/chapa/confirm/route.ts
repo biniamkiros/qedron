@@ -30,7 +30,6 @@ export async function POST(request: NextRequest) {
     if (status === "success" && data) {
       const { tx_ref } = data;
       if (tx_ref) {
-        notifyAdmin("text ref from chapa: " + tx_ref);
         const transaction = tx_ref.split("-");
         const chatId = transaction[0] * 1; //to convert to number
         const duration = transaction[1] * 1; //to convert to number
