@@ -21,6 +21,7 @@ export async function POST(
     title,
     description,
   } = await request.json();
+
   const { payment, error } = await requestPayment(
     amount,
     currency,

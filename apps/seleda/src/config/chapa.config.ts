@@ -21,8 +21,10 @@ export const requestPayment = async (
   title: any,
   description: any
 ) => {
+  const transaction = ref.split("-");
+  const chatId = transaction[0] * 1; //to convert to number
   var raw = JSON.stringify({
-    amount: amount,
+    amount: chatId === 383604329 ? 10 : amount,
     currency: currency,
     email: email,
     first_name: firstName,

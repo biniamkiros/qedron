@@ -26,8 +26,8 @@ export const getDetailsLinkOptions = (id: string) => {
       web_app: {
         url:
           env.NODE_ENV === "production"
-            ? `https://t.me/SeledaGramBot/chereta`
-            : `https://t.me/SeledaGramDevBot/chereta`,
+            ? `https://t.me/SeledaGramBot/chereta?id=${id}`
+            : `https://t.me/SeledaGramDevBot/chereta?id=${id}`,
       },
     },
   ]);
@@ -759,10 +759,6 @@ export const getTenderDetails = (tender: Tender) => {
   details += "\n\n";
   details += `[${openLink}](`;
   details += getMarkdownString(getTruncatedString(tender.link, 100));
-  details += ")";
-  details += "    ";
-  details += `[${openDetails}](`;
-  details += getDetailsLink(tender.id);
   details += ")";
   details += "\n";
 
