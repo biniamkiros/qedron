@@ -255,7 +255,14 @@ export default function TenderDetailsMiniApp() {
       platform={["macos", "ios"].includes(lp.platform) ? "ios" : "base"}
       style={{ backgroundColor: "var(--tg-theme-bg-color)" }}
     >
-      <List
+      <Placeholder description="ሙሉ መረጃ ከቴሌግራም ሳይወጡ ማየት ይችላሉ።" header="ጨረታ ዝርዝር">
+        <img
+          alt="Telegram sticker"
+          className="blt0jZBzpxuR4oDhJc8s"
+          src="https://xelene.me/telegram.gif"
+        />
+      </Placeholder>
+      {/* <List
         style={{
           background: "var(--tgui--secondary_bg_color)",
           padding: "40px",
@@ -266,15 +273,21 @@ export default function TenderDetailsMiniApp() {
           footer="The official Telegram app is available for Android, iPhone, iPad, Windows, macOS and Linux."
           header="Main Settings"
         >
-          <Cell before={<IconContainer>{/* <Icon28Chat /> */}</IconContainer>}>
+          <Cell before={<IconContainer>
+           <Icon28Chat /> 
+          </IconContainer>}>
             Chat Settings
           </Cell>
           <Cell
-            before={<IconContainer>{/* <Icon28Devices /> */}</IconContainer>}
+            before={<IconContainer>
+            <Icon28Devices /> 
+            </IconContainer>}
           >
             Data and Storage
           </Cell>
-          <Cell before={<IconContainer>{/* <Icon28Stats /> */}</IconContainer>}>
+          <Cell before={<IconContainer>
+           <Icon28Stats /> 
+          </IconContainer>}>
             Devices
           </Cell>
         </Section>
@@ -291,7 +304,7 @@ export default function TenderDetailsMiniApp() {
             placeholder="21 y.o. designer from San Francisco"
           />
         </Section>
-      </List>
+      </List> */}
     </AppRoot>
   );
 }
