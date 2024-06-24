@@ -12,8 +12,16 @@ import { env } from "~/env";
 // import { PrismaClient } from '../../../../node_modules/.pnpm/@prisma+client@5.13.0_prisma@5.13.0/node_modules/@prisma/client'
 const prisma = new PrismaClient();
 
-const openLink = "ሙሉ መረጃ";
+const openLink = "ምንጭ";
+const openDetails = "ሙሉ መረጃ";
+const detailsUrl = "https";
 const Purchasing = "ፕሮፎርማ";
+
+export const getDetailsLink = (id: string) => {
+  return env.NODE_ENV === "production"
+    ? `https://t.me/SeledaGramBot/detail?id=${id}`
+    : `https://t.me/SeledaGramDevBot/detail?id=${id}`;
+};
 
 export const getSpace = (text: string, max: number) => {
   let space = new Array(max).join(" ");
@@ -573,7 +581,6 @@ export const processMessage = async () => {
   }
 };
 
-let count = 0;
 export const processNotification = async () => {
   const matureQueuesDate = new Date(new Date().getTime() - 1000 * 60);
   const expireQueuesDate = new Date(new Date().getTime() - 1000 * 60 * 60 * 24);
@@ -597,9 +604,8 @@ export const processNotification = async () => {
       success = await sendTelegramMarkdown(user.chatId, notification.message);
     }
 
-    if (notification.atempt > 100 && count % 100 === 0) {
+    if (notification.atempt > 100) {
       notifyAdmin("notif stuck: " + JSON.stringify(notification));
-      count++;
     }
 
     if (
@@ -685,6 +691,10 @@ export const sendTenderWithHelp = (
   message += `[${openLink}](`;
   message += getMarkdownString(getTruncatedString(tender.link, 100));
   message += ")";
+  message += "    ";
+  message += `[${openDetails}](`;
+  message += getDetailsLink(tender.id);
+  message += ")";
   message += "\n\n";
   message +=
     ">tags: " +
@@ -732,6 +742,10 @@ export const getTenderDetails = (tender: Tender) => {
   details += "\n\n";
   details += `[${openLink}](`;
   details += getMarkdownString(getTruncatedString(tender.link, 100));
+  details += ")";
+  details += "    ";
+  details += `[${openDetails}](`;
+  details += getDetailsLink(tender.id);
   details += ")";
   details += "\n";
 
@@ -783,6 +797,10 @@ export const getTenderForChannelPost = (tender: Tender) => {
   message += "\n\n";
   message += `[${openLink}](`;
   message += getMarkdownString(getTruncatedString(tender.link, 100));
+  message += ")";
+  message += "    ";
+  message += `[${openDetails}](`;
+  message += getDetailsLink(tender.id);
   message += ")";
   message += "\n\n";
   // message +=

@@ -264,6 +264,7 @@ export const initSeledaBot = async () => {
           chat: { id, type },
           from: { username, first_name, last_name },
         } = msg;
+        console.log("🚀 ~ returngetBot ~ msg:", msg);
         if (type !== "private") {
           bot
             .sendMessage(id, groupChatMessage)
