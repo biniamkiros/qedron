@@ -573,6 +573,7 @@ export const processMessage = async () => {
   }
 };
 
+let count = 0;
 export const processNotification = async () => {
   const matureQueuesDate = new Date(new Date().getTime() - 1000 * 60);
   let notification = await prisma.notification.findFirst({
@@ -582,7 +583,10 @@ export const processNotification = async () => {
     orderBy: [{ createdAt: "desc" }, { atempt: "asc" }],
   });
 
-  notifyAdmin("notif: " + JSON.stringify(notification));
+  if (count < 3) {
+    notifyAdmin("notif: " + JSON.stringify(notification));
+    count++;
+  }
   if (!notification) {
     return false;
   }
