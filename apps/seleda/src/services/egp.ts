@@ -3,6 +3,7 @@ import {
   notifyAdmin,
   sendTelegram,
   sendTelegramMarkdown,
+  sendTelegramWithOptions,
   sendUsernameOptions,
   sendUsernameReplyOptions,
 } from "./telegram";
@@ -17,10 +18,26 @@ const openDetails = "ሙሉ መረጃ";
 const detailsUrl = "https";
 const Purchasing = "ፕሮፎርማ";
 
-export const getDetailsLink = (id: string) => {
-  return env.NODE_ENV === "production"
-    ? `http://t.me/SeledaGramBot/chereta?id=${id}`
-    : `http://t.me/SeledaGramDevBot/chereta?id=${id}`;
+export const getDetailsLinkOptions = (id: string) => {
+  const arrayButton = [];
+  arrayButton.push([
+    {
+      text: "የጨረታውን ዝርዝር ይመልከቱ",
+      web_app: {
+        url:
+          env.NODE_ENV === "production"
+            ? `https://t.me/SeledaGramBot/chereta`
+            : `https://t.me/SeledaGramDevBot/chereta`,
+      },
+    },
+  ]);
+
+  const options = {
+    reply_markup: JSON.stringify({ inline_keyboard: arrayButton }),
+    parse_mode: "MarkdownV2",
+  };
+
+  return options;
 };
 
 export const getSpace = (text: string, max: number) => {
@@ -691,17 +708,17 @@ export const sendTenderWithHelp = (
   message += `[${openLink}](`;
   message += getMarkdownString(getTruncatedString(tender.link, 100));
   message += ")";
-  message += "    ";
-  message += `[${openDetails}](`;
-  message += getDetailsLink(tender.id);
-  message += ")";
   message += "\n\n";
   message +=
     ">tags: " +
     getMarkdownString(getTruncatedString(queue.tags.join(", "))) +
     "**";
 
-  return sendTelegramMarkdown(chatId, message);
+  return sendTelegramWithOptions(
+    chatId,
+    message,
+    getDetailsLinkOptions(tender.id)
+  );
 };
 
 export const getTenderDetails = (tender: Tender) => {
@@ -797,10 +814,6 @@ export const getTenderForChannelPost = (tender: Tender) => {
   message += "\n\n";
   message += `[${openLink}](`;
   message += getMarkdownString(getTruncatedString(tender.link, 100));
-  message += ")";
-  message += "    ";
-  message += `[${openDetails}](`;
-  message += getDetailsLink(tender.id);
   message += ")";
   message += "\n\n";
   // message +=

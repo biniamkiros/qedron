@@ -33,7 +33,7 @@ export const initSeledaBot = async () => {
     });
 
     bot.on("callback_query", (query: { data?: any; message?: any }) => {
-      console.log("🚀 ~ bot.on ~ query:", query);
+      // console.log("🚀 ~ bot.on ~ query:", query);
       const { message: { chat: { id } } = {} } = query;
       switch (query.data) {
         case NEW_TAG_RESULTS:
@@ -264,7 +264,6 @@ export const initSeledaBot = async () => {
           chat: { id, type },
           from: { username, first_name, last_name },
         } = msg;
-        console.log("🚀 ~ returngetBot ~ msg:", msg);
         if (type !== "private") {
           bot
             .sendMessage(id, groupChatMessage)
@@ -309,10 +308,10 @@ export const initSeledaBot = async () => {
 
       const options = {
         reply_markup: JSON.stringify({ inline_keyboard: arrayButton }),
-        parse_mode: "HTML",
+        parse_mode: "MarkdownV2",
       };
       const subDate = await getUserActiveEndDate(id);
-      const message = `የሰሌዳግራም ደንበኝነት ምዝገባዎ በ ${subDate} ያልቃል። ለማራዘም ከስር ያለውን 👇 ማስፈንጠሪያ በመጫን ክፍያ ይፈጽሙ።`;
+      const message = `የሰሌዳግራም ደንበኝነት ምዝገባዎ በff ${subDate} ያልቃል። ለማራዘም ከስር ያለውን 👇 ማስፈንጠሪያ በመጫን ክፍያ ይፈጽሙ።`;
       await bot.sendMessage(msg.chat.id, message, options);
     });
 
@@ -530,6 +529,45 @@ export const sendTelegram = async (
     });
 };
 
+export const sendTelegramWithOptions = async (
+  chatId: number,
+  content: String,
+  options: any
+): Promise<boolean> => {
+  if (!seledaGramBot) {
+    console.error(
+      "🚀 ~ sendTelegram ~ has not been iniatialised. Initialising..."
+    );
+    seledaGramBot = await initSeledaBot();
+  }
+
+  if (!seledaGramBot) {
+    console.error(
+      "🚀 ~ sendTelegram ~ Error iniatialising bot.",
+      seledaGramBot
+    );
+    return false;
+  }
+
+  return seledaGramBot
+    .sendMessage(chatId, content, options)
+    .then((Msg: { chat: { id: any }; message_id: any }) => {
+      return true;
+    })
+    .catch((error: { code: any; response: { body: any } }) => {
+      console.log(error.code); // => 'ETELEGRAM'
+      console.log(error.response.body); // => { ok: false, error_code: 400, description: 'Bad Request: chat not found' }
+      notifyAdmin(
+        "Error sending message.\nid: " +
+          chatId +
+          "\nError: " +
+          JSON.stringify(error)
+      );
+      handleError(chatId, error);
+      return false;
+    });
+};
+
 export const handleUpdates = async (update: any) => {
   if (!seledaGramBot) {
     console.error(
@@ -552,7 +590,12 @@ export const handleUpdates = async (update: any) => {
 export const handleError = async (chatId: any, error: any) => {
   // "error_code":403,"description":"Forbidden: Bot was blocked by the user"
   const { error_code, description } = error.response.body;
-  if (error.response && (error_code === 403 || error_code === 400)) {
+  if (
+    error.response &&
+    (error_code === 403 ||
+      (error_code === 400 &&
+        error.description === "Bad Request: chat not found"))
+  ) {
     // ...snip...
     // ok: false,
     // error_code: 400,
