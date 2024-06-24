@@ -480,6 +480,7 @@ export const sendTelegramMarkdown = async (
       console.log(error.code); // => 'ETELEGRAM'
       console.log(error.response.body); // => { ok: false, error_code: 400, description: 'Bad Request: chat not found' }
       handleError(chatId, error);
+      notifyAdmin("Erro sending markdown message.\n" + JSON.stringify(error));
       return false;
     });
 };

@@ -581,7 +581,7 @@ export const processNotification = async () => {
     where: {
       createdAt: { lte: matureQueuesDate },
     },
-    orderBy: [{ createdAt: "asc" }, { atempt: "desc" }],
+    orderBy: [{ atempt: "asc" }, { createdAt: "asc" }],
   });
 
   if (!notification) {
