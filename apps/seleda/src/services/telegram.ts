@@ -481,7 +481,7 @@ export const sendTelegramMarkdown = async (
       console.log(error.response.body); // => { ok: false, error_code: 400, description: 'Bad Request: chat not found' }
       handleError(chatId, error);
       notifyAdmin(
-        "Erro sending markdown message.\nid: " +
+        "Error sending MARKDOWN message.\nid: " +
           chatId +
           "\nError: " +
           JSON.stringify(error)
@@ -519,7 +519,7 @@ export const sendTelegram = async (
       console.log(error.code); // => 'ETELEGRAM'
       console.log(error.response.body); // => { ok: false, error_code: 400, description: 'Bad Request: chat not found' }
       notifyAdmin(
-        "Erro sending markdown message.\nid: " +
+        "Error sending message.\nid: " +
           chatId +
           "\nError: " +
           JSON.stringify(error)
@@ -551,7 +551,7 @@ export const handleUpdates = async (update: any) => {
 export const handleError = async (chatId: any, error: any) => {
   // "error_code":403,"description":"Forbidden: Bot was blocked by the user"
   const { error_code, description } = error.response.body;
-  if (error.response && error_code === 403) {
+  if (error.response && (error_code === 403 || error_code === 400)) {
     // ...snip...
     // ok: false,
     // error_code: 400,
