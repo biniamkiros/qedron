@@ -480,7 +480,12 @@ export const sendTelegramMarkdown = async (
       console.log(error.code); // => 'ETELEGRAM'
       console.log(error.response.body); // => { ok: false, error_code: 400, description: 'Bad Request: chat not found' }
       handleError(chatId, error);
-      notifyAdmin("Erro sending markdown message.\n" + JSON.stringify(error));
+      notifyAdmin(
+        "Erro sending markdown message.\nid: " +
+          chatId +
+          "\nError: " +
+          JSON.stringify(error)
+      );
       return false;
     });
 };
@@ -513,6 +518,12 @@ export const sendTelegram = async (
     .catch((error: { code: any; response: { body: any } }) => {
       console.log(error.code); // => 'ETELEGRAM'
       console.log(error.response.body); // => { ok: false, error_code: 400, description: 'Bad Request: chat not found' }
+      notifyAdmin(
+        "Erro sending markdown message.\nid: " +
+          chatId +
+          "\nError: " +
+          JSON.stringify(error)
+      );
       handleError(chatId, error);
       return false;
     });
