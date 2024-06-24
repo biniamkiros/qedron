@@ -260,6 +260,7 @@ export default function TenderDetailsMiniApp() {
           alt="Telegram sticker"
           className="blt0jZBzpxuR4oDhJc8s"
           src="https://xelene.me/telegram.gif"
+          style={{ width: "25%" }}
         />
       </Placeholder>
       {/* <List
