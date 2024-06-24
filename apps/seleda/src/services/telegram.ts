@@ -277,7 +277,7 @@ export const initSeledaBot = async () => {
           handleChatUser(msg);
           const name =
             (first_name ? first_name : "") + " " + (last_name ? last_name : "");
-          const formattedUsername = username ? "@" + username : "";
+          const formattedUsername = username ? "@" + username : name;
           notifyAdmin(`Starting chat with ${formattedUsername}`);
           bot
             .sendMessage(

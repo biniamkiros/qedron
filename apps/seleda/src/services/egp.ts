@@ -146,7 +146,8 @@ export const pullTenders = async () => {
   tenders.forEach((tender) => {
     upsertEGPTender(tender);
   });
-  notifyAdmin(`Seleda is updating ${tenders.length} tenders`);
+  if (!tenders || !tenders.length)
+    notifyAdmin(`Updating tenders was not successfull at ${new Date()}`);
   return tenders;
 };
 
@@ -581,6 +582,7 @@ export const processNotification = async () => {
     orderBy: [{ createdAt: "desc" }, { atempt: "asc" }],
   });
 
+  notifyAdmin("notif: " + notification);
   if (!notification) {
     return false;
   }
