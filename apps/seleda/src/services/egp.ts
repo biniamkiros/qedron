@@ -582,7 +582,7 @@ export const processNotification = async () => {
     orderBy: [{ createdAt: "desc" }, { atempt: "asc" }],
   });
 
-  notifyAdmin("notif: " + notification);
+  notifyAdmin("notif: " + JSON.stringify(notification));
   if (!notification) {
     return false;
   }
