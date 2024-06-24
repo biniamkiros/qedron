@@ -576,17 +576,14 @@ export const processMessage = async () => {
 let count = 0;
 export const processNotification = async () => {
   const matureQueuesDate = new Date(new Date().getTime() - 1000 * 60);
+  const expireQueuesDate = new Date(new Date().getTime() - 1000 * 60 * 60 * 24);
   let notification = await prisma.notification.findFirst({
     where: {
       createdAt: { lte: matureQueuesDate },
     },
-    orderBy: [{ createdAt: "desc" }, { atempt: "asc" }],
+    orderBy: [{ createdAt: "asc" }, { atempt: "desc" }],
   });
 
-  if (count < 3) {
-    notifyAdmin("notif: " + JSON.stringify(notification));
-    count++;
-  }
   if (!notification) {
     return false;
   }
@@ -600,17 +597,41 @@ export const processNotification = async () => {
       success = await sendTelegramMarkdown(user.chatId, notification.message);
     }
 
-    if (success) {
+    if (notification.atempt > 100 && count % 100 === 0) {
+      notifyAdmin("notif stuck: " + JSON.stringify(notification));
+      count++;
+    }
+
+    if (
+      success ||
+      user.status === "blocked" ||
+      notification.createdAt > expireQueuesDate
+    ) {
       try {
-        const deleted = await prisma.notification.delete({
+        notifyAdmin(
+          "Notification will be deleted for one of these reasons: \nsuccess:" +
+            success +
+            "\nuser:" +
+            user.status +
+            "\ndate:" +
+            notification.createdAt +
+            "\nattempt:" +
+            notification.atempt
+        );
+        const atempt = notification.atempt + 1;
+        const attempted = await prisma.notification.update({
           where: { id: notification.id },
+          data: { atempt: atempt },
         });
+        // const deleted = await prisma.notification.delete({
+        //   where: { id: notification.id },
+        // });
       } catch (e) {
-        console.log("🚀 ~ process notification ~ error deleting message:", e);
+        notifyAdmin("🚀 ~ process notification ~ error deleting message:" + e);
       }
     } else {
       const atempt = notification.atempt + 1;
-      const deleted = await prisma.notification.update({
+      const attempted = await prisma.notification.update({
         where: { id: notification.id },
         data: { atempt: atempt },
       });
