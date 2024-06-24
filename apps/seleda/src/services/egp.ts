@@ -19,8 +19,8 @@ const Purchasing = "ፕሮፎርማ";
 
 export const getDetailsLink = (id: string) => {
   return env.NODE_ENV === "production"
-    ? `https://t.me/SeledaGramBot/detail?id=${id}`
-    : `https://t.me/SeledaGramDevBot/detail?id=${id}`;
+    ? `http://t.me/SeledaGramBot/chereta?id=${id}`
+    : `http://t.me/SeledaGramDevBot/chereta?id=${id}`;
 };
 
 export const getSpace = (text: string, max: number) => {

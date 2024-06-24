@@ -14,7 +14,7 @@ import {
 
 import { mock } from "../../config/mock.config";
 import { FC, useEffect, useMemo, useState } from "react";
-import PaymentMiniApp from "../../components/PaymentMiniApp";
+import TenderDetailsMiniApp from "../../components/TenderDetailsMiniApp";
 import { ErrorBoundary } from "../../components/ErrorBoundary";
 
 const ErrorBoundaryError: FC<{ error: unknown }> = ({ error }) => (
@@ -45,7 +45,7 @@ export default function HomePage() {
   return (
     <ErrorBoundary fallback={ErrorBoundaryError}>
       <SDKProvider acceptCustomStyles debug>
-        <PaymentMiniApp />
+        <TenderDetailsMiniApp />
       </SDKProvider>
     </ErrorBoundary>
   );
