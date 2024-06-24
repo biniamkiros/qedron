@@ -618,14 +618,9 @@ export const processNotification = async () => {
             "\nattempt:" +
             notification.atempt
         );
-        const atempt = notification.atempt + 1;
-        const attempted = await prisma.notification.update({
+        const deleted = await prisma.notification.delete({
           where: { id: notification.id },
-          data: { atempt: atempt },
         });
-        // const deleted = await prisma.notification.delete({
-        //   where: { id: notification.id },
-        // });
       } catch (e) {
         notifyAdmin("🚀 ~ process notification ~ error deleting message:" + e);
       }
