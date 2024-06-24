@@ -608,16 +608,16 @@ export const processNotification = async () => {
       notification.createdAt > expireQueuesDate
     ) {
       try {
-        notifyAdmin(
-          "Notification will be deleted for one of these reasons: \nsuccess:" +
-            success +
-            "\nuser:" +
-            user.status +
-            "\ndate:" +
-            notification.createdAt +
-            "\nattempt:" +
-            notification.atempt
-        );
+        // notifyAdmin(
+        //   "Notification will be deleted for one of these reasons: \nsuccess:" +
+        //     success +
+        //     "\nuser:" +
+        //     user.status +
+        //     "\ndate:" +
+        //     notification.createdAt +
+        //     "\nattempt:" +
+        //     notification.atempt
+        // );
         const deleted = await prisma.notification.delete({
           where: { id: notification.id },
         });
