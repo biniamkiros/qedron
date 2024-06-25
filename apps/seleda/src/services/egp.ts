@@ -34,7 +34,7 @@ export const getDetailsLinkOptions = (id: string) => {
 
   const options = {
     reply_markup: JSON.stringify({ inline_keyboard: arrayButton }),
-    parse_mode: "MarkdownV2",
+    parse_mode: "HTML",
   };
 
   return options;
@@ -91,10 +91,20 @@ export const sendSummary = async () => {
   if (env.NODE_ENV === "production") {
     const users = await prisma.user.findMany({ where: { status: "active" } });
     users.forEach(async (u) => {
+      const tags = u.tags;
+
+      let escapedMessage =
+        tags.length > 0
+          ? "Your current keywords\n\n`" +
+            getMarkdownString(tags.join(", ")) +
+            "`"
+          : getMarkdownString("You currently have no tags set.");
+      escapedMessage += "\n\n";
+      escapedMessage += message;
       const notification = await prisma.notification.create({
         data: {
           userId: u.id,
-          message: message,
+          message: escapedMessage,
         },
       });
     });
@@ -663,19 +673,17 @@ export const sendTenderWithHelp = (
   tender: Tender,
   queue: Message
 ): Promise<boolean> => {
-  let message = "\\#";
+  let message = "#";
   message += queue.type;
   message += " tender ";
-  message += " `";
+  message += " <code>";
   message += tender.id
     ? getMarkdownString(getTruncatedString(tender.id))
     : "unknown";
-  message += "`\n\n";
-  message += "***";
-  message += tender.title
-    ? getMarkdownString(getTruncatedString(tender.title, 100))
-    : "no title";
-  message += "***\n";
+  message += "</code>\n\n";
+  message += "<b>";
+  message += tender.title ? getTruncatedString(tender.title, 100) : "no title";
+  message += "</b>\n";
   if (tender.title !== tender.description) {
     message +=
       tender.description === null
@@ -685,35 +693,34 @@ export const sendTenderWithHelp = (
           );
     message += "\n";
   }
-  message += " \\-";
-  message += tender.status
-    ? " " + getMarkdownString(getTruncatedString(tender.status))
-    : "";
+  message += " -";
+  message += tender.status ? " " + getTruncatedString(tender.status) : "";
   message += " by ";
-  message += getMarkdownString(getTruncatedString(tender.entity, 100));
+  message += getTruncatedString(tender.entity, 100);
   message += "\n\n💵 ";
-  if (tender.security)
-    message += getMarkdownString(getTruncatedString(tender.security));
+  if (tender.security) message += getTruncatedString(tender.security);
   message += "    ";
   message +=
     tender.openingDate === null
       ? "unknown opening date"
       : formattedDate(tender.openingDate);
-  message += " \\- ";
+  message += " - ";
   message +=
     tender.closingDate === null
       ? "unknown closing date"
       : formattedDate(tender.closingDate);
   message += "\n\n";
-  message += `[${openLink}](`;
-  message += getMarkdownString(getTruncatedString(tender.link, 100));
-  message += ")";
+  // message += `[${openLink}](`;
+  message += `<a href="${tender.link}">${openLink}</a>`;
+  // message += getMarkdownString(getTruncatedString(tender.link, 100));
+  // message += ")";
   message += "\n\n";
   message +=
-    ">tags: " +
-    getMarkdownString(getTruncatedString(queue.tags.join(", "))) +
-    "**";
+    "<blockquote>tags: " +
+    getTruncatedString(queue.tags.join(", ")) +
+    "</blockquote>";
 
+  console.log("🚀 ~ message:", message);
   return sendTelegramWithOptions(
     chatId,
     message,
