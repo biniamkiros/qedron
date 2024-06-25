@@ -18,7 +18,24 @@ const openDetails = "ሙሉ መረጃ";
 const detailsUrl = "https";
 const Purchasing = "ፕሮፎርማ";
 
-export const getDetailsLinkOptions = (id: string) => {
+export const getDetailsLinkOptionsMarkdown = (id: string) => {
+  const arrayButton = [];
+  arrayButton.push([
+    {
+      text: "የጨረታውን ዝርዝር ይመልከቱ",
+      web_app: { url: "https://seleda.qedron.com/tmachereta?id=${id}" },
+    },
+  ]);
+
+  const options = {
+    reply_markup: JSON.stringify({ inline_keyboard: arrayButton }),
+    parse_mode: "HTML",
+  };
+
+  return options;
+};
+
+export const getDetailsLinkOptionsHTML = (id: string) => {
   const arrayButton = [];
   arrayButton.push([
     {
@@ -26,8 +43,8 @@ export const getDetailsLinkOptions = (id: string) => {
       web_app: {
         url:
           env.NODE_ENV === "production"
-            ? `https://t.me/SeledaGramBot/chereta?id=${id}`
-            : `https://t.me/SeledaGramDevBot/chereta?id=${id}`,
+            ? `https://t.me/SeledaGramBot/tmachereta?id=${id}`
+            : `https://t.me/SeledaGramDevBot/tmachereta?id=${id}`,
       },
     },
   ]);
@@ -588,7 +605,7 @@ export const processMessage = async () => {
     //only process on prod and for biniam on dev
     let success = false;
     if (env.NODE_ENV === "production" || user.chatId === 383604329) {
-      success = await sendTenderWithHelp(user.chatId, tender, queue);
+      success = await sendTenderWithHelpMarkdown(user.chatId, tender, queue);
     }
     if (success) {
       try {
@@ -668,7 +685,70 @@ export const processNotification = async () => {
   return true;
 };
 
-export const sendTenderWithHelp = (
+export const sendTenderWithHelpMarkdown = (
+  chatId: number,
+  tender: Tender,
+  queue: Message
+): Promise<boolean> => {
+  let message = "\\#";
+  message += queue.type;
+  message += " tender ";
+  message += " `";
+  message += tender.id
+    ? getMarkdownString(getTruncatedString(tender.id))
+    : "unknown";
+  message += "`\n\n";
+  message += "***";
+  message += tender.title
+    ? getMarkdownString(getTruncatedString(tender.title, 100))
+    : "no title";
+  message += "***\n";
+  if (tender.title !== tender.description) {
+    message +=
+      tender.description === null
+        ? "no description"
+        : getMarkdownString(
+            getTruncatedString(tender.description.trim(), 1000)
+          );
+    message += "\n";
+  }
+  message += " \\-";
+  message += tender.status
+    ? " " + getMarkdownString(getTruncatedString(tender.status))
+    : "";
+  message += " by ";
+  message += getMarkdownString(getTruncatedString(tender.entity, 100));
+  message += "\n\n💵 ";
+  if (tender.security)
+    message += getMarkdownString(getTruncatedString(tender.security));
+  message += "    ";
+  message +=
+    tender.openingDate === null
+      ? "unknown opening date"
+      : formattedDate(tender.openingDate);
+  message += " \\- ";
+  message +=
+    tender.closingDate === null
+      ? "unknown closing date"
+      : formattedDate(tender.closingDate);
+  message += "\n\n";
+  message += `[${openLink}](`;
+  message += getMarkdownString(getTruncatedString(tender.link, 100));
+  message += ")";
+  message += "\n\n";
+  message +=
+    ">tags: " +
+    getMarkdownString(getTruncatedString(queue.tags.join(", "))) +
+    "**";
+
+  return sendTelegramWithOptions(
+    chatId,
+    message,
+    getDetailsLinkOptionsMarkdown(tender.id)
+  );
+};
+
+export const sendTenderWithHelpHTML = (
   chatId: number,
   tender: Tender,
   queue: Message
@@ -724,7 +804,7 @@ export const sendTenderWithHelp = (
   return sendTelegramWithOptions(
     chatId,
     message,
-    getDetailsLinkOptions(tender.id)
+    getDetailsLinkOptionsHTML(tender.id)
   );
 };
 

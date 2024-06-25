@@ -16,6 +16,7 @@ import { mock } from "../../config/mock.config";
 import { FC, useEffect, useMemo, useState } from "react";
 import TenderDetailsMiniApp from "../../components/TenderDetailsMiniApp";
 import { ErrorBoundary } from "../../components/ErrorBoundary";
+import { useSearchParams } from "next/navigation";
 
 const ErrorBoundaryError: FC<{ error: unknown }> = ({ error }) => (
   <div>
@@ -42,6 +43,10 @@ export default function HomePage() {
     // client-side-only code
     mock();
   }
+  const searchParams = useSearchParams();
+
+  const id = searchParams.get("id");
+  console.log("🚀 ~ id:", id);
   return (
     <ErrorBoundary fallback={ErrorBoundaryError}>
       <SDKProvider acceptCustomStyles debug>
