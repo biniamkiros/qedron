@@ -11,8 +11,8 @@ RUN set -ex && \
     rm /tmp/traccar.zip && \
     apk del wget
 
-ENTRYPOINT ["java", "-Xms1g", "-Xmx1g", "-Djava.net.preferIPv4Stack=true"]
-
 COPY ./packages/traccar/traccar.xml /opt/traccar/conf/traccar.xml
+
+ENTRYPOINT ["java", "-Xms1g", "-Xmx1g", "-Djava.net.preferIPv4Stack=true"]
 
 CMD ["-jar", "tracker-server.jar", "conf/traccar.xml"]
