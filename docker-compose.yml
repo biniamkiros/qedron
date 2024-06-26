@@ -329,12 +329,12 @@ services:
     networks:
       - app_network
 
-  oss:
-    container_name: oss
+  occ:
+    container_name: occ
     labels:
       - traefik.enable=true
-      - traefik.http.routers.oss.rule=Host(`oss.qedron.com`)
-    image: ghcr.io/biniamkiros/oss:latest
+      - traefik.http.routers.occ.rule=Host(`occ.qedron.com`)
+    image: ghcr.io/biniamkiros/occ:latest
     build:
       context: .
       dockerfile: ./packages/traccar/Dockerfile
