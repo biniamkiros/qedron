@@ -329,6 +329,24 @@ services:
     networks:
       - app_network
 
+  oss:
+    container_name: oss
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.oss.rule=Host(`oss.qedron.com`)
+    image: ghcr.io/biniamkiros/oss:latest
+    build:
+      context: .
+      dockerfile: ./packages/traccar/Dockerfile
+    ports:
+      - "8082:8082"
+      - "5000-5150:5000-5150"
+      - "5000-5150:5000-5150/udp"
+    restart: always
+    depends_on:
+      postgresdb:
+        condition: service_healthy
+
   # monitoring:
   #   image: nicolargo/glances:latest-full
   #   pid: host
