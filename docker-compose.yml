@@ -324,8 +324,14 @@ services:
       test:
         # ["CMD-SHELL", "pg_isready -U ${POSTGRES_USERNAME} -d ${POSTGRES_DB}"]
         [
-          "CMD-SHELL",
-          "psql -U ${POSTGRES_USERNAME} -d ${POSTGRES_DB} -c SELECT 1",
+          "CMD",
+          "psql",
+          "-U",
+          "${POSTGRES_USERNAME}",
+          "-d",
+          "${POSTGRES_DB}",
+          "-c",
+          "SELECT 1",
         ]
       interval: 10s
       timeout: 5s
