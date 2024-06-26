@@ -1,8 +1,18 @@
-# ARG PROXY_VERSION
+FROM alpine:3.20.0
 
-FROM  traccar/traccar:latest
+ENV TRACCAR_VERSION 6.2
+
+WORKDIR /opt/traccar
+
+RUN set -ex && \
+    apk add --no-cache --no-progress openjdk11-jre-headless wget && \
+    wget -qO /tmp/traccar.zip https://github.com/traccar/traccar/releases/download/v$TRACCAR_VERSION/traccar-other-$TRACCAR_VERSION.zip && \
+    unzip -qo /tmp/traccar.zip -d /opt/traccar && \
+    rm /tmp/traccar.zip && \
+    apk del wget
+
+ENTRYPOINT ["java", "-Xms1g", "-Xmx1g", "-Djava.net.preferIPv4Stack=true"]
 
 COPY ./packages/traccar/traccar.xml /opt/traccar/conf/traccar.xml
-# /etc/nginx/nginx.conf
 
-# CMD ["-jar", "tracker-server.jar", "conf/traccar.xml"]
+CMD ["-jar", "tracker-server.jar", "conf/traccar.xml"]
