@@ -29,7 +29,7 @@ export const getDetailsLinkOptionsMarkdown = (id: string) => {
 
   const options = {
     reply_markup: JSON.stringify({ inline_keyboard: arrayButton }),
-    parse_mode: "HTML",
+    parse_mode: "MarkdownV2",
   };
 
   return options;

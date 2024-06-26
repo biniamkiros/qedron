@@ -322,7 +322,11 @@ services:
       - ./postgresdb-data:/var/lib/postgresql/data
     healthcheck:
       test:
-        ["CMD-SHELL", "pg_isready -U ${POSTGRES_USERNAME} -d ${POSTGRES_DB}"]
+        # ["CMD-SHELL", "pg_isready -U ${POSTGRES_USERNAME} -d ${POSTGRES_DB}"]
+        [
+          "CMD-SHELL",
+          "psql -U ${POSTGRES_USERNAME} -d ${POSTGRES_DB} -c SELECT 1",
+        ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -339,9 +343,9 @@ services:
       context: .
       dockerfile: ./packages/traccar/Dockerfile
     ports:
-      - 8082:8082
-      - 5000-5150:5000-5150
-      - 5000-5150:5000-5150/udp
+      - "8082:8082"
+      - "5000-5150:5000-5150"
+      - "5000-5150:5000-5150/udp"
     restart: always
     networks:
       - app_network
