@@ -343,6 +343,8 @@ services:
       - 5000-5150:5000-5150
       - 5000-5150:5000-5150/udp
     restart: always
+    networks:
+      - app_network
     depends_on:
       postgresdb:
         condition: service_healthy
