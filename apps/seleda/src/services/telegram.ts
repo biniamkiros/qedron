@@ -70,6 +70,9 @@ export const initSeledaBot = async () => {
           });
         return;
       }
+
+      if (await isSubscriber(id)) return;
+
       const tags = await getUserTags(id);
 
       let escapedMessage = getMarkdownString(
@@ -171,6 +174,7 @@ export const initSeledaBot = async () => {
           });
         return;
       }
+      if (await isSubscriber(id)) return;
       const { user, count } = await setTag(id, []);
       bot
         .sendMessage(
@@ -201,6 +205,7 @@ export const initSeledaBot = async () => {
         return;
       }
 
+      if (await isSubscriber(id)) return;
       const tags = await getUserTags(id);
 
       let escapedMessage = getMarkdownString(
@@ -237,6 +242,7 @@ export const initSeledaBot = async () => {
         return;
       }
 
+      if (await isSubscriber(id)) return;
       bot
         .sendMessage(
           id,
@@ -275,10 +281,15 @@ export const initSeledaBot = async () => {
           return;
         } else {
           handleChatUser(msg);
+
           const name =
             (first_name ? first_name : "") + " " + (last_name ? last_name : "");
           const formattedUsername = username ? "@" + username : name;
+
           notifyAdmin(`Starting chat with ${formattedUsername}`);
+
+          if (await isSubscriber(id)) return;
+
           bot
             .sendMessage(
               id,
@@ -566,6 +577,44 @@ export const sendTelegramWithOptions = async (
       handleError(chatId, error);
       return false;
     });
+};
+
+export const isSubscriber = async (chatId: number): Promise<boolean> => {
+  if (!seledaGramBot) {
+    console.error(
+      "🚀 ~ sendTelegram ~ has not been iniatialised. Initialising..."
+    );
+    seledaGramBot = await initSeledaBot();
+  }
+
+  if (!seledaGramBot) {
+    console.error(
+      "🚀 ~ sendTelegram ~ Error iniatialising bot.",
+      seledaGramBot
+    );
+    return false;
+  }
+  const content = "";
+  const activeEndDate = await getUserActiveEndDate(chatId);
+  if (new Date(activeEndDate) > new Date()) return true;
+  else
+    return seledaGramBot
+      .sendMessage(chatId, content)
+      .then((Msg: { chat: { id: any }; message_id: any }) => {
+        return false;
+      })
+      .catch((error: { code: any; response: { body: any } }) => {
+        console.log(error.code); // => 'ETELEGRAM'
+        console.log(error.response.body); // => { ok: false, error_code: 400, description: 'Bad Request: chat not found' }
+        notifyAdmin(
+          "Error sending message.\nid: " +
+            chatId +
+            "\nError: " +
+            JSON.stringify(error)
+        );
+        handleError(chatId, error);
+        return false;
+      });
 };
 
 export const handleUpdates = async (update: any) => {
