@@ -5,6 +5,6 @@
     <entry key='database.driver'>org.postgresql.Driver</entry>
     <entry key='database.url'>jdbc:postgresql://postgresdb:5432/postgres</entry>
     <entry key='database.user'>qedrongres</entry>
-    <entry key='database.password'>_1978qedron</entry>
+    <entry key='database.password'>_1978qedron</entry> 
     <entry key='web.healthCheck'>false</entry>
 </properties>
