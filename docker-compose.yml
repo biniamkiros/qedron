@@ -345,8 +345,8 @@ services:
       - traefik.enable=true
       - traefik.http.routers.occ.rule=Host(`occ.qedron.com`)
       - traefik.http.services.occ.loadbalancer.server.port=8082
-      - traefik.http.services.occ.loadbalancer.server.port=5000-5150
-      - traefik.http.services.occ.loadbalancer.server.port=5000-5150/udp
+      # - traefik.http.services.occ.loadbalancer.server.port=5000-5150
+      # - traefik.http.services.occ.loadbalancer.server.port=5000-5150/udp
     image: ghcr.io/biniamkiros/occ:latest
     build:
       context: .
