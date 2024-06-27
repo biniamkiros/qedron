@@ -23,6 +23,9 @@ services:
       - "443:443"
       # remove port 8080 for production
       - "8080:8080"
+      # for devices
+      - "5000-5150:5000-5150"
+      - "5000-5150:5000-5150/udp"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./traefik/ssl/:/ssl-certs/
