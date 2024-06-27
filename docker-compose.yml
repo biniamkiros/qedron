@@ -11,8 +11,8 @@ services:
       - --entrypoints.websecure.address=:443
       - --entrypoints.websecure.http.tls.certResolver=default
       - --entrypoints.web.address=:80
-      # - --entryPoints.tracking.address=:5000-5150
-      # - --entryPoints.trackingudp.address=:5000-5150/udp
+      - --entryPoints.occ.address=:5000-5150
+      - --entryPoints.occ.address=:5000-5150/udp
       - --entrypoints.web.http.redirections.entryPoint.to=websecure
       - --entrypoints.web.http.redirections.entryPoint.scheme=https
       - --entrypoints.mongodb.address=:${MONGO_REPLICA_PORT}
@@ -23,11 +23,11 @@ services:
     ports:
       - "80:80"
       - "443:443"
-      # remove port 8080 for production
-      - "8080:8080"
-    expose:
+      # occ
       - "5000-5150:5000-5150"
       - "5000-5150:5000-5150/udp"
+      # remove port 8080 for production
+      - "8080:8080"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./traefik/ssl/:/ssl-certs/
