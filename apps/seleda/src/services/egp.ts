@@ -394,17 +394,18 @@ export const upsertEGPTender = async (r: {
       const bidders = await prisma.user.findMany({
         where: { status: "active" },
       });
+
       bidders.forEach(async (bidder: User) => {
         const today = new Date();
+        const lastsubRemindDate = bidder.lastsubRemindDate
+          ? bidder.lastsubRemindDate
+          : today;
         if (bidder.activeEndDate && bidder.activeEndDate > today)
           createQueueforUser(bidder, upsertTender, old ? "Updated" : "New");
         else if (
-          !bidder.lastsubRemindDate ||
-          (bidder.lastsubRemindDate &&
-            bidder.lastsubRemindDate <
-              new Date(today.getTime() - 1000 * 60 * 60 * 24))
+          lastsubRemindDate < new Date(today.getTime() - 1000 * 60 * 60 * 24)
         ) {
-          notifyAdmin("Subscribe remnder created for" + bidder.name);
+          notifyAdmin("Subscribe remnder created for " + bidder.name);
           const message = `የእርስዎን መስፈርት የሚያሟላ ጨረታ አምልጥዎታል። ምዝገባዎን ለማዘመን ይህን /subscribe ይጫኑ`;
           await prisma.notification.create({
             data: {
