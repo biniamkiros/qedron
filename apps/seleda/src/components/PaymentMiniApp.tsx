@@ -93,7 +93,7 @@ const initSeledaPayment = async (user: any, amount: number) => {
     return { status: "failed", messsage: "invalid amount", checkout: null };
 
   var raw = JSON.stringify({
-    amount: amount,
+    amount: 10, //amount,
     currency: "ETB",
     email: null,
     first_name: user.firstName,
