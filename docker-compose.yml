@@ -14,6 +14,7 @@ services:
       - --entrypoints.web.http.redirections.entryPoint.to=websecure
       - --entrypoints.web.http.redirections.entryPoint.scheme=https
       - --entrypoints.mongodb.address=:${MONGO_REPLICA_PORT}
+      - --entrypoints.occ.address=:5000-5150
       - --certificatesResolvers.default.acme.email=biniamdev@gmail.com
       - --certificatesResolvers.default.acme.storage=/ssl-certs/acme.json
       - --certificatesResolvers.default.acme.httpChallenge.entryPoint=web
@@ -23,9 +24,6 @@ services:
       - "443:443"
       # remove port 8080 for production
       - "8080:8080"
-      # for devices
-      - "5000-5150:5000-5150"
-      - "5000-5150:5000-5150/udp"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./traefik/ssl/:/ssl-certs/
