@@ -367,6 +367,8 @@ services:
       - "5000-5150:5000-5150"
       - "5000-5150:5000-5150/udp"
     restart: always
+    volumes:
+      - ./traccar/logs:/opt/traccar/logs
     networks:
       - app_network
     depends_on:
