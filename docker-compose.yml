@@ -16,6 +16,7 @@ services:
       - --entrypoints.web.http.redirections.entryPoint.to=websecure
       - --entrypoints.web.http.redirections.entryPoint.scheme=https
       - --entrypoints.mongodb.address=:${MONGO_REPLICA_PORT}
+      - --entrypoints.occ.address=:5000-5150:5000-5150
       - --certificatesResolvers.default.acme.email=biniamdev@gmail.com
       - --certificatesResolvers.default.acme.storage=/ssl-certs/acme.json
       - --certificatesResolvers.default.acme.httpChallenge.entryPoint=web
