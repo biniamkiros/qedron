@@ -6,9 +6,9 @@ services:
     labels:
       - traefik.enable='true'
       # Dashboard
-      - traefik.http.routers.traefik.rule=Host(`proxy.qedron.com`)
-      - traefik.http.routers.traefik.entrypoints=websecure
-      # - traefik.http.routers.traefik.service=api@internal
+      - traefik.http.routers.proxy.rule=Host(`proxy.qedron.com`)
+      - traefik.http.routers.proxy.entrypoints=websecure
+      # - traefik.http.routers.proxy.service=api@internal
     image: traefik:latest
     restart: always
     command:
