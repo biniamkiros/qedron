@@ -352,15 +352,9 @@ services:
       - traefik.http.routers.occ.service=occ-service
       - traefik.http.services.occ-service.loadbalancer.server.port=8082
 
-      # - traefik.http.routers.tracking.entrypoints=web
-      # - traefik.http.routers.tracking.rule=Host(`occ.qedron.com`)
-      # - traefik.http.routers.tracking.service=tracking-service
-      # - traefik.http.services.tracking-service.loadbalancer.server.port=5000-5150
+      - traefik.http.routers.devices.entrypoints=web
+      - traefik.http.routers.devices.rule=Host(`occ.qedron.com`)
 
-      # - traefik.http.routers.trackingudp.entrypoints=web
-      # - traefik.http.routers.trackingudp.rule=Host(`occ.qedron.com`)
-      # - traefik.http.routers.trackingudp.service=trackingudp-service
-      # - traefik.http.services.trackingudp-service.loadbalancer.server.port=5000-5150/udp
     image: ghcr.io/biniamkiros/occ:latest
     build:
       context: .
