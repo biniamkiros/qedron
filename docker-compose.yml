@@ -21,7 +21,7 @@ services:
       - --entrypoints.web.http.redirections.entryPoint.scheme=https
       - --entrypoints.web.http.redirections.entrypoint.priority=1000
       - --entrypoints.mongodb.address=:${MONGO_REPLICA_PORT}
-      - --entrypoints.trackers.address=:5055
+      # - --entrypoints.trackers.address=:5055
       - --certificatesResolvers.default.acme.email=biniamdev@gmail.com
       - --certificatesResolvers.default.acme.storage=/ssl-certs/acme.json
       - --certificatesResolvers.default.acme.httpChallenge.entryPoint=web
@@ -361,9 +361,9 @@ services:
       - traefik.http.routers.occ.entrypoints=websecure,web
 
       # - traefik.http.services.trackers.loadbalancer.server.port=5055
-      - traefik.http.routers.trackers.rule=Host(`occ.qedron.com`)
-      - traefik.http.routers.trackers.entrypoints=web
-      - traefik.http.routers.trackers.priority=2000
+      # - traefik.http.routers.trackers.rule=Host(`occ.qedron.com`)
+      # - traefik.http.routers.trackers.entrypoints=web
+      # - traefik.http.routers.trackers.priority=2000
 
     image: ghcr.io/biniamkiros/occ:latest
     build:
