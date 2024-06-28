@@ -8,7 +8,25 @@ services:
       # Dashboard
       - traefik.http.routers.proxy.rule=Host(`proxy.qedron.com`)
       - traefik.http.routers.proxy.entrypoints=websecure
-      # - traefik.http.routers.proxy.service=api@internal
+      - traefik.http.routers.proxy.service=api@internal
+
+        #dashboard
+      # traefik.enable: true
+      # traefik.http.routers.proxy-api.rule: Host(`proxy.${DOMAIN}`)
+      # traefik.http.routers.proxy-api.entryPoints: websecure
+      # traefik.http.routers.proxy-api.tls: true
+      # traefik.http.routers.proxy-api.tls.certresolver: letsencrypt
+      # traefik.http.routers.proxy-api.tls.domains[0].main: "${DOMAIN}"
+      # traefik.http.routers.proxy-api.tls.domains[0].sans: "*.${DOMAIN}"
+      # traefik.http.routers.proxy-api.service: api@internal
+      # traefik.http.routers.proxy-api.middlewares: dashboardauth@docker
+      # # redirect all http to https
+      # traefik.http.routers.http-catchall.rule: hostregexp(`{host:.+}`)
+      # traefik.http.routers.http-catchall.entrypoints: web
+      # traefik.http.routers.http-catchall.middlewares: redirect-to-https@docker
+      # traefik.http.middlewares.redirect-to-https.redirectscheme.scheme: https
+      # #basic auth
+      # traefik.http.middlewares.dashboardauth.basicauth.users: "user:$$"
     image: traefik:latest
     restart: always
     command:
@@ -33,7 +51,7 @@ services:
       # - "5000-5150:5000-5150"
       # - "5000-5150:5000-5150/udp"
       # remove port 8080 for production
-      # - "8080:8080"
+      - "8080:8080"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./traefik/ssl/:/ssl-certs/
