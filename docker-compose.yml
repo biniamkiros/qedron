@@ -350,24 +350,14 @@ services:
       - traefik.enable=true
       - traefik.http.routers.occ.rule=Host(`occ.qedron.com`)
       - traefik.http.routers.occ.entrypoints=websecure,web
-
-      # - traefik.http.routers.tracking.entrypoints=web
-      # - traefik.http.routers.tracking.rule=Host(`occ.qedron.com`)
-      # - traefik.http.routers.tracking.service=tracking-service
-      # - traefik.http.services.tracking-service.loadbalancer.server.port=5000-5150
-
-      # - traefik.http.routers.trackingudp.entrypoints=web
-      # - traefik.http.routers.trackingudp.rule=Host(`occ.qedron.com`)
-      # - traefik.http.routers.trackingudp.service=trackingudp-service
-      # - traefik.http.services.trackingudp-service.loadbalancer.server.port=5000-5150/udp
     image: ghcr.io/biniamkiros/occ:latest
     build:
       context: .
       dockerfile: ./packages/traccar/Dockerfile
     ports:
-      - "8082:8082"
-      - "5000-5150:5000-5150"
-      - "5000-5150:5000-5150/udp"
+      - 8082:8082
+      - 5000-5150:5000-5150
+      - 5000-5150:5000-5150/udp
     restart: always
     volumes:
       - ./traccar/logs:/opt/traccar/logs
