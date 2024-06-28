@@ -3,6 +3,12 @@ version: "3.8"
 services:
   proxy:
     container_name: proxy
+    labels:
+      - traefik.enable='true'
+      # Dashboard
+      - traefik.http.routers.traefik.rule=Host(`proxy.qedron.com`)
+      - traefik.http.routers.traefik.entrypoints=web,websecure
+      - traefik.http.routers.traefik.service=api@internal
     image: traefik:latest
     restart: always
     command:
@@ -22,6 +28,9 @@ services:
       - --certificatesResolvers.default.acme.storage=/ssl-certs/acme.json
       - --certificatesResolvers.default.acme.httpChallenge.entryPoint=web
       - --providers.docker.exposedByDefault=false
+        # middleware redirect
+      - --traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
+
     ports:
       - "80:80"
       - "443:443"
@@ -29,7 +38,7 @@ services:
       # - "5000-5150:5000-5150"
       # - "5000-5150:5000-5150/udp"
       # remove port 8080 for production
-      - "8080:8080"
+      # - "8080:8080"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./traefik/ssl/:/ssl-certs/
