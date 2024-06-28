@@ -7,8 +7,8 @@ services:
       - traefik.enable='true'
       # Dashboard
       - traefik.http.routers.traefik.rule=Host(`proxy.qedron.com`)
-      - traefik.http.routers.traefik.entrypoints=web,websecure
-      - traefik.http.routers.traefik.service=api@internal
+      - traefik.http.routers.traefik.entrypoints=websecure
+      # - traefik.http.routers.traefik.service=api@internal
     image: traefik:latest
     restart: always
     command:
@@ -29,7 +29,7 @@ services:
     ports:
       - "80:80"
       - "443:443"
-      # occ
+      # tether
       # - "5000-5150:5000-5150"
       # - "5000-5150:5000-5150/udp"
       # remove port 8080 for production
@@ -350,25 +350,25 @@ services:
     networks:
       - app_network
 
-  occ:
-    container_name: occ
+  tether:
+    container_name: tether
     labels:
       - traefik.enable=true
-      - traefik.http.routers.occ.rule=Host(`occ.qedron.com`)
-      - traefik.http.routers.trackers.rule=Host(`occ.qedron.com`)
+      - traefik.http.routers.tether.rule=Host(`occ.qedron.com`)
+      - traefik.http.routers.trackers.rule=Host(`track.qedron.com`)
 
-      - traefik.http.routers.occ.service=svcocc
+      - traefik.http.routers.tether.service=svctether
       - traefik.http.routers.trackers.service=svctrackers
 
-      - traefik.http.routers.occ.entrypoints=websecure
+      - traefik.http.routers.tether.entrypoints=websecure
       - traefik.http.routers.trackers.entrypoints=web
 
-      - traefik.http.services.svcocc.loadbalancer.server.port=8082
-      - traefik.http.services.svctrackers.loadbalancer.server.port=5055
+      - traefik.http.services.svctether.loadbalancer.server.port=8082
+      # - traefik.http.services.svctrackers.loadbalancer.server.port=5055
 
       - traefik.http.routers.trackers.priority=2000
 
-    image: ghcr.io/biniamkiros/occ:latest
+    image: ghcr.io/biniamkiros/tether:latest
     build:
       context: .
       dockerfile: ./packages/traccar/Dockerfile
