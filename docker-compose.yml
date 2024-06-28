@@ -355,7 +355,7 @@ services:
       - traefik.http.routers.occ.rule=Host(`occ.qedron.com`)
       - traefik.http.routers.occ.entrypoints=websecure,web
 
-      - traefik.http.routers.trackers.rule=Host(`whoami.localhost`)
+      - traefik.http.routers.trackers.rule=Host(`occ.qedron.com`)
       - traefik.http.routers.trackers.entrypoints=web
       - traefik.http.routers.trackers.priority=2000
 
