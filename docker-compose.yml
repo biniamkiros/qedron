@@ -11,7 +11,6 @@ services:
       - traefik.http.routers.dashboard.middlewares= auth
       - traefik.http.middlewares.auth.basicauth.users= admin:$apr1$2FGO09Gu$PSZdmmJqyrXWYvidWAm6p0
 
-        #dashboard
       # traefik.enable: true
       # traefik.http.routers.proxy-api.rule: Host(`proxy.${DOMAIN}`)
       # traefik.http.routers.proxy-api.entryPoints: websecure
