@@ -355,15 +355,15 @@ services:
     container_name: occ
     labels:
       - traefik.enable=true
-      - traefik.http.services.occ.loadbalancer.server.port=8082
-
       - traefik.http.routers.occ.rule=Host(`occ.qedron.com`)
-      - traefik.http.routers.occ.entrypoints=websecure,web
+      - traefik.http.routers.occ.service=svcocc
+      - traefik.http.routers.occ.entrypoints=websecure
+      - traefik.http.services.svcocc.loadbalancer.server.port=8082
 
+      - traefik.http.routers.trackers.priority=2000
       - traefik.http.routers.trackers.rule=Host(`occ.qedron.com`)
       - traefik.http.routers.trackers.service=svctrackers
       - traefik.http.routers.trackers.entrypoints=web
-      - traefik.http.routers.trackers.priority=2000
       - traefik.http.services.svctrackers.loadbalancer.server.port=5055
 
     image: ghcr.io/biniamkiros/occ:latest
