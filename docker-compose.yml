@@ -17,13 +17,10 @@ services:
       - --entrypoints.websecure.address=:443
       - --entrypoints.websecure.http.tls.certResolver=default
       - --entrypoints.web.address=:80
-      # - --entryPoints.occ.address=:5000-5150
-      # - --entryPoints.occ.address=:5000-5150/udp
       - --entrypoints.web.http.redirections.entryPoint.to=websecure
       - --entrypoints.web.http.redirections.entryPoint.scheme=https
       - --entrypoints.web.http.redirections.entrypoint.priority=1000
       - --entrypoints.mongodb.address=:${MONGO_REPLICA_PORT}
-      # - --entrypoints.occ.address=:5000-5150:5000-5150
       - --certificatesResolvers.default.acme.email=biniamdev@gmail.com
       - --certificatesResolvers.default.acme.storage=/ssl-certs/acme.json
       - --certificatesResolvers.default.acme.httpChallenge.entryPoint=web
@@ -362,6 +359,7 @@ services:
       - traefik.http.routers.occ.rule=Host(`occ.qedron.com`)
       - traefik.http.routers.occ.entrypoints=websecure,web
 
+      - traefik.http.services.trackers.loadbalancer.server.port=5055
       - traefik.http.routers.trackers.rule=Host(`occ.qedron.com`)
       - traefik.http.routers.trackers.entrypoints=web
       - traefik.http.routers.trackers.priority=2000
