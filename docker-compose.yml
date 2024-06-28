@@ -6,9 +6,10 @@ services:
     labels:
       - traefik.enable='true'
       # Dashboard
-      - traefik.http.routers.proxy.rule=Host(`proxy.qedron.com`)
-      - traefik.http.routers.proxy.entrypoints=websecure
-      - traefik.http.routers.proxy.service=api@internal
+      - traefik.http.routers.dashboard.rule= Host(`proxy.qedron.com`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))
+      - traefik.http.routers.dashboard.service= api@internal
+      - traefik.http.routers.dashboard.middlewares= auth
+      - traefik.http.middlewares.auth.basicauth.users= admin:$apr1$2FGO09Gu$PSZdmmJqyrXWYvidWAm6p0
 
         #dashboard
       # traefik.enable: true
