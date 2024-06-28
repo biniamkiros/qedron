@@ -8,25 +8,28 @@ services:
       # Dashboard
       - traefik.http.routers.dashboard.rule= Host(`proxy.qedron.com`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))
       - traefik.http.routers.dashboard.service= api@internal
+      - traefik.http.routers.dashboard.entrypoints=websecure
+      - traefik.http.routers.dashboard.tls=true
       - traefik.http.routers.dashboard.middlewares= auth
       - traefik.http.middlewares.auth.basicauth.users= admin:$apr1$2FGO09Gu$PSZdmmJqyrXWYvidWAm6p0
+    # admin super_strong_password
 
-      # traefik.enable: true
-      # traefik.http.routers.proxy-api.rule: Host(`proxy.${DOMAIN}`)
-      # traefik.http.routers.proxy-api.entryPoints: websecure
-      # traefik.http.routers.proxy-api.tls: true
-      # traefik.http.routers.proxy-api.tls.certresolver: letsencrypt
-      # traefik.http.routers.proxy-api.tls.domains[0].main: "${DOMAIN}"
-      # traefik.http.routers.proxy-api.tls.domains[0].sans: "*.${DOMAIN}"
-      # traefik.http.routers.proxy-api.service: api@internal
-      # traefik.http.routers.proxy-api.middlewares: dashboardauth@docker
-      # # redirect all http to https
-      # traefik.http.routers.http-catchall.rule: hostregexp(`{host:.+}`)
-      # traefik.http.routers.http-catchall.entrypoints: web
-      # traefik.http.routers.http-catchall.middlewares: redirect-to-https@docker
-      # traefik.http.middlewares.redirect-to-https.redirectscheme.scheme: https
-      # #basic auth
-      # traefik.http.middlewares.dashboardauth.basicauth.users: "user:$$"
+    # traefik.enable: true
+    # traefik.http.routers.proxy-api.rule: Host(`proxy.${DOMAIN}`)
+    # traefik.http.routers.proxy-api.entryPoints: websecure
+    # traefik.http.routers.proxy-api.tls: true
+    # traefik.http.routers.proxy-api.tls.certresolver: letsencrypt
+    # traefik.http.routers.proxy-api.tls.domains[0].main: "${DOMAIN}"
+    # traefik.http.routers.proxy-api.tls.domains[0].sans: "*.${DOMAIN}"
+    # traefik.http.routers.proxy-api.service: api@internal
+    # traefik.http.routers.proxy-api.middlewares: dashboardauth@docker
+    # # redirect all http to https
+    # traefik.http.routers.http-catchall.rule: hostregexp(`{host:.+}`)
+    # traefik.http.routers.http-catchall.entrypoints: web
+    # traefik.http.routers.http-catchall.middlewares: redirect-to-https@docker
+    # traefik.http.middlewares.redirect-to-https.redirectscheme.scheme: https
+    # #basic auth
+    # traefik.http.middlewares.dashboardauth.basicauth.users: "user:$$"
     image: traefik:latest
     restart: always
     command:
