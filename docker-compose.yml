@@ -6,21 +6,22 @@ services:
     labels:
       - traefik.enable=true
       # Dashboard
-      - traefik.http.routers.proxy.rule=Host(`proxy.qedron.com`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))
+      - traefik.http.routers.proxy.rule=Host(`proxy.qedron.com`)
+      # && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))
       - traefik.http.routers.proxy.service=api@internal
       - traefik.http.routers.proxy.entrypoints=websecure
       - traefik.http.routers.proxy.tls=true
       - traefik.http.routers.proxy.middlewares=auth
       - traefik.http.routers.proxy.service=svcproxy
       - traefik.http.services.svcproxy.loadbalancer.server.port=8080
-      - traefik.http.middlewares.auth.basicauth.users=admin:$apr1$$S8iPt6va$$sVruUzLtrvelT30Arujrl1
+      - traefik.http.middlewares.auth.basicauth.users=admin:$apr1$$SCyHUDNM$$gcx.glMoINyfpdmGU1cd51
     # admin super_strong_password
 
     image: traefik:latest
     restart: always
     command:
       - --api.dashboard=true
-      # - --api.insecure=false
+      - --api.insecure=false
       - --entrypoints.websecure.address=:443
       - --entrypoints.websecure.http.tls.certResolver=default
       - --entrypoints.web.address=:80
