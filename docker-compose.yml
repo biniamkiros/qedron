@@ -12,8 +12,9 @@ services:
       - traefik.http.routers.proxy.entrypoints=websecure
       - traefik.http.routers.proxy.tls=true
       - traefik.http.routers.proxy.middlewares=auth
+      - traefik.http.routers.proxy.service=svcproxy
+      - traefik.http.services.svcproxy.loadbalancer.server.port=8080
       - traefik.http.middlewares.auth.basicauth.users=admin:$apr1$2FGO09Gu$PSZdmmJqyrXWYvidWAm6p0
-      - traefik.http.services.proxy.loadbalancer.server.port=8080
     # admin super_strong_password
 
     # traefik.enable: true
