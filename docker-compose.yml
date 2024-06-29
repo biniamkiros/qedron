@@ -4,7 +4,7 @@ services:
   proxy:
     container_name: proxy
     labels:
-      - traefik.enable='true'
+      - traefik.enable=true
       # Dashboard
       - traefik.http.routers.proxy.rule=Host(`proxy.qedron.com`)
       # && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))
