@@ -6,13 +6,14 @@ services:
     labels:
       - traefik.enable='true'
       # Dashboard
-      - traefik.http.routers.dashboard.rule= Host(`proxy.qedron.com`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))
-      - traefik.http.routers.dashboard.service= api@internal
-      - traefik.http.routers.dashboard.entrypoints=websecure
-      - traefik.http.routers.dashboard.tls=true
-      - traefik.http.routers.dashboard.middlewares=auth
+      - traefik.http.routers.proxy.rule=Host(`proxy.qedron.com`)
+      # && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))
+      - traefik.http.routers.proxy.service=api@internal
+      - traefik.http.routers.proxy.entrypoints=websecure
+      - traefik.http.routers.proxy.tls=true
+      - traefik.http.routers.proxy.middlewares=auth
       - traefik.http.middlewares.auth.basicauth.users=admin:$apr1$2FGO09Gu$PSZdmmJqyrXWYvidWAm6p0
-      - traefik.http.services.dashboard.loadbalancer.server.port=8080
+      - traefik.http.services.proxy.loadbalancer.server.port=8080
     # admin super_strong_password
 
     # traefik.enable: true
