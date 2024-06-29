@@ -10,8 +10,9 @@ services:
       - traefik.http.routers.dashboard.service= api@internal
       - traefik.http.routers.dashboard.entrypoints=websecure
       - traefik.http.routers.dashboard.tls=true
-      - traefik.http.routers.dashboard.middlewares= auth
-      - traefik.http.middlewares.auth.basicauth.users= admin:$apr1$2FGO09Gu$PSZdmmJqyrXWYvidWAm6p0
+      - traefik.http.routers.dashboard.middlewares=auth
+      - traefik.http.middlewares.auth.basicauth.users=admin:$apr1$2FGO09Gu$PSZdmmJqyrXWYvidWAm6p0
+      - traefik.http.services.dashboard.loadbalancer.server.port=8080
     # admin super_strong_password
 
     # traefik.enable: true
