@@ -366,7 +366,7 @@ services:
       - traefik.http.routers.trackers.rule=Host(`track.qedron.com`)
 
       - traefik.http.routers.tether.service=svctether
-      - traefik.http.routers.trackers.service=svctrackers
+      # - traefik.http.routers.trackers.service=svctrackers
 
       - traefik.http.routers.tether.entrypoints=websecure
       - traefik.http.routers.trackers.entrypoints=web
