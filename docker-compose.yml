@@ -9,7 +9,7 @@ services:
       - traefik.http.routers.proxy.rule=Host(`proxy.qedron.com`)
       # && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))
       # - traefik.http.routers.proxy.service=api@internal
-      # - traefik.http.routers.proxy.entrypoints=web,websecure
+      - traefik.http.routers.proxy.entrypoints=web,websecure
       # - traefik.http.routers.proxy.tls=true
       # - traefik.http.routers.proxy.middlewares=auth
       - traefik.http.routers.proxy.service=svcproxy
