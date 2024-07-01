@@ -7,7 +7,7 @@ services:
       # - traefik.enable=true
       # - api.insecure=true
       # Dashboard
-      - traefik.enable=true"
+      - traefik.enable=true
       - traefik.http.routers.mydashboard.rule=Host(`proxy.qedron.com`)
       - traefik.http.routers.mydashboard.service=api@internal
       - traefik.http.routers.mydashboard.middlewares=myauth
