@@ -4,9 +4,15 @@ services:
   proxy:
     container_name: proxy
     labels:
-      - traefik.enable=true
-      - api.insecure=true
+      # - traefik.enable=true
+      # - api.insecure=true
       # Dashboard
+      - traefik.enable=true"
+      - traefik.http.routers.mydashboard.rule=Host(`proxy.qedron.com`)
+      - traefik.http.routers.mydashboard.service=api@internal
+      - traefik.http.routers.mydashboard.middlewares=myauth
+      - traefik.http.middlewares.myauth.basicauth.users=admin:$$apr1$$SCyHUDNM$$gcx.glMoINyfpdmGU1cd51
+
       # - traefik.http.routers.proxy.rule=Host(`proxy.qedron.com`)
       # && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))
       # - traefik.http.routers.proxy.service=api@internal
@@ -23,7 +29,7 @@ services:
     restart: always
     command:
       - --api.dashboard=true
-      - --api.insecure=false
+      # - --api.insecure=false
       - --entrypoints.websecure.address=:443
       - --entrypoints.websecure.http.tls.certResolver=default
       - --entrypoints.web.address=:80
