@@ -41,6 +41,7 @@ services:
       - --certificatesResolvers.default.acme.storage=/ssl-certs/acme.json
       - --certificatesResolvers.default.acme.httpChallenge.entryPoint=web
       - --providers.docker.exposedByDefault=false
+      - --providers.docker.network=web
 
     ports:
       - "80:80"
