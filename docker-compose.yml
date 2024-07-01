@@ -30,6 +30,8 @@ services:
     command:
       - --api.dashboard=true
       # - --api.insecure=false
+      - --log.level=DEBUG
+      - --accesslog=true
       - --entrypoints.websecure.address=:443
       - --entrypoints.websecure.http.tls.certResolver=default
       - --entrypoints.web.address=:80
